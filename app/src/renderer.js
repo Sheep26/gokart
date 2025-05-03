@@ -25,21 +25,26 @@ class DATA {
     }
 
     get_speed() {
-        return this.data.speed
+        return this.data.speed;
     }
 
     get_rpm() {
-        return this.data.rpm
+        return this.data.rpm;
     }
 
     get_power() {
-        return this.data.power
+        return this.data.power;
     }
 
     get_throttle() {
-        this.data.throttle
+        this.data.throttle;
     }
 }
 
 var data = new DATA("https://gokart.sheepland.xyz");
 
+function update_statistics() {
+    data.update_data();
+}
+
+update_statistics()
