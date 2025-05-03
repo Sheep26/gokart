@@ -21,7 +21,7 @@ const config = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8001;
 
 let data = {
     online: false, 
