@@ -60,4 +60,4 @@ function update_statistics() {
     }
 }
 
-update_statistics()
+setInterval(update_statistics, 0.1)
