@@ -53,8 +53,7 @@ function update_statistics() {
 
     // Update elements
     for (let key in elements) {
-        console.log(key)
-        console.log(elements[key])
+        // Check if json data isn't null.
         if (json[key] !== undefined) {
             elements[key].innerHTML = json[key];
         }
