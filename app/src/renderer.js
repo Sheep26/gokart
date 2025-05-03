@@ -24,27 +24,41 @@ class DATA {
         }
     }
 
-    get_speed() {
-        return this.data.speed;
-    }
-
-    get_rpm() {
-        return this.data.rpm;
-    }
-
-    get_power() {
-        return this.data.power;
-    }
-
-    get_throttle() {
-        this.data.throttle;
+    get_data() {
+        return this.data;
     }
 }
 
-var data = new DATA("https://gokart.sheepland.xyz");
+let elements = {
+    speed: document.getElementById("speed-data"),
+    speed_avg: document.getElementById("speed-data-avg"),
+    speed_max: document.getElementById("speed-data-max"),
+    rpm: document.getElementById("rpm-data"),
+    rpm_avg: document.getElementById("rpm-data-avg"),
+    rpm_max: document.getElementById("rpm-data-max"),
+    power: document.getElementById("power-data"),
+    power_avg: document.getElementById("power-data-avg"),
+    power_max: document.getElementById("power-data-max"),
+    throttle: document.getElementById("throttle-data"),
+    throttle_avg: document.getElementById("throttle-data-avg"),
+    throttle_max: document.getElementById("throttle-data-max"),
+}
+
+let data = new DATA("https://gokart.sheepland.xyz");
 
 function update_statistics() {
     data.update_data();
+
+    var json = data.get_data()
+
+    // Update elements
+    for (let key in elements) {
+        console.log(key)
+        console.log(elements[key])
+        if (json[key] !== undefined) {
+            elements[key].innerHTML = json[key];
+        }
+    }
 }
 
 update_statistics()
