@@ -5,3 +5,25 @@ body {
 h1, h2, h3, p, a {
     color: white;
 }
+
+.cam-iframe {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+}
+
+.data-header {
+    margin-left: 51%;
+}
+
+.data-table {
+    margin-left: 51%;
+}
+
+.data-table * {
+    color: white;
+}
+
+table, th, td {
+    border: 1px solid white;
+  }
