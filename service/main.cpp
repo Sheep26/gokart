@@ -3,8 +3,11 @@
 #include <data.hpp>
 #include <cstdlib>
 #include <thread>
+#include <chrono>
 
 using namespace std;
+using namespace std::this_thread;
+using namespace std::chrono
 
 int main() {
     cout << "Starting gokart deamon.";
@@ -19,7 +22,7 @@ int main() {
 
     // Main loop.
     while (true) {
-        
+        sleep_for(seconds(0.032));
     }
 
     // Return 0.

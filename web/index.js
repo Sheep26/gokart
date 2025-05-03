@@ -28,10 +28,12 @@ let data = {
     data: {}
 };
 
+// Nginx proxy confs make us need to call /api/get_data
 app.get("/get_data", (req, res) => {
     res.send(data);
 });
 
+// Nginx proxy confs make us need to call /api/update_data
 app.post("/update_data", (req, res) => {
     data = {
         online: true,
