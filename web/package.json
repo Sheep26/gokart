@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Sheep26/gokart#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mediasoup": "^3.15.7"
   }
 }
