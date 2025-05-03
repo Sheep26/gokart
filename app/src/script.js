@@ -1,3 +1,6 @@
+const api_url = "http://localhost"
+const video_url = "http://localhost:8000"
+
 class DATA {
     constructor(api_url = "") {
         this.data = null;
@@ -19,13 +22,19 @@ class DATA {
 
             // Set data variable
             this.data = json;
+
+            return json;
         } catch (error) {
             console.error(error.message);
         }
     }
 
     get_data() {
-        return this.data;
+        return this.data.data;
+    }
+
+    get_online() {
+        return this.data.online;
     }
 }
 
@@ -44,20 +53,43 @@ let elements = {
     throttle_max: document.getElementById("throttle-data-max"),
 }
 
-let data = new DATA("https://gokart.sheepland.xyz");
+let data = new DATA(api_url);
+let flvrunning = false;
 
 function update_statistics() {
-    data.update_data();
-
-    var json = data.get_data()
-
-    // Update elements
-    for (let key in elements) {
-        // Check if json data isn't null.
-        if (json == null && json[key] !== undefined) {
-            elements[key].innerHTML = json[key];
+    data.update_data().then(json => {
+        // Check if online
+        if (!json.online) return;
+        // Update elements
+        for (let key in elements) {
+            // Check if json data isn't null.
+            if (json == null && json.data[key] !== undefined) {
+                elements[key].innerHTML = json.data[key];
+            }
         }
+    });
+}
+
+setInterval(update_statistics, 100)
+check_online_interval = setInterval(check_online, 100)
+
+function check_online() {
+    if (data.data != null && data.get_online() && !flvrunning) {
+        clearInterval(check_online_interval);
+        create_flv();
     }
 }
 
-//setInterval(update_statistics, 0.1)
+function create_flv() {
+    if (flvjs.isSupported()) {
+        flvrunning = true;
+        var videoElement = document.getElementById('videoElement');
+        var flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+            url: video_url + '/live/stream.flv'
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+    }
+}

@@ -19,7 +19,7 @@ int main() {
 
     // Main loop.
     while (true) {
-
+        
     }
 
     // Return 0.
@@ -30,7 +30,7 @@ void ffmpeg_setup() {
     // Start ffmpeg.
     cout << "Starting ffmpeg live video feed.";
 
-    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz:1935/live");
+    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz/live/stream");
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }

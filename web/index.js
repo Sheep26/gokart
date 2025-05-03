@@ -23,14 +23,20 @@ app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 80;
 
-let data = {};
+let data = {
+    online: false, 
+    data: {}
+};
 
 app.get("/api/get_data", (req, res) => {
     res.send(data);
 });
 
 app.post("/api/update_data", (req, res) => {
-    data = req.body;
+    data = {
+        online: true,
+        data: req.body
+    };
     res.sendStatus(200);
 });
 
