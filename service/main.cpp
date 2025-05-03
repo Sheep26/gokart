@@ -4,13 +4,18 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
+#include <curl/curl.h>
 
 using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
 void data_thread() {
+    while (true) {
+        
 
+        sleep_for(milliseconds(100));
+    }
 }
 
 void ffmpeg_thread() {

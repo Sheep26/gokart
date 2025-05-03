@@ -1,1 +1,1 @@
-gcc main.c -o main -l wiringPi
+g++ main.cpp -l wiringPi $(pkg-config --cflags --libs libcurl) -o main
