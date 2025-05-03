@@ -19,7 +19,7 @@ app.post("/api/update_data", (req, res) => {
     res.sendStatus(200);
 });
 
-app.listen(PORT, function (err) {
+app.listen(PORT, "0.0.0.0", function (err) {
     if (err) console.log(err);
     console.log("Server listening on PORT", PORT);
 });
