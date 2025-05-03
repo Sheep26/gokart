@@ -1,5 +1,4 @@
-const api_url = "http://localhost"
-const video_url = "http://localhost:8000"
+const api_url = "https://gokart.sheepland.xyz"
 
 class DATA {
     constructor(api_url = "") {
@@ -86,7 +85,7 @@ function create_flv() {
         var videoElement = document.getElementById('videoElement');
         var flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: video_url + '/live/stream.flv'
+            url: api_url + '/live/stream.flv'
         });
         flvPlayer.attachMediaElement(videoElement);
         flvPlayer.load();

@@ -28,11 +28,11 @@ let data = {
     data: {}
 };
 
-app.get("/api/get_data", (req, res) => {
+app.get("/get_data", (req, res) => {
     res.send(data);
 });
 
-app.post("/api/update_data", (req, res) => {
+app.post("/update_data", (req, res) => {
     data = {
         online: true,
         data: req.body
