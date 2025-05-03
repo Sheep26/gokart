@@ -9,7 +9,7 @@ class DATA {
 
         try {
             // Request data from api
-            const response = await fetch(this.api_url + "/api/exported_data");
+            const response = await fetch(this.api_url + "/api/get_data");
 
             if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
@@ -54,7 +54,7 @@ function update_statistics() {
     // Update elements
     for (let key in elements) {
         // Check if json data isn't null.
-        if (json[key] !== undefined) {
+        if (json == null && json[key] !== undefined) {
             elements[key].innerHTML = json[key];
         }
     }
