@@ -13,18 +13,20 @@ const config = {
     },
     http: {
         port: 8000,
-        allow_origin: '*'
+        allow_origin: '*',
+        mediaroot: "./media"
     },
     trans: {
-        ffmpeg: 'ffmpeg', // Make sure ffmpeg is installed
+        ffmpeg: "ffmpeg",
         tasks: [
             {
-                app: 'live', // RTMP app name
+                app: "live",
                 hls: true,
-                hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
-                dash: false
-            }
-        ]
+                hlsFlags: "[hls_time=2:hls_list_size=3:hls_flags=delete_segments]",
+                hlsKeep: false,
+            },
+        ],
+        MediaRoot: "./media",
     }
 };
 
