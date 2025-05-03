@@ -15,6 +15,17 @@ const config = {
         port: 8000,
         allow_origin: '*'
     },
+    trans: {
+        ffmpeg: 'ffmpeg', // Make sure ffmpeg is installed
+        tasks: [
+            {
+                app: 'live', // RTMP app name
+                hls: true,
+                hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
+                dash: false
+            }
+        ]
+    }
 };
 
 // Encode and parse data.
@@ -41,5 +52,3 @@ app.listen(PORT, "0.0.0.0", function (err) {
 
 const nms = new NodeMediaServer(config);
 nms.run();
-
-console.log('Node Media Server running on RTMP port 1935 and HTTP port 8000');

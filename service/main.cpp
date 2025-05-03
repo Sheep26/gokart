@@ -17,12 +17,17 @@ int main() {
     thread ffmpeg_t(ffmpeg_setup);
     ffmpeg_t.join();
 
-    // Return 0
+    // Main loop.
+    while (true) {
+
+    }
+
+    // Return 0.
     return 0;
 }
 
 void ffmpeg_setup() {
-    // Start ffmpeg
+    // Start ffmpeg.
     cout << "Starting ffmpeg live video feed.";
 
     int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz:1935/live/stream");

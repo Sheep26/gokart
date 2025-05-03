@@ -6,7 +6,7 @@ h1, h2, h3, p, a {
     color: white;
 }
 
-.cam-iframe {
+.cam {
     width: 50%;
     height: 50%;
     position: absolute;
