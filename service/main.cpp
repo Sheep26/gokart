@@ -15,7 +15,7 @@ int main() {
 
     // Create a thread for ffmpeg video feed.
     thread ffmpeg_t(ffmpeg_setup);
-    ffmpeg_t.join()
+    ffmpeg_t.join();
 
     // Return 0
     return 0;
@@ -25,7 +25,7 @@ void ffmpeg_setup() {
     // Start ffmpeg
     cout << "Starting ffmpeg live video feed.";
 
-    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -vcodec libx264 -f flv rtmp://gokartrtmp.sheepland.xyz/live/01");
+    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -vcodec libx264 -f flv rtmp://gokartrtmp.sheepland.xyz:1935/live/01");
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
