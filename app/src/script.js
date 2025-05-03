@@ -58,17 +58,17 @@ let data = new DATA(api_url);
 let flvrunning = false;
 
 function update_statistics() {
-    data.update_data().then(json => {
-        // Check if online
-        if (!json.online) return;
-        // Update elements
-        for (let key in elements) {
-            // Check if json data isn't null.
-            if (json == null && json.data[key] !== undefined) {
-                elements[key].innerHTML = json.data[key];
-            }
+    data.update_data();
+    // Check if online
+    if (data.data != null && !data.get_online()) return;
+
+    // Update elements
+    for (let key in elements) {
+        // Check if json data isn't null.
+        if (data.data != null && data.get_data()[key] != undefined) {
+            elements[key].innerHTML = data.get_data()[key];
         }
-    });
+    }
 }
 
 setInterval(update_statistics, 100)
