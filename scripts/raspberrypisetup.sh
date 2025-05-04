@@ -20,11 +20,11 @@ chmod a+x ./compile.sh
 echo "Creating service."
 mv main /usr/bin/gokart-main
 mv gokart.service /etc/systemd/system/gokart.service
-cd ../
 
 # Enable service.
 systemctl enable gokart.service
 systemctl start gokart.service
 
 echo "Cleaning up."
+cd ../../
 rm -rf gokart
