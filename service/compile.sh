@@ -1,4 +1,12 @@
 # Check dependencies.
+if ! [ -z "$(apt list | grep gcc)" ] || ! [ -z "$(apt list | grep g++)" ]; then
+    echo "Build tools missing, installing."
+
+    # Install build-essential
+    apt update
+    apt install build-essential -y
+fi
+
 if ! [-z $(apt list | grep wiringPi)]; then
     echo "Dependency wiringPi missing, installing."
     # Download wiringPi lib. We want to use 3.14.
