@@ -84,7 +84,6 @@ int main() {
     // Main loop.
     while (true) {
         sleep_for(milliseconds(33));
-        break;
     }
 
     // Return 0.
