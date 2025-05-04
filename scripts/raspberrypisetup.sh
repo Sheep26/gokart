@@ -1,5 +1,14 @@
-# Check if ffmpeg installed
-if ! dpkg -l | grep -q ffmpeg; then
+PKG=$(dpkg -l)
+
+# Check dependencies.
+if ! PKG | grep -q git; then
+    echo "Dependency git missing, installing."
+    # Install libcurl library
+    apt update
+    apt install git -y
+fi
+
+if ! PKG -l | grep -q ffmpeg; then
     echo "Ffmpeg missing, installing."
     # Install build-essential (includes g++)
     apt update
@@ -7,7 +16,7 @@ if ! dpkg -l | grep -q ffmpeg; then
 fi
 
 echo "Cloning github repository."
-git clone https://github.com/Sheep26/gokart
+git clone https://github.com/Sheep26/gokart.git
 
 cd gokart/service
 

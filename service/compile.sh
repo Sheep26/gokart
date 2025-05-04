@@ -1,22 +1,34 @@
 #!/usr/bin/bash
 
+PKG=$(dpkg -l)
+
 # Check dependencies.
-if ! dpkg -l | grep -q g++; then
+if ! PKG | grep -q git; then
+    echo "Dependency git missing, installing."
+    # Install libcurl library
+    apt update
+    apt install git -y
+fi
+
+if ! PKG | grep -q g++; then
     echo "Build tools missing, installing."
     # Install build-essential (includes g++)
     apt update
     apt install build-essential -y
 fi
 
-if ! dpkg -l | grep -q wiringPi; then
+if ! PKG | grep -q wiringPi; then
     echo "Dependency wiringPi missing, installing."
-    # Download wiringPi lib. We want to use 3.14.
-    wget https://github.com/WiringPi/WiringPi/releases/download/3.14/wiringpi_3.14_arm64.deb
+    git clone https://github.com/WiringPi/WiringPi.git
     # Install
-    apt install ./wiringpi_3.14_arm64.deb -y
+    cd WiringPi
+    ./build debian
+
+    mv debian-template/wiringpi-* .
+    apt install ./wiringpi-*
 fi
 
-if ! dpkg -l | grep -q libcurl4-openssl-dev; then
+if ! PKG | grep -q libcurl4-openssl-dev; then
     echo "Dependency libcurl4-openssl-dev missing, installing."
     # Install libcurl library
     apt update
