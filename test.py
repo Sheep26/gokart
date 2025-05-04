@@ -1,4 +1,5 @@
 import requests
+from time import sleep
 
 data = {
         "speed": 20,
@@ -16,4 +17,6 @@ data = {
 }
 
 # sending post request and saving response as response object
-r = requests.post(url="https://gokart.sheepland.xyz/api/update_data", data=data)
+while True:
+        r = requests.post(url="https://gokart.sheepland.xyz/api/update_data", data=data)
+        sleep(0.1)
