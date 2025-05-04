@@ -1,5 +1,5 @@
 # Check dependencies.
-if [ -z "$(apt list | grep gcc)" ] || [ -z "$(apt list | grep g++)" ]; then
+if [ -z "$(dpkg -l | grep g++)" ]; then
     echo "Build tools missing, installing."
 
     # Install build-essential
@@ -7,7 +7,7 @@ if [ -z "$(apt list | grep gcc)" ] || [ -z "$(apt list | grep g++)" ]; then
     apt install build-essential -y
 fi
 
-if [-z $(apt list | grep wiringPi)]; then
+if [-z $(dpkg -l | grep wiringPi)]; then
     echo "Dependency wiringPi missing, installing."
     # Download wiringPi lib. We want to use 3.14.
     wget https://github.com/WiringPi/WiringPi/releases/download/3.14/wiringpi_3.14_arm64.deb
@@ -15,7 +15,7 @@ if [-z $(apt list | grep wiringPi)]; then
     apt install ./wiringpi_3.14_arm64.deb -y
 fi
 
-if [-z $(apt list | grep libcurl4-openssl-dev)]; then
+if [-z $(dpkg -l | grep libcurl4-openssl-dev)]; then
     echo "Dependency libcurl4-openssl-dev missing, installing."
     # Install libcurl library
     apt update
