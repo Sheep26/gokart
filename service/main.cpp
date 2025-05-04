@@ -64,7 +64,7 @@ void ffmpeg_thread() {
 }
 
 int main() {
-    cout << "Starting gokart deamon.";
+    cout << "Starting gokart service.";
 
     // Setup GPIO
     // Uses BCM numbering of the GPIOs and directly accesses the GPIO registers.
