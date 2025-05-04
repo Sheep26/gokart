@@ -26,6 +26,10 @@ if ! PKG | grep -q wiringPi; then
 
     mv debian-template/wiringpi-* .
     apt install ./wiringpi-*
+
+    # Clean up
+    cd ../
+    rm -rf WiringPi
 fi
 
 if ! PKG | grep -q libcurl4-openssl-dev; then
