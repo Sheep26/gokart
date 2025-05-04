@@ -15,10 +15,9 @@ void data_thread() {
     // Send data to server every 100ms
     while (true) {
         CURL* curl = curl_easy_init();
-        string response;
 
         if (curl) {
-            std::string body = std::format(R"({
+            string body = format(R"({
                 "speed": {},
                 "speed_avg": {},
                 "speed_max": {},
@@ -54,13 +53,14 @@ void data_thread() {
 }
 
 void ffmpeg_thread() {
+    cout << "Starting ffmpeg live video feed.";
+
     // Check if ffmpeg installed.
     if (system("which ffmpeg > /dev/null 2>&1") != 0) {
         cerr << "Error: ffmpeg is not installed on the system." << endl;
     }
 
     // Start ffmpeg.
-    cout << "Starting ffmpeg live video feed.";
 
     int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz/live/stream");
     if (ret != 0) {
@@ -78,12 +78,12 @@ int main() {
         return 1;
     }
 
-    // Create a thread for ffmpeg video feed.
+    // Create threads
     thread ffmpeg_t(ffmpeg_thread);
-    ffmpeg_t.detach();
-
-    // Create a thread to upload the data to the server.
     thread data_t(data_thread);
+
+    // Detach threads to allow independent execution
+    ffmpeg_t.detach();
     data_t.detach();
 
     // Main loop.
