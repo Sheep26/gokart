@@ -40,5 +40,5 @@ if ! PKG | grep -q libcurl4-openssl-dev; then
 fi
 
 # Compile.
-g++ main.cpp -lwiringPi $(pkg-config --cflags --libs libcurl) -o main
+g++ main.cpp -l wiringPi $(pkg-config --cflags --libs libcurl) -o main
 chmod a+x main
