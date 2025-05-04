@@ -59,7 +59,13 @@ let flvPlayer = null;
 function update_statistics() {
     data.update_data();
     // Check if online
-    if (data.data != null && !data.get_online()) return;
+    if (data.data != null && !data.get_online()) {
+        // Set element data to 0.
+        for (let key in elements) {
+            elements[key][0].innerHTML = "0" + elements[key][1]
+        }
+        return;
+    }
 
     // Update elements
     for (let key in elements) {
