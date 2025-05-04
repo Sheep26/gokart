@@ -13,6 +13,8 @@ echo "Updating executable."
 rm /usr/bin/gokart-main
 mv main /usr/bin/gokart-main
 
+systemctl restart gokart.service
+
 echo "Cleaning up."
 cd ../../
 rm -rf gokart
