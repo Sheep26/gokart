@@ -5,6 +5,7 @@ cd gokart/service
 
 # Compile executable.
 echo "Compiling executable."
+chmod a+x ./compile.sh
 ./compile.sh
 
 # Create service.
