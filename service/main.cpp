@@ -1,11 +1,11 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <data.hpp>
-#include <stdlib>
 #include <thread>
 #include <chrono>
 #include <curl/curl.h>
 #include <format>
+#include <cstdlib>
 
 using namespace std;
 using namespace std::this_thread;
@@ -54,6 +54,11 @@ void data_thread() {
 }
 
 void ffmpeg_thread() {
+    // Check if ffmpeg installed.
+    if (system("which ffmpeg > /dev/null 2>&1") != 0) {
+        cerr << "Error: ffmpeg is not installed on the system." << endl;
+    }
+
     // Start ffmpeg.
     cout << "Starting ffmpeg live video feed.";
 
@@ -75,11 +80,11 @@ int main() {
 
     // Create a thread for ffmpeg video feed.
     thread ffmpeg_t(ffmpeg_thread);
-    ffmpeg_t.join();
+    ffmpeg_t.detach();
 
     // Create a thread to upload the data to the server.
     thread data_t(data_thread);
-    data_t.join();
+    data_t.detach();
 
     // Main loop.
     while (true) {
