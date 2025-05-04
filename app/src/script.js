@@ -53,7 +53,8 @@ let elements = {
 }
 
 let data = new DATA(api_url);
-let flvrunning = false;
+
+let flvPlayer = null;
 
 function update_statistics() {
     data.update_data();
@@ -69,21 +70,25 @@ function update_statistics() {
     }
 }
 
-setInterval(update_statistics, 100)
-check_online_interval = setInterval(check_online, 100)
+setInterval(update_statistics, 100);
+setInterval(check_online, 100);
 
 function check_online() {
-    if (data.data != null && data.get_online() && !flvrunning) {
-        clearInterval(check_online_interval);
-        create_flv();
+    if (data.data != null == null) return;
+    if (data.get_online()) {
+        if (flvPlayer == null) {
+            create_flv();
+        }
+    } else if (flvPlayer != null) {
+        flvPlayer.destroy();
+        flvPlayer = null;
     }
 }
 
 function create_flv() {
     if (flvjs.isSupported()) {
-        flvrunning = true;
         var videoElement = document.getElementById('videoElement');
-        var flvPlayer = flvjs.createPlayer({
+        flvPlayer = flvjs.createPlayer({
             type: 'flv',
             url: api_url + '/live/stream.flv'
         });
