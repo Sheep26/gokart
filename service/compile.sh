@@ -1,3 +1,5 @@
+#!/usr/bin/sh
+
 # Check dependencies.
 if [ -z "$(dpkg -l | grep g++)" ]; then
     echo "Build tools missing, installing."
