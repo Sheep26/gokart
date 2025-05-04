@@ -38,18 +38,18 @@ class DATA {
 }
 
 let elements = {
-    speed: document.getElementById("speed-data"),
-    speed_avg: document.getElementById("speed-data-avg"),
-    speed_max: document.getElementById("speed-data-max"),
-    rpm: document.getElementById("rpm-data"),
-    rpm_avg: document.getElementById("rpm-data-avg"),
-    rpm_max: document.getElementById("rpm-data-max"),
-    power: document.getElementById("power-data"),
-    power_avg: document.getElementById("power-data-avg"),
-    power_max: document.getElementById("power-data-max"),
-    throttle: document.getElementById("throttle-data"),
-    throttle_avg: document.getElementById("throttle-data-avg"),
-    throttle_max: document.getElementById("throttle-data-max"),
+    speed: [document.getElementById("speed-data"), "km/h"],
+    speed_avg: [document.getElementById("speed-data-avg"), "km/h"],
+    speed_max: [document.getElementById("speed-data-max"), "km/h"],
+    rpm: [document.getElementById("rpm-data"), "rpm"],
+    rpm_avg: [document.getElementById("rpm-data-avg"), "rpm"],
+    rpm_max: [document.getElementById("rpm-data-max"), "rpm"],
+    power: [document.getElementById("power-data"), "W"],
+    power_avg: [document.getElementById("power-data-avg"), "W"],
+    power_max: [document.getElementById("power-data-max"), "W"],
+    throttle: [document.getElementById("throttle-data"), "%"],
+    throttle_avg: [document.getElementById("throttle-data-avg"), "%"],
+    throttle_max: [document.getElementById("throttle-data-max"), "%"],
 }
 
 let data = new DATA(api_url);
@@ -65,7 +65,7 @@ function update_statistics() {
     for (let key in elements) {
         // Check if json data isn't null.
         if (data.data != null && data.get_data()[key] != undefined) {
-            elements[key].innerHTML = data.get_data()[key];
+            elements[key][0].innerHTML = data.get_data()[key] + elements[key][1];
         }
     }
 }
