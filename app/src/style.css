@@ -12,11 +12,9 @@ h1, h2, h3, p, a {
     position: absolute;
 }
 
-.data-header {
-    margin-left: 51%;
-}
-
-.data-table {
+.data-table-div {
+    width: 49%;
+    height: 49%;
     margin-left: 51%;
 }
 
