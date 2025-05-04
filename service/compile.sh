@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 # Check dependencies.
 if [ -z "$(dpkg -l | grep g++)" ]; then

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <data.hpp>
-#include <cstdlib>
+#include <stdlib>
 #include <thread>
 #include <chrono>
 #include <curl/curl.h>
