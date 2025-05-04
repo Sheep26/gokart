@@ -10,8 +10,6 @@ h1, h2, h3, p, a {
     width: 50%;
     height: 50%;
     position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .data-header {
