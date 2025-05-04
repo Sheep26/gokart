@@ -26,3 +26,4 @@ fi
 
 # Compile.
 g++ main.cpp -l wiringPi $(pkg-config --cflags --libs libcurl) -o main
+chmod a+x main
