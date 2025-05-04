@@ -17,6 +17,8 @@ const config = {
     },
 };
 
+let last_online = Date.now();
+
 // Encode and parse data.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,10 +31,14 @@ let data = {
 };
 
 app.get("/api/get_data", (req, res) => {
+    if (Date.now() - last_online > 5000) {
+        data.online = false;
+    }
     res.send(data);
 });
 
 app.post("/api/update_data", (req, res) => {
+    last_online = Date.now();
     data = {
         online: true,
         data: req.body
