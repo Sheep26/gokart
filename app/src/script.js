@@ -1,4 +1,3 @@
-// Nginx proxy confs allow us to run 2 ports under one domain.
 const api_url = "https://gokart.sheepland.xyz"
 
 class DATA {
@@ -12,7 +11,6 @@ class DATA {
 
         try {
             // Request data from api
-            // Nginx proxy confs make us need to call /api/get_data instead of /get_data
             const response = await fetch(this.api_url + "/api/get_data");
 
             if (!response.ok) {

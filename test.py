@@ -16,4 +16,4 @@ data = {
 }
 
 # sending post request and saving response as response object
-r = requests.post(url="http://localhost:8001/update_data", data=data)
+r = requests.post(url="https://gokart.sheepland.xyz/api/update_data", data=data)
