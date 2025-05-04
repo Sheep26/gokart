@@ -34,7 +34,7 @@ void data_thread() {
             })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
             const char* body_cstr = body.c_str();
 
-            curl_easy_setopt(curl, CURLOPT_URL, "https://gokart.sheepland.xyz/apt/update_data");
+            curl_easy_setopt(curl, CURLOPT_URL, "https://gokart.sheepland.xyz/api/update_data");
             curl_easy_setopt(curl, CURLOPT_POST, 1L);
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_cstr);
             curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
