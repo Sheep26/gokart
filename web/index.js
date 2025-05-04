@@ -27,12 +27,28 @@ const PORT = process.env.PORT || 8001;
 
 let data = {
     online: false, 
-    data: {}
-};
+    data: {
+        "speed": 0,
+        "speed_avg": 0,
+        "speed_max": 0,
+        "rpm": 0,
+        "rpm_avg": 0,
+        "rpm_max": 0,
+        "power": 0,
+        "power_avg": 0,
+        "power_max": 0,
+        "throttle": 0,
+        "throttle_avg": 0,
+        "throttle_max": 0
+    }
+}
 
 app.get("/api/get_data", (req, res) => {
     if (Date.now() - last_online > 5000) {
         data.online = false;
+        for (key in data.data) {
+            data.data[key] = 0;
+        }
     }
     res.send(data);
 });
