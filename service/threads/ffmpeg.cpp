@@ -1,10 +1,10 @@
-#include "./thread.h"
+#include "thread.h"
 
 using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
-void Threads::ffmpeg_thread() {
+void Threads::ffmpeg_t() {
     cout << "Starting ffmpeg live video feed.";
 
     // Check if ffmpeg installed.
