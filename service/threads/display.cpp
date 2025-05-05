@@ -1,4 +1,4 @@
-#include "./threads/thread.h"
+#include "./thread.h"
 
 using namespace std;
 using namespace std::this_thread;
