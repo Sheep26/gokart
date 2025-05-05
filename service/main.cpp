@@ -7,6 +7,7 @@
 #include <atomic>
 #include <cstdio>
 #include <string>
+#include <cstring>
 #include "./data.hpp"
 
 using namespace std;
@@ -14,6 +15,30 @@ using namespace std::this_thread;
 using namespace std::chrono;
 
 bool networkUtilsRunning = false;
+
+bool check_network() {
+    FILE* pipe = popen("nmcli device status | grep wlan0", "r");
+    if (!pipe) {
+        cerr << "Error: Failed to open pipe for network check." << std::endl;
+        return false;
+    }
+
+    char buffer[128];
+    string result = "";
+
+    // Read the output of the command
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+
+    // Close the pipe
+    int return_code = pclose(pipe);
+
+    // Trim any trailing whitespace (e.g., newline)
+    result.erase(result.find_last_not_of(" \n\r\t") + 1);
+
+    return result.find("connected") != string::npos;
+}
 
 void data_thread() {
     // Send data to server every 100ms
@@ -25,7 +50,7 @@ void data_thread() {
         CURL* curl = curl_easy_init();
 
         if (curl) {
-            string body = format(R"({
+            string body = std::format(R"({
                 "speed": {},
                 "speed_avg": {},
                 "speed_max": {},
@@ -76,30 +101,6 @@ void ffmpeg_thread() {
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
-}
-
-bool check_network() {
-    FILE* pipe = popen("nmcli device status | grep wlan0", "r");
-    if (!pipe) {
-        cerr << "Error: Failed to open pipe for network check." << std::endl;
-        return false;
-    }
-
-    char buffer[128];
-    string result = "";
-
-    // Read the output of the command
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        result += buffer;
-    }
-
-    // Close the pipe
-    int return_code = pclose(pipe);
-
-    // Trim any trailing whitespace (e.g., newline)
-    result.erase(result.find_last_not_of(" \n\r\t") + 1);
-
-    return result.find("connected") != string::npos;
 }
 
 void display_thread() {
