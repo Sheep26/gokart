@@ -32,6 +32,6 @@ struct DATA {
     THROTTLE throttle;
 };
 
-extern DATA data;
+DATA data;
 
 #endif
