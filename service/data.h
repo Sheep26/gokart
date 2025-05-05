@@ -1,3 +1,6 @@
+#ifndef DATA_H
+#define DATA_H
+
 struct SPEED {
     int current = 0;
     int avg = 0;
@@ -30,3 +33,4 @@ struct DATA {
 };
 
 extern DATA data;
+#endif
