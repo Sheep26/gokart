@@ -16,11 +16,11 @@ fi
 echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
 
+cd gokart/service
+
 # Configure I2C.
 raspi-config nonint do_i2c 1
-raspi-config nonint do_boot_behaviour B2
-
-cd gokart/service
+echo "Enabled I2C."
 
 # Compile executable.
 echo "Compiling executable."
