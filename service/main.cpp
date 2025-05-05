@@ -75,7 +75,7 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void display_thread() {
+void Threads::display_thread() {
     while (true) {
         sleep_for(milliseconds(33));
     }
