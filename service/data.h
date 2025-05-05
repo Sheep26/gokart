@@ -33,4 +33,5 @@ struct DATA {
 };
 
 extern DATA data;
+
 #endif
