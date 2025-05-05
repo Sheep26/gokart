@@ -1,28 +1,28 @@
 #!/usr/bin/bash
 
 # Check dependencies.
-if ! $(apt list | grep -q git); then
+if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
     # Install libcurl library
     apt update
     apt install git -y
 fi
 
-if ! $(apt list | grep -q g++); then
+if ! $(apt list --installed | grep -q g++); then
     echo "Build tools missing, installing."
     # Install build-essential (includes g++)
     apt update
     apt install build-essential -y
 fi
 
-if ! $(apt list | grep -q libfmt-dev); then
+if ! $(apt list --installed | grep -q libfmt-dev); then
     echo "Dependency libfmt-dev missing, installing."
     # Install libfmt-dev
     apt update
     apt install libfmt-dev -y
 fi
 
-if ! $(apt list | grep -q wiringpi); then
+if ! $(apt list --installed | grep -q wiringpi); then
     echo "Dependency wiringPi missing, installing."
     git clone https://github.com/WiringPi/WiringPi.git
     # Install
@@ -37,14 +37,14 @@ if ! $(apt list | grep -q wiringpi); then
     rm -rf WiringPi
 fi
 
-if ! $(apt list | grep -q pkg-config); then
+if ! $(apt list --installed | grep -q pkg-config); then
     echo "Dependency pkg-config missing, installing."
     # Install libcurl library
     apt update
     apt install pkg-config -y
 fi
 
-if ! $(apt list | grep -q libcurl4-openssl-dev); then
+if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     echo "Dependency libcurl4-openssl-dev missing, installing."
     # Install libcurl library
     apt update

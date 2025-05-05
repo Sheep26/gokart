@@ -1,12 +1,12 @@
 # Check dependencies.
-if ! $(apt list | grep -q git); then
+if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
     # Install libcurl library
     apt update
     apt install git -y
 fi
 
-if ! $(apt list | grep -q ffmpeg); then
+if ! $(apt list --installed | grep -q ffmpeg); then
     echo "Ffmpeg missing, installing."
     # Install build-essential (includes g++)
     apt update
