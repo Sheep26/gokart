@@ -53,7 +53,8 @@ bool Networking::wifi_enabled() {
 }
 
 bool Networking::set_wifi(bool enabled) {
-    system("nmcli radio wifi " + (enabled ? "on" : "off"));
+    string cmd = "nmcli radio wifi " + (enabled ? "on" : "off")
+    system(cmd.c_str());
 }
 
 void Networking::wait_for_network() {
