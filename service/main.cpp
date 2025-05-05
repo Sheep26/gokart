@@ -24,7 +24,7 @@ int main() {
     }
 
     // Create display thread.
-    thread display_t(Threads::display_thread);
+    thread display_t(Threads::display_t);
     display_t.detach();
 
     // I don't care that it's bad code right now.
@@ -38,8 +38,8 @@ int main() {
         if (!networkUtilsRunning && Networking::check_network()) {
             networkUtilsRunning = true;
             // Create threads
-            thread ffmpeg_t(Threads::ffmpeg_thread);
-            thread data_t(Threads::data_thread);
+            thread ffmpeg_t(Threads::ffmpeg_t);
+            thread data_t(Threads::data_t);
 
             // Detach threads to allow independent execution
             ffmpeg_t.detach();
