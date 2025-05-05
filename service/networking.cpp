@@ -1,4 +1,8 @@
 #include "./networking.h"
+#include <string>
+#include <iostream>
+#include <cstdio>
+#include <chrono>
 
 bool Networking::check_network() {
     FILE* pipe = popen("nmcli device status | grep wlan0", "r");
