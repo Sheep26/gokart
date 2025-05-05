@@ -60,7 +60,8 @@ bool Networking::wifi_enabled() {
 }
 
 void Networking::set_wifi(bool enabled) {
-    string cmd = "nmcli radio wifi " + (enabled ? "on" : "off");
+    string cmd = "nmcli radio wifi ";
+    cmd += enabled ? "on" : "off";
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
