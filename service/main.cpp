@@ -12,7 +12,7 @@ using namespace std::this_thread;
 using namespace std::chrono;
 
 #define OLED_ADDR 0x3C
-#define TELEMENTRY_PIN = 5
+#define TELEMENTRY_PIN = 6
 
 bool telementry_running = false;
 
@@ -95,6 +95,8 @@ void Threads::ffmpeg_t() {
 
 void Threads::display_t(int fd) {
     while (true) {
+        oled_command(fd, 0xAF); // Display on.
+
         sleep_for(milliseconds(33));
     }
 }
