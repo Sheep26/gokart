@@ -2,14 +2,9 @@
 #include <wiringPi.h>
 #include <thread>
 #include <chrono>
-#include <curl/curl.h>
-#include <cstdlib>
-#include <cstdio>
-#include <string>
-#include <cstring>
 #include "./data.h"
 #include "./networking.h"
-#include ".thread.h"
+#include "./thread.h"
 
 using namespace std;
 using namespace std::this_thread;
