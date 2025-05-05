@@ -1,14 +1,12 @@
-PKG=$(dpkg -l)
-
 # Check dependencies.
-if ! PKG | grep -q git; then
+if ! $(apt list | grep -q git); then
     echo "Dependency git missing, installing."
     # Install libcurl library
     apt update
     apt install git -y
 fi
 
-if ! PKG -l | grep -q ffmpeg; then
+if ! $(apt list | grep -q ffmpeg); then
     echo "Ffmpeg missing, installing."
     # Install build-essential (includes g++)
     apt update
