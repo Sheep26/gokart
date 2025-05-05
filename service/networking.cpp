@@ -82,7 +82,7 @@ int Networking::wait_for_network() {
 }
 
 void Networking::scan_wifi() {
-    FILE* pipe = popen("nmcli device wifi list --rescan auto", "r");
+    FILE* pipe = popen("nmcli device wifi rescan", "r");
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
