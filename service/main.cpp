@@ -80,14 +80,14 @@ void ffmpeg_thread() {
 }
 
 bool check_network() {
-    FILE* pipe = popen("nmcli networking connectivity", "r");
+    FILE* pipe = popen("nmcli device status | grep wlan0", "r");
     if (!pipe) {
-        std::cerr << "Error: Failed to open pipe for network check." << std::endl;
+        cerr << "Error: Failed to open pipe for network check." << std::endl;
         return false;
     }
 
     char buffer[128];
-    std::string result = "";
+    string result = "";
 
     // Read the output of the command
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
@@ -100,8 +100,7 @@ bool check_network() {
     // Trim any trailing whitespace (e.g., newline)
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    // Check if the output is "full"
-    return (result == "full");
+    return result.find("connected") != string::npos;
 }
 
 void display_thread() {
@@ -124,6 +123,10 @@ int main() {
     // Create display thread.
     thread display_t(display_thread);
     display_t.detach();
+
+    if (!check_network()) {
+        cout << "Waiting for network." << endl;
+    }
 
     // Main loop.
     while (true) {
