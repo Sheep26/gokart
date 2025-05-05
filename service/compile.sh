@@ -45,5 +45,5 @@ if ! $(apt list | grep -q libcurl4-openssl-dev); then
 fi
 
 # Compile.
-g++ main.cpp -l wiringPi -l fmt $(pkg-config --cflags --libs libcurl) -o main
+g++ main.cpp -lwiringPi -lfmt -llibcurl -o main
 chmod a+x main
