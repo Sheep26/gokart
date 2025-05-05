@@ -13,14 +13,14 @@ if ! $(apt list --installed | grep -q ffmpeg); then
     apt install ffmpeg -y
 fi
 
+# Configure I2C.
+raspi-config nonint do_i2c 1
+echo "Enabled I2C."
+
 echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
 
 cd gokart/service
-
-# Configure I2C.
-raspi-config nonint do_i2c 1
-echo "Enabled I2C."
 
 # Compile executable.
 echo "Compiling executable."
