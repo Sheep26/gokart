@@ -15,7 +15,7 @@ if ! $(apt list | grep -q g++); then
     apt install build-essential -y
 fi
 
-if ! $(apt list | grep -q wiringPi); then
+if ! $(apt list | grep -q wiringpi); then
     echo "Dependency wiringPi missing, installing."
     git clone https://github.com/WiringPi/WiringPi.git
     # Install
