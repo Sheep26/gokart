@@ -127,6 +127,9 @@ int main() {
 
     if (!check_network()) {
         cout << "Waiting for network." << endl;
+        while (!check_network()) {
+            sleep_for(milliseconds(1000));
+        }
     }
 
     // Main loop.
@@ -141,6 +144,8 @@ int main() {
             ffmpeg_t.detach();
             data_t.detach();
         }
+
+        sleep_for(milliseconds(100));
     }
 
     // Return 0.
