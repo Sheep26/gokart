@@ -29,4 +29,4 @@ struct DATA {
     THROTTLE throttle;
 };
 
-DATA data;
+extern DATA data;
