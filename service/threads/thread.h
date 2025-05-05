@@ -8,7 +8,7 @@
 #include <string>
 #include <cstring>
 #include <fmt/core.h>
-#include "data.h"
+#include "../data.h"
 
 class Threads {
 public:
