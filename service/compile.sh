@@ -16,7 +16,7 @@ if ! $(apt list | grep -q g++); then
 fi
 
 if ! $(apt list | grep -q libfmt-dev); then
-    echo "Libfmt-dev missing, installing."
+    echo "Dependency libfmt-dev missing, installing."
     # Install libfmt-dev
     apt update
     apt install libfmt-dev -y
@@ -37,6 +37,13 @@ if ! $(apt list | grep -q wiringpi); then
     rm -rf WiringPi
 fi
 
+if ! $(apt list | grep -q pkg-config); then
+    echo "Dependency pkg-config missing, installing."
+    # Install libcurl library
+    apt update
+    apt install pkg-config -y
+fi
+
 if ! $(apt list | grep -q libcurl4-openssl-dev); then
     echo "Dependency libcurl4-openssl-dev missing, installing."
     # Install libcurl library
@@ -45,5 +52,5 @@ if ! $(apt list | grep -q libcurl4-openssl-dev); then
 fi
 
 # Compile.
-g++ main.cpp -lwiringPi -lfmt -llibcurl -o main
+g++ main.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -o main
 chmod a+x main
