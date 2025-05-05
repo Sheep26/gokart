@@ -11,7 +11,7 @@ using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
-#define OLED_ADDR 0x3C
+#define OLED_ADDR 0x3C // Example, change this later this will be different.
 #define TELEMENTRY_PIN = 6
 
 bool telementry_running = false;
