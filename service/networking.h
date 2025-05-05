@@ -9,8 +9,10 @@
 
 class Networking {
 public:
-    static void wait_for_network();  // Declaration of static method
-    static bool check_network();     // Declaration of static method
+    static void wait_for_network();
+    static bool check_network();
+    static bool wifi_enabled();
+    static bool set_wifi(bool enabled);
 };
 
-#endif // NETWORKING_H
+#endif
