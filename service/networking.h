@@ -16,7 +16,7 @@ public:
     static bool wifi_enabled();
     static void set_wifi(bool enabled);
     static void scan_wifi();
-    static void connect_wifi(string ssid, string passwd);
+    static void connect_wifi(string ssid, string passwd, int hidden);
 };
 
 #endif

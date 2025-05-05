@@ -91,8 +91,8 @@ void Networking::scan_wifi() {
     }
 }
 
-void Networking::connect_wifi(string ssid, string passwd) {
-    string cmd = "nmcli device wifi connect \"" + ssid + "\" password \"" + passwd + "\"";
+void Networking::connect_wifi(string ssid, string passwd, int hidden) {
+    string cmd = "raspi-config nonint do_wifi_ssid_passphrase" + ssid + " " + passwd + " " + hidden;
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
