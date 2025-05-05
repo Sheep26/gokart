@@ -15,6 +15,13 @@ if ! $(apt list | grep -q g++); then
     apt install build-essential -y
 fi
 
+if ! $(apt list | grep -q libfmt-dev); then
+    echo "Libfmt-dev missing, installing."
+    # Install libfmt-dev
+    apt update
+    apt install libfmt-dev -y
+fi
+
 if ! $(apt list | grep -q wiringpi); then
     echo "Dependency wiringPi missing, installing."
     git clone https://github.com/WiringPi/WiringPi.git
@@ -38,5 +45,5 @@ if ! $(apt list | grep -q libcurl4-openssl-dev); then
 fi
 
 # Compile.
-g++ main.cpp -l wiringPi $(pkg-config --cflags --libs libcurl) -o main
+g++ main.cpp -l wiringPi -l fmt $(pkg-config --cflags --libs libcurl) -o main
 chmod a+x main

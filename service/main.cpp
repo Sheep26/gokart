@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <string>
 #include <cstring>
+#include <fmt/core.h>
 #include "./data.hpp"
 
 using namespace std;
@@ -50,7 +51,7 @@ void data_thread() {
         CURL* curl = curl_easy_init();
 
         if (curl) {
-            string body = std::format(R"({
+            string body = fmt::format(R"({
                 "speed": {},
                 "speed_avg": {},
                 "speed_max": {},
