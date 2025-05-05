@@ -7,10 +7,14 @@
 #include <format>
 #include <cstdlib>
 #include <atomic>
+#include <cstdio>
+#include <string>
 
 using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
+
+bool networkUtilsRunning = false;
 
 void data_thread() {
     // Send data to server every 100ms
@@ -69,6 +73,37 @@ void ffmpeg_thread() {
     }
 }
 
+bool check_network() {
+    FILE* pipe = popen("nmcli networking connectivity", "r");
+    if (!pipe) {
+        std::cerr << "Error: Failed to open pipe for network check." << std::endl;
+        return false;
+    }
+
+    char buffer[128];
+    std::string result = "";
+
+    // Read the output of the command
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+
+    // Close the pipe
+    int return_code = pclose(pipe);
+
+    // Trim any trailing whitespace (e.g., newline)
+    result.erase(result.find_last_not_of(" \n\r\t") + 1);
+
+    // Check if the output is "full"
+    return (result == "full");
+}
+
+void display_thread() {
+    while (true) {
+        sleep_for(milliseconds(33));
+    }
+}
+
 int main() {
     cout << "Starting gokart service." << endl;
 
@@ -80,17 +115,22 @@ int main() {
         return 1;
     }
 
-    // Create threads
-    thread ffmpeg_t(ffmpeg_thread);
-    thread data_t(data_thread);
-
-    // Detach threads to allow independent execution
-    ffmpeg_t.detach();
-    data_t.detach();
+    // Create display thread.
+    thread display_t(display_thread);
+    display_t.detach();
 
     // Main loop.
     while (true) {
-        sleep_for(milliseconds(33));
+        if (!networkUtilsRunning && check_network()) {
+            networkUtilsRunning = true;
+            // Create threads
+            thread ffmpeg_t(ffmpeg_thread);
+            thread data_t(data_thread);
+
+            // Detach threads to allow independent execution
+            ffmpeg_t.detach();
+            data_t.detach();
+        }
     }
 
     // Return 0.
