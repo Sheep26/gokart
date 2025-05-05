@@ -19,6 +19,10 @@ bool networkUtilsRunning = false;
 void data_thread() {
     // Send data to server every 100ms
     while (true) {
+        if (!check_network()) {
+            return;
+        }
+
         CURL* curl = curl_easy_init();
 
         if (curl) {
@@ -44,6 +48,8 @@ void data_thread() {
             curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
     
             CURLcode res = curl_easy_perform(curl);
+
+            // Clean up memory.
             curl_easy_cleanup(curl);
     
             if (res == CURLE_OK) {
