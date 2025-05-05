@@ -96,7 +96,6 @@ int main() {
     thread display_t(Threads::display_t);
     display_t.detach();
 
-    // I don't care that it's bad code right now.
     if (!Networking::check_network()) {
         cout << "Waiting for network." << endl;
         Networking::wait_for_network();
