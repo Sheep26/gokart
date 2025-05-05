@@ -3,7 +3,6 @@
 #include <thread>
 #include <chrono>
 #include <curl/curl.h>
-#include <format>
 #include <cstdlib>
 #include <atomic>
 #include <cstdio>
