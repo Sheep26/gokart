@@ -4,6 +4,6 @@
 
 class Networking {
 public:
-    void wait_for_network();
-    bool check_network();
+    static void wait_for_network();
+    static bool check_network();
 };
