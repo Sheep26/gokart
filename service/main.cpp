@@ -21,7 +21,7 @@ bool networkUtilsRunning = false;
 void data_thread() {
     // Send data to server every 100ms
     while (true) {
-        if (!check_network()) {
+        if (!Networking::check_network()) {
             return;
         }
 
@@ -103,16 +103,14 @@ int main() {
     display_t.detach();
 
     // I don't care that it's bad code right now.
-    if (!check_network()) {
+    if (!Networking::check_network()) {
         cout << "Waiting for network." << endl;
-        while (!check_network()) {
-            sleep_for(milliseconds(1000));
-        }
+        Networking::wait_for_network();
     }
 
     // Main loop.
     while (true) {
-        if (!networkUtilsRunning && check_network()) {
+        if (!networkUtilsRunning && Networking::check_network()) {
             networkUtilsRunning = true;
             // Create threads
             thread ffmpeg_t(ffmpeg_thread);

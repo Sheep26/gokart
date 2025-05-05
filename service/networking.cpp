@@ -1,9 +1,5 @@
 #include "./networking.h"
 
-void Networking::wait_for_network() {
-
-}
-
 bool Networking::check_network() {
     FILE* pipe = popen("nmcli device status | grep wlan0", "r");
     if (!pipe) {
@@ -26,4 +22,10 @@ bool Networking::check_network() {
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
     return result.find("connected") != string::npos;
+}
+
+void Networking::wait_for_network() {
+    while (!Networking::check_network()) {
+        sleep_for(milliseconds(1000));
+    }
 }
