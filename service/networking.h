@@ -1,3 +1,8 @@
+#include <string>
+#include <iostream>
+#include <cstdio>
+#include <chrono>
+
 class Networking {
 public:
     static void wait_for_network();
