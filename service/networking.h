@@ -7,7 +7,7 @@
 #include <chrono>
 #include <thread>
 
-extern class Networking {
+class Networking {
 public:
     static void wait_for_network();  // Declaration of static method
     static bool check_network();     // Declaration of static method
