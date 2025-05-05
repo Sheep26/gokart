@@ -1,6 +1,5 @@
 #include <iostream>
 #include <wiringPi.h>
-#include <data.hpp>
 #include <thread>
 #include <chrono>
 #include <curl/curl.h>
@@ -9,6 +8,7 @@
 #include <atomic>
 #include <cstdio>
 #include <string>
+#include "./data.hpp"
 
 using namespace std;
 using namespace std::this_thread;
