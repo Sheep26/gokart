@@ -77,7 +77,7 @@ void Threads::data_t() {
             sleep_for(milliseconds(100));
         }
     }
-    catch {
+    catch (...) {
         telementry_running = false;
     }
 }
