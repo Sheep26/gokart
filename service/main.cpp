@@ -13,9 +13,9 @@ using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
-#define TELEMENTRY_PIN = 10
-#define DC = 5
-#define RST = 6
+#define TELEMENTRY_PIN 10
+#define DC 5
+#define RST 6
 
 bool telementry_running = false;
 
