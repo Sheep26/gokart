@@ -16,14 +16,6 @@ using namespace std::chrono;
 
 bool telementry_running = false;
 
-void oled_command(int fd, uint8_t cmd) {
-    wiringPiI2CWriteReg8(fd, 0x00, cmd);
-}
-
-void oled_data(int fd, uint8_t data) {
-    wiringPiI2CWriteReg8(fd, 0x40, data);
-}
-
 void Threads::data_t() {
     // Send data to server every 100ms
     try {
@@ -93,9 +85,9 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void Threads::display_t(int fd) {
+void Threads::display_t(int i2cd) {
     while (true) {
-        oled_command(fd, 0xAF); // Display on.
+        
 
         sleep_for(milliseconds(33));
     }
@@ -124,9 +116,9 @@ int main() {
         return -1;
     }
 
-    int fd = wiringPiI2CSetup(OLED_ADDR);
+    int i2cd = wiringPiI2CSetup(OLED_ADDR);
 
-    if (fd < 0) {
+    if (i2cd < 0) {
         std::cerr << "Failed to init I2C\n";
         return -2;
     }
@@ -136,7 +128,7 @@ int main() {
     pullUpDnControl(TELEMENTRY_PIN, PUD_DOWN);
 
     // Create display thread.
-    thread display_t(Threads::display_t, fd);
+    thread display_t(Threads::display_t, i2cd);
     display_t.detach();
 
     // Check if telementry enabled.
