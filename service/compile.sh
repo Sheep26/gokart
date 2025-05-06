@@ -52,5 +52,5 @@ if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
 fi
 
 # Compile.
-g++ main.cpp networking.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main

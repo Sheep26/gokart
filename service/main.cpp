@@ -1,22 +1,34 @@
 #include <iostream>
 #include <wiringPi.h>
-#include <wiringPiI2C.h>
+#include <wiringPiSPI.h>
 #include <thread>
 #include <chrono>
 #include "data.h"
 #include "networking.h"
 #include "threads.h"
+#include "ssd1306.h"
+#include "OledScreen.h"
 
 using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
-#define OLED_ADDR 0x3C
-#define OLED_CMD 0x00
-#define OLED_DATA 0x40
-#define TELEMENTRY_PIN = 6
+#define TELEMENTRY_PIN = 10
+#define DC = 5
+#define RST = 6
 
 bool telementry_running = false;
+
+/*
+ Display pinout.
+ GND    --- Gnd
+ VCC    --- 3.3V
+ DO     --- SCLK(Pin#23)
+ DI     --- MOSI(Pin#19)
+ RES/RST    --- GPIO18(Pin#6) (You can use Any Pin)
+ DC     --- GPIO17(Pin#5) (You can use Any Pin)
+ CS     --- CS0(Pin#24)
+*/
 
 void Threads::data_t() {
     // Send data to server every 100ms
@@ -87,42 +99,71 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void Threads::display_t(int i2cd) {
-    // SSD1306 initialization commands
-    unsigned char init_commands[] = {
-        0xAE,       // Display OFF
-        0xA8, 0x3F, // Set multiplex ratio (1 to 64)
-        0x21, 0x00, 0x7F, // Set column address range (0 to 127 for 128-pixel width)
-        0xD3, 0x00, // Set display offset to 0
-        0x40,       // Set display start line to 0
-        0xA1,       // Set segment re-map (column address 127 is mapped to SEG0)
-        0xC8,       // Set COM output scan direction (remapped mode)
-        0xD5, 0x80, // Set display clock divide ratio/oscillator frequency
-        0xDA, 0x12, // Set COM pins hardware configuration
-        0x81, 0x7F, // Set contrast control (medium contrast)
-        0xA4,       // Enable display output (resume to RAM content display)
-        0xDB, 0x40, // Set VCOMH deselect level
-        0x20, 0x00, // Set memory addressing mode (horizontal addressing mode)
-        0x8D, 0x14, // Enable charge pump regulator
-        0xAF        // Display ON
+void Threads::display_t() {
+    OledScreen oled;
+
+    unsigned char initcode[] = {
+        // Initialisation sequence
+        SSD1306_DISPLAYOFF,                    // 0xAE
+        SSD1306_SETLOWCOLUMN,            // low col = 0
+        SSD1306_SETHIGHCOLUMN,           // hi col = 0
+        SSD1306_SETSTARTLINE,            // line #0
+        SSD1306_SETCONTRAST,                   // 0x81
+        0xCF,
+        0xa1,                                  // setment remap 95 to 0 (?)
+        SSD1306_NORMALDISPLAY,                 // 0xA6
+        SSD1306_DISPLAYALLON_RESUME,           // 0xA4
+        SSD1306_SETMULTIPLEX,                  // 0xA8
+        0x3F,                                  // 0x3F 1/64 duty
+        SSD1306_SETDISPLAYOFFSET,              // 0xD3
+        0x0,                                   // no offset
+        SSD1306_SETDISPLAYCLOCKDIV,            // 0xD5
+        0xF0,                                  // the suggested ratio 0x80
+        SSD1306_SETPRECHARGE,                  // 0xd9
+        0xF1,
+        SSD1306_SETCOMPINS,                    // 0xDA
+        0x12,                                  // disable COM left/right remap
+        SSD1306_SETVCOMDETECT,                 // 0xDB
+        0x40,                                  // 0x20 is default?
+        SSD1306_MEMORYMODE,                    // 0x20
+        0x00,                                  // 0x0 act like ks0108
+        SSD1306_SEGREMAP,
+        SSD1306_COMSCANDEC,
+        SSD1306_CHARGEPUMP,                    //0x8D
+        0x14,
+
+        // Enabled the OLED panel
+        SSD1306_DISPLAYON
     };
 
-    // Send initialization commands
-    for (unsigned char cmd : init_commands) {
-        wiringPiI2CWriteReg8(i2cd, OLED_CMD, cmd);
-    }
+    unsigned char poscode[] = {
+        SSD1306_SETLOWCOLUMN,            // low col = 0
+        SSD1306_SETHIGHCOLUMN,           // hi col = 0
+        SSD1306_SETSTARTLINE            // line #0
+    };
 
-    // Clear the display (optional)
-    for (int i = 0; i < 1024; i++) { // 128x64 pixels = 1024 bytes
-        wiringPiI2CWriteReg8(i2cd, OLED_DATA, 0x00);
-    }
+    pinMode (DC, OUTPUT);
+    pinMode (RST, OUTPUT);
+    wiringPiSPISetup(0, 8*1000*1000);
+    
+    // reset
+    digitalWrite(RST,  LOW);
+    sleep_for(milliseconds(50));
+    digitalWrite(RST,  HIGH);
+    
+    // init
+    digitalWrite(DC, LOW);
+    wiringPiSPIDataRW(0, initcode, 28);
 
     while (true) {
-        // Example: Display a simple pattern or update the screen
-        for (int i = 0; i < 128; i++) {
-            wiringPiI2CWriteReg8(i2cd, OLED_DATA, 0xFF); // Example: Fill one column
-        }
+        digitalWrite(DC, LOW);
+        wiringPiSPIDataRW(0, poscode, 3);
+        digitalWrite(DC, HIGH);
+        wiringPiSPIDataRW(0, oled.pix_buf, 1024);
 
+        oled.clear();
+
+        oled.draw_circle(0,0,2048,1);
         sleep_for(milliseconds(33));
     }
 }
@@ -150,19 +191,12 @@ int main() {
         return -1;
     }
 
-    int i2cd = wiringPiI2CSetup(OLED_ADDR);
-
-    if (i2cd < 0) {
-        std::cerr << "Failed to init I2C\n";
-        return -2;
-    }
-
     // Set pin mode for telementry switch.
     pinMode(TELEMENTRY_PIN, INPUT);
     pullUpDnControl(TELEMENTRY_PIN, PUD_DOWN);
 
     // Create display thread.
-    thread display_t(Threads::display_t, i2cd);
+    thread display_t(Threads::display_t);
     display_t.detach();
 
     // Check if telementry enabled.
