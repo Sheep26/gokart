@@ -163,7 +163,7 @@ void Threads::display_t() {
 
         oled.clear();
 
-        oled.draw_circle(0,0,2048,1);
+        oled.println("Hello world!", 16, 16, 16, 1);
         sleep_for(milliseconds(33));
     }
 }
