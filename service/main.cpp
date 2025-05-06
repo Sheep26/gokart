@@ -6,7 +6,7 @@
 #include "data.h"
 #include "networking.h"
 #include "threads.h"
-#include "ssd1306.h"
+#include "ssd1309.h"
 #include "OledScreen.h"
 
 using namespace std;
@@ -104,36 +104,36 @@ void Threads::display_t() {
 
     unsigned char initcode[] = {
         // Initialisation sequence
-        SSD1306_DISPLAYOFF,                    // 0xAE
-        SSD1306_SETLOWCOLUMN,            // low col = 0
-        SSD1306_SETHIGHCOLUMN,           // hi col = 0
-        SSD1306_SETSTARTLINE,            // line #0
-        SSD1306_SETCONTRAST,                   // 0x81
+        SSD1309_DISPLAYOFF,                    // 0xAE
+        SSD1309_SETLOWCOLUMN,            // low col = 0
+        SSD1309_SETHIGHCOLUMN,           // hi col = 0
+        SSD1309_SETSTARTLINE,            // line #0
+        SSD1309_SETCONTRAST,                   // 0x81
         0xCF,
         0xa1,                                  // setment remap 95 to 0 (?)
-        SSD1306_NORMALDISPLAY,                 // 0xA6
-        SSD1306_DISPLAYALLON_RESUME,           // 0xA4
-        SSD1306_SETMULTIPLEX,                  // 0xA8
+        SSD1309_NORMALDISPLAY,                 // 0xA6
+        SSD1309_DISPLAYALLON_RESUME,           // 0xA4
+        SSD1309_SETMULTIPLEX,                  // 0xA8
         0x3F,                                  // 0x3F 1/64 duty
-        SSD1306_SETDISPLAYOFFSET,              // 0xD3
+        SSD1309_SETDISPLAYOFFSET,              // 0xD3
         0x0,                                   // no offset
-        SSD1306_SETDISPLAYCLOCKDIV,            // 0xD5
+        SSD1309_SETDISPLAYCLOCKDIV,            // 0xD5
         0xF0,                                  // the suggested ratio 0x80
-        SSD1306_SETPRECHARGE,                  // 0xd9
+        SSD1309_SETPRECHARGE,                  // 0xd9
         0xF1,
-        SSD1306_SETCOMPINS,                    // 0xDA
+        SSD1309_SETCOMPINS,                    // 0xDA
         0x12,                                  // disable COM left/right remap
-        SSD1306_SETVCOMDETECT,                 // 0xDB
+        SSD1309_SETVCOMDETECT,                 // 0xDB
         0x40,                                  // 0x20 is default?
-        SSD1306_MEMORYMODE,                    // 0x20
+        SSD1309_MEMORYMODE,                    // 0x20
         0x00,                                  // 0x0 act like ks0108
-        SSD1306_SEGREMAP,
-        SSD1306_COMSCANDEC,
-        SSD1306_CHARGEPUMP,                    //0x8D
+        SSD1309_SEGREMAP,
+        SSD1309_COMSCANDEC,
+        SSD1309_CHARGEPUMP,                    //0x8D
         0x14,
 
         // Enabled the OLED panel
-        SSD1306_DISPLAYON
+        SSD1309_DISPLAYON
     };
 
     unsigned char poscode[] = {
