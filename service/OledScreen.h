@@ -1,10 +1,8 @@
 #ifndef OLEDSCREEN_H
 #define OLEDSCREEN_H
 
-
 #include <stdint.h> 
 #include <string>
-
 
 class OledScreen
 {
