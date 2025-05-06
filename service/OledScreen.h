@@ -37,5 +37,4 @@ class OledScreen
         void println_8(const char * line, int len, int x, int y);
 };
 
-
 #endif
