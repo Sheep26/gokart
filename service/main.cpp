@@ -11,7 +11,9 @@ using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
 
-#define OLED_ADDR 0x3C // Example, change this later this will be different.
+#define OLED_ADDR 0x3C
+#define OLED_CMD 0x00
+#define OLED_DATA 0x40
 #define TELEMENTRY_PIN = 6
 
 bool telementry_running = false;
@@ -86,8 +88,40 @@ void Threads::ffmpeg_t() {
 }
 
 void Threads::display_t(int i2cd) {
+    // SSD1306 initialization commands
+    unsigned char init_commands[] = {
+        0xAE,       // Display OFF
+        0xA8, 0x3F, // Set multiplex ratio (1 to 64)
+        0x21, 0x00, 0x7F, // Set column address range (0 to 127 for 128-pixel width)
+        0xD3, 0x00, // Set display offset to 0
+        0x40,       // Set display start line to 0
+        0xA1,       // Set segment re-map (column address 127 is mapped to SEG0)
+        0xC8,       // Set COM output scan direction (remapped mode)
+        0xD5, 0x80, // Set display clock divide ratio/oscillator frequency
+        0xDA, 0x12, // Set COM pins hardware configuration
+        0x81, 0x7F, // Set contrast control (medium contrast)
+        0xA4,       // Enable display output (resume to RAM content display)
+        0xDB, 0x40, // Set VCOMH deselect level
+        0x20, 0x00, // Set memory addressing mode (horizontal addressing mode)
+        0x8D, 0x14, // Enable charge pump regulator
+        0xAF        // Display ON
+    };
+
+    // Send initialization commands
+    for (unsigned char cmd : init_commands) {
+        wiringPiI2CWriteReg8(i2cd, OLED_CMD, cmd);
+    }
+
+    // Clear the display (optional)
+    for (int i = 0; i < 1024; i++) { // 128x64 pixels = 1024 bytes
+        wiringPiI2CWriteReg8(i2cd, OLED_DATA, 0x00);
+    }
+
     while (true) {
-        
+        // Example: Display a simple pattern or update the screen
+        for (int i = 0; i < 128; i++) {
+            wiringPiI2CWriteReg8(i2cd, OLED_DATA, 0xFF); // Example: Fill one column
+        }
 
         sleep_for(milliseconds(33));
     }
