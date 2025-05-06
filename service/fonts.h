@@ -1,8 +1,6 @@
 #ifndef FONTS_H
 #define FONTS_H
 
-
-
 // these are the 5x8 ASCII characters starting with ' '.
 const unsigned char characters[] = 
 { \
