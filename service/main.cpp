@@ -20,6 +20,7 @@ using namespace std::chrono;
 bool telementry_running = false;
 
 /*
+ https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
  Display pinout.
  GND    --- Gnd
  VCC    --- 3.3V
@@ -103,43 +104,30 @@ void Threads::display_t() {
     OledScreen oled;
 
     unsigned char initcode[] = {
-        // Initialisation sequence
-        SSD1309_DISPLAYOFF,                    // 0xAE
-        SSD1309_SETLOWCOLUMN,            // low col = 0
-        SSD1309_SETHIGHCOLUMN,           // hi col = 0
-        SSD1309_SETSTARTLINE,            // line #0
-        SSD1309_SETCONTRAST,                   // 0x81
-        0xCF,
-        0xa1,                                  // setment remap 95 to 0 (?)
-        SSD1309_NORMALDISPLAY,                 // 0xA6
-        SSD1309_DISPLAYALLON_RESUME,           // 0xA4
-        SSD1309_SETMULTIPLEX,                  // 0xA8
-        0x3F,                                  // 0x3F 1/64 duty
-        SSD1309_SETDISPLAYOFFSET,              // 0xD3
-        0x0,                                   // no offset
-        SSD1309_SETDISPLAYCLOCKDIV,            // 0xD5
-        0xF0,                                  // the suggested ratio 0x80
-        SSD1309_SETPRECHARGE,                  // 0xd9
-        0xF1,
-        SSD1309_SETCOMPINS,                    // 0xDA
-        0x12,                                  // disable COM left/right remap
-        SSD1309_SETVCOMDETECT,                 // 0xDB
-        0x40,                                  // 0x20 is default?
-        SSD1309_MEMORYMODE,                    // 0x20
-        0x00,                                  // 0x0 act like ks0108
-        SSD1309_SEGREMAP,
-        SSD1309_COMSCANDEC,
-        SSD1309_CHARGEPUMP,                    //0x8D
-        0x14,
-
-        // Enabled the OLED panel
-        SSD1309_DISPLAYON
+        DISPLAY_OFF,                     // 0xAE: Turn display off
+        SET_DISPLAY_CLOCK_DEVICE_RATIO,  0x80, // 0xD5: Set clock divide ratio/oscillator frequency
+        SET_MULTIPLEX_RATIO,             0x3F, // 0xA8: Set multiplex ratio (1/64 duty cycle)
+        SET_DISPLAY_OFFSET,              0x00, // 0xD3: Set display offset to 0
+        SET_DISPLAY_START_LINE | 0x00,         // 0x40: Set display start line to 0
+        SET_SEGMENT_REMAP_ON,                  // 0xA1: Set segment re-map (column address 127 is mapped to SEG0)
+        SET_COM_OUTPUT_SCAN_DIRECTION_8,       // 0xC8: Set COM output scan direction (remapped mode)
+        SET_COM_PINS_HARDWARE_CONFIG,    0x12, // 0xDA: Set COM pins hardware configuration
+        SET_CONTRAST,                   0x7F,  // 0x81: Set contrast control to medium
+        SET_PRECHANGE_PERIOD,           0xF1,  // 0xD9: Set pre-charge period
+        SET_VCOMH_DESELECT_LEVEL,       0x40,  // 0xDB: Set VCOMH deselect level
+        SET_MEMORY_ADDRESS_MODE,        0x00,  // 0x20: Set memory addressing mode to horizontal
+        SET_LOW_COLUMN,                       // 0x00: Set lower column start address
+        SET_HIGH_COLUMN,                      // 0x10: Set higher column start address
+        SET_CHARGE_PUMP,               0x14,  // 0x8D: Enable charge pump regulator
+        DEACTIVATE_SCROLL,                   // 0x2E: Deactivate scrolling
+        SET_NORMAL_DISPLAY,                  // 0xA6: Set normal display mode (not inverted)
+        DISPLAY_ON 
     };
 
     unsigned char poscode[] = {
-        SSD1306_SETLOWCOLUMN,            // low col = 0
-        SSD1306_SETHIGHCOLUMN,           // hi col = 0
-        SSD1306_SETSTARTLINE            // line #0
+        SET_LOW_COLUMN,            // low col = 0
+        SET_HIGH_COLUMN,           // hi col = 0
+        SET_DISPLAY_START_LINE     // line #0
     };
 
     pinMode (DC, OUTPUT);
