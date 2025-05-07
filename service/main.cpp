@@ -144,14 +144,19 @@ void Threads::display_t() {
     wiringPiSPIDataRW(0, initcode, 28);
 
     while (true) {
+        // Oled data.
+        // Clear screen.
+        oled.clear();
+
+        // Print Hello World to display.
+        oled.println("Hello world!", 16, 16, 32, 1);
+        
+        // Send data to display.
         digitalWrite(DC, LOW);
         wiringPiSPIDataRW(0, poscode, 3);
         digitalWrite(DC, HIGH);
         wiringPiSPIDataRW(0, oled.pix_buf, 1024);
 
-        oled.clear();
-
-        oled.println("Hello world!", 16, 16, 32, 1);
         sleep_for(milliseconds(33));
     }
 }
