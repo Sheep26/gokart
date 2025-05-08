@@ -3,6 +3,8 @@
 #include <wiringPiSPI.h>
 #include <thread>
 #include <chrono>
+#include <alsa/asoundlib.h>
+
 #include "data.h"
 #include "networking.h"
 #include "threads.h"

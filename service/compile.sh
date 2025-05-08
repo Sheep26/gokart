@@ -5,7 +5,7 @@ apt upgrade
 # Check dependencies.
 if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
-    
+
     # Install libcurl library
     apt install git -y
 fi
@@ -61,5 +61,5 @@ if ! $(apt list --installed | grep -q alsa-utils-dev); then
 fi
 
 # Compile.
-g++ main.cpp networking.cpp OledScreen.cpp ./PiFmRds/*.c -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ main.cpp networking.cpp OledScreen.cpp ./PiFmRds/*.c -lwiringPi -lasound -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main
