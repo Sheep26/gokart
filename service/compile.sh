@@ -5,18 +5,21 @@ apt upgrade
 # Check dependencies.
 if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
+    
     # Install libcurl library
     apt install git -y
 fi
 
 if ! $(apt list --installed | grep -q g++); then
     echo "Build tools missing, installing."
+
     # Install build-essential (includes g++)
     apt install build-essential -y
 fi
 
 if ! $(apt list --installed | grep -q libfmt-dev); then
     echo "Dependency libfmt-dev missing, installing."
+
     # Install libfmt-dev
     apt install libfmt-dev -y
 fi
@@ -38,14 +41,23 @@ fi
 
 if ! $(apt list --installed | grep -q pkg-config); then
     echo "Dependency pkg-config missing, installing."
+
     # Install libcurl library
     apt install pkg-config -y
 fi
 
 if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     echo "Dependency libcurl4-openssl-dev missing, installing."
+
     # Install libcurl library
     apt install libcurl4-openssl-dev -y
+fi
+
+if ! $(apt list --installed | grep -q alsa-utils-dev); then
+    echo "Dependency alsa-utils-dev missing, installing"
+
+    # Install the library.
+    apt install alsa-utils-dev -y
 fi
 
 # Compile.
