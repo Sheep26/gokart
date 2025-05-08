@@ -15,6 +15,7 @@ using namespace std::chrono;
 
 #define TELEMENTRY_PIN 10
 #define RADIO_BUTTON 11
+#define RADIO_SWITCH 12
 #define DC 5
 #define RST 6
 
@@ -174,12 +175,10 @@ void start_telementry() {
     // Create threads
     thread ffmpeg_thread(Threads::ffmpeg_t);
     thread data_thread(Threads::data_t);
-    thread radio_thread(Threads::radio_t);
 
     // Detach threads to allow independent execution
     ffmpeg_thread.detach();
     data_thread.detach();
-    radio_thread.detach();
 }
 
 int main() {
@@ -198,8 +197,15 @@ int main() {
     pinMode(RADIO_PIN, OUTPUT);
 
     // Create display thread.
-    thread display_t(Threads::display_t);
-    display_t.detach();
+    thread display_thread(Threads::display_t);
+
+    display_thread.detach();
+
+    // Check if radio enabled.
+    if (digitalRead(TELEMENTRY_PIN) == HIGH){
+        thread radio_thread(Threads::radio_t);
+        radio_thread.detach();
+    }
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
