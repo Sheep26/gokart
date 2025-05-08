@@ -48,12 +48,6 @@ if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     apt install libcurl4-openssl-dev -y
 fi
 
-if ! $(apt list --installed | grep -q libsndfile1-dev); then
-    echo "Dependency libsndfile1-dev missing, installing."
-
-    apt install libsndfile1-dev
-fi
-
 # Compile.
 g++ main.cpp networking.cpp OledScreen.cpp ./PiFmRds/*.c -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main
