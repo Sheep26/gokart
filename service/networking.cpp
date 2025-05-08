@@ -28,12 +28,6 @@ bool Networking::check_network() {
     // Trim any trailing whitespace (e.g., newline)
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    // Clean up.
-    pclose(pipe);
-    free(pipe);
-    free(return_code);
-    free(buffer);
-
     return result.find("connected") != string::npos;
 }
 
@@ -62,12 +56,6 @@ bool Networking::wifi_enabled() {
     // Trim any trailing whitespace (e.g., newline)
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    // Clean up.
-    pclose(pipe);
-    free(pipe);
-    free(return_code);
-    free(buffer);
-
     return (result == "enabled");
 }
 
@@ -81,10 +69,6 @@ void Networking::set_wifi(bool enabled) {
     } else{
         cerr << "Error: Failed to execute command.";
     }
-
-    // Cleaning up.
-    free(cmd);
-    free(pipe);
 }
 
 int Networking::wait_for_network() {
@@ -105,9 +89,6 @@ void Networking::scan_wifi() {
     } else {
         cerr << "Error: Failed to execute Wi-Fi scan command." << endl;
     }
-
-    // Cleaning up.
-    free(pipe);
 }
 
 void Networking::connect_wifi(string ssid, string passwd) {
@@ -119,8 +100,4 @@ void Networking::connect_wifi(string ssid, string passwd) {
     } else {
         cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << endl;
     }
-
-    // Cleaning up.
-    free(cmd);
-    free(pipe);
 }
