@@ -61,5 +61,5 @@ if ! $(apt list --installed | grep -q libasound2-dev); then
 fi
 
 # Compile.
-g++ main.cpp networking.cpp OledScreen.cpp ./PiFmRds/*.c -lwiringPi -lasound -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lasound -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main

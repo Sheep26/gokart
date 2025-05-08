@@ -3,7 +3,7 @@
 #include <wiringPiSPI.h>
 #include <thread>
 #include <chrono>
-#include <alsa/asoundlib.h>
+#include <alsa/asoundlib.h> // Include ALSA library
 
 #include "data.h"
 #include "networking.h"
@@ -162,13 +162,79 @@ void Threads::display_t() {
 }
 
 void Threads::radio_t() {
-    // Radio loop.
-    while (true) {
-        if (digitalRead(RADIO_BUTTON) == HIGH) {
-            // Radio, this is GPIO 4/pin 7.
-            
-        }
+    const char* device = "plughw:1,0"; // ALSA device (adjust based on your hardware)
+    snd_pcm_t* handle;
+    snd_pcm_hw_params_t* params;
+    unsigned int rate = 44100; // Sample rate
+    int channels = 2;          // Stereo
+    snd_pcm_uframes_t frames = 32; // Frames per period
+    int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
+    char* buffer = new char[buffer_size];
+
+    // Open PCM device for recording
+    if (snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0) < 0) {
+        cerr << "Error: Unable to open PCM device." << endl;
+        delete[] buffer;
+        return;
     }
+
+    // Allocate hardware parameters object
+    snd_pcm_hw_params_malloc(&params);
+    snd_pcm_hw_params_any(handle, params);
+
+    // Set hardware parameters
+    snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
+    snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
+    snd_pcm_hw_params_set_channels(handle, params, channels);
+    snd_pcm_hw_params_set_rate_near(handle, params, &rate, nullptr);
+    snd_pcm_hw_params_set_period_size_near(handle, params, &frames, nullptr);
+
+    // Apply hardware parameters
+    if (snd_pcm_hw_params(handle, params) < 0) {
+        cerr << "Error: Unable to set hardware parameters." << endl;
+        snd_pcm_hw_params_free(params);
+        snd_pcm_close(handle);
+        delete[] buffer;
+        return;
+    }
+
+    snd_pcm_hw_params_free(params); // Free hardware parameters object
+
+    // Open output file for saving recorded audio
+    FILE* output_file = fopen("/tmp/mic_recording.raw", "wb");
+    if (!output_file) {
+        cerr << "Error: Unable to open output file for recording." << endl;
+        snd_pcm_close(handle);
+        delete[] buffer;
+        return;
+    }
+
+    cout << "Recording started. Press the button to stop." << endl;
+
+    // Recording loop
+    while (digitalRead(RADIO_BUTTON) == HIGH) {
+        int rc = snd_pcm_readi(handle, buffer, frames);
+        if (rc == -EPIPE) {
+            // Buffer overrun
+            cerr << "Warning: Buffer overrun occurred." << endl;
+            snd_pcm_prepare(handle);
+        } else if (rc < 0) {
+            cerr << "Error: Failed to read from PCM device: " << snd_strerror(rc) << endl;
+            break;
+        } else if (rc != (int)frames) {
+            cerr << "Warning: Short read, only " << rc << " frames captured." << endl;
+        }
+
+        // Write captured audio to file
+        fwrite(buffer, 1, buffer_size, output_file);
+    }
+
+    cout << "Recording stopped." << endl;
+
+    // Cleanup
+    fclose(output_file);
+    snd_pcm_close(handle);
+    delete[] buffer;
 }
 
 void start_telementry() {
