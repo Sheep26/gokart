@@ -14,6 +14,7 @@ using namespace std::this_thread;
 using namespace std::chrono;
 
 #define TELEMENTRY_PIN 10
+#define RADIO_BUTTON 11
 #define DC 5
 #define RST 6
 
@@ -87,12 +88,6 @@ void Threads::data_t() {
 void Threads::ffmpeg_t() {
     cout << "Starting ffmpeg live video feed.";
 
-    // Check if ffmpeg installed.
-    if (system("which ffmpeg > /dev/null 2>&1") != 0) {
-        cerr << "Error: ffmpeg is not installed on the system, exiting." << endl;
-        return;
-    }
-
     // Start ffmpeg.
     int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz/live/stream");
     if (ret != 0) {
@@ -163,32 +158,43 @@ void Threads::display_t() {
     }
 }
 
+void Threads::radio_t() {
+    // Radio loop.
+    while (true) {
+        if (digitalRead(RADIO_BUTTON) == HIGH) {
+           system("arecord -fS16_LE -r 44100 -Dplughw:1,0 -c 2 - | /usr/bin/pi_fm_rds -freq 103.1 -audio -");
+        }
+    }
+}
+
 void start_telementry() {
     telementry_running = true;
 
     // Create threads
-    thread ffmpeg_t(Threads::ffmpeg_t);
-    thread data_t(Threads::data_t);
+    thread ffmpeg_thread(Threads::ffmpeg_t);
+    thread data_thread(Threads::data_t);
+    thread radio_thread(Threads::radio_t);
 
     // Detach threads to allow independent execution
-    ffmpeg_t.detach();
-    data_t.detach();
+    ffmpeg_thread.detach();
+    data_thread.detach();
+    radio_thread.detach();
 }
 
 int main() {
     cout << "Starting gokart service." << endl;
 
     // Setup GPIO
-    // Uses BCM numbering of the GPIOs and directly accesses the GPIO registers.
     cout << "Initalizing GPIO" << endl;
-    if (wiringPiSetupGpio() == -1) {
+    if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         cerr << "Error: Failed to initialize GPIO." << endl;
         return -1;
     }
 
-    // Set pin mode for telementry switch.
+    // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
-    pullUpDnControl(TELEMENTRY_PIN, PUD_DOWN);
+    pinMode(RADIO_BUTTON, INPUT);
+    pinMode(RADIO_PIN, OUTPUT);
 
     // Create display thread.
     thread display_t(Threads::display_t);

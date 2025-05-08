@@ -51,6 +51,24 @@ if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     apt install libcurl4-openssl-dev -y
 fi
 
+if ! $(apt list --installed | grep -q alsa-utils); then
+    echo "Dependency alsa-utils missing, installing."
+    # Install libcurl library
+    apt update
+    apt install alsa-utils -y
+fi
+
+git clone https://github.com/ChristopheJacquet/PiFmRds.git
+cd PiFmRds/src
+make clean
+make
+
+chmod a+x ./pi_fm_rds
+mv ./pi_fm_rds /usr/bin/pi_fm_rds
+
+cd ../../
+rm -rf PiFmRds
+
 # Compile.
 g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main
