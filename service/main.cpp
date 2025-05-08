@@ -161,7 +161,7 @@ void Threads::display_t() {
     }
 }
 
-void create_threads() {
+void start_telementry() {
     telementry_running = true;
 
     // Create threads
@@ -194,19 +194,15 @@ int main() {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        if (!Networking::check_network()) {
-            cout << "Waiting for network." << endl;
-            Networking::wait_for_network();
-        }
-    
-        create_threads();
+        cout << "Waiting for network." << endl;
+        cout << "Network connected, took " << Networking::wait_for_network() << "s" << endl;
     
         while (true) {
-            Networking::wait_for_network();
-    
-            if (!telementry_running) {
-                create_threads();
+            if (Networking::check_network() && !telementry_running) {
+                start_telementry();
             }
+
+            sleep_for(milliseconds(10000));
         }
     }
 
