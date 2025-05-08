@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 Restart=always
 User=root
-ExecStart=/usr/bin/gokart-main
+ExecStart=arecord -fS16_LE -r 44100 -Dplughw:1,0 -c 2 - | /usr/bin/gokart-main -
 
 [Install]
 WantedBy=multi-user.target

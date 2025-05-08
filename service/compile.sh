@@ -1,24 +1,23 @@
 #!/usr/bin/bash
+apt update
+apt upgrade
 
 # Check dependencies.
 if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
     # Install libcurl library
-    apt update
     apt install git -y
 fi
 
 if ! $(apt list --installed | grep -q g++); then
     echo "Build tools missing, installing."
     # Install build-essential (includes g++)
-    apt update
     apt install build-essential -y
 fi
 
 if ! $(apt list --installed | grep -q libfmt-dev); then
     echo "Dependency libfmt-dev missing, installing."
     # Install libfmt-dev
-    apt update
     apt install libfmt-dev -y
 fi
 
@@ -40,34 +39,20 @@ fi
 if ! $(apt list --installed | grep -q pkg-config); then
     echo "Dependency pkg-config missing, installing."
     # Install libcurl library
-    apt update
     apt install pkg-config -y
 fi
 
 if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     echo "Dependency libcurl4-openssl-dev missing, installing."
     # Install libcurl library
-    apt update
     apt install libcurl4-openssl-dev -y
 fi
 
-if ! $(apt list --installed | grep -q alsa-utils); then
-    echo "Dependency alsa-utils missing, installing."
-    # Install libcurl library
-    apt update
-    apt install alsa-utils -y
+if ! $(apt list --installed | grep -q libsndfile1-dev); then
+    echo "Dependency libsndfile1-dev missing, installing."
+
+    apt install libsndfile1-dev
 fi
-
-git clone https://github.com/ChristopheJacquet/PiFmRds.git
-cd PiFmRds/src
-make clean
-make
-
-chmod a+x ./pi_fm_rds
-mv ./pi_fm_rds /usr/bin/pi_fm_rds
-
-cd ../../
-rm -rf PiFmRds
 
 # Compile.
 g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main

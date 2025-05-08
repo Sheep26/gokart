@@ -1,16 +1,22 @@
 # Check dependencies.
+apt update
+
 if ! $(apt list --installed | grep -q git); then
     echo "Dependency git missing, installing."
     # Install libcurl library
-    apt update
     apt install git -y
 fi
 
 if ! $(apt list --installed | grep -q ffmpeg); then
     echo "Ffmpeg missing, installing."
     # Install build-essential (includes g++)
-    apt update
     apt install ffmpeg -y
+fi
+
+if ! $(apt list --installed | grep -q alsa-utils); then
+    echo "Dependency alsa-utils missing, installing."
+    # Install libcurl library
+    apt install alsa-utils -y
 fi
 
 echo "Cloning github repository."
