@@ -55,5 +55,5 @@ if ! $(apt list --installed | grep -q libsndfile1-dev); then
 fi
 
 # Compile.
-g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ main.cpp networking.cpp OledScreen.cpp ./PiFmRds/*.c -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main

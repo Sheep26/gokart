@@ -181,7 +181,7 @@ void start_telementry() {
     data_thread.detach();
 }
 
-int main() {
+int main(int argc, char **argv) {
     cout << "Starting gokart service." << endl;
 
     // Setup GPIO
