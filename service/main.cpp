@@ -162,7 +162,7 @@ void Threads::radio_t() {
     // Radio loop.
     while (true) {
         if (digitalRead(RADIO_BUTTON) == HIGH) {
-            // Radio, this is GPIO 4 or pin 7.
+            // Radio, this is GPIO 4/pin 7.
            system("arecord -fS16_LE -r 44100 -Dplughw:1,0 -c 2 - | /usr/bin/pi_fm_rds -freq 103.1 -audio -");
         }
     }
