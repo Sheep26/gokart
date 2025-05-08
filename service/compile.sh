@@ -53,11 +53,11 @@ if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     apt install libcurl4-openssl-dev -y
 fi
 
-if ! $(apt list --installed | grep -q alsa-utils-dev); then
-    echo "Dependency alsa-utils-dev missing, installing"
+if ! $(apt list --installed | grep -q libasound2-dev); then
+    echo "Dependency libasound2-dev missing, installing"
 
     # Install the library.
-    apt install alsa-utils-dev -y
+    apt install libasound2-dev -y
 fi
 
 # Compile.
