@@ -81,6 +81,10 @@ void Networking::set_wifi(bool enabled) {
     } else{
         cerr << "Error: Failed to execute command.";
     }
+
+    // Cleaning up.
+    free(cmd);
+    free(pipe);
 }
 
 int Networking::wait_for_network() {
