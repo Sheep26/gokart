@@ -18,6 +18,16 @@ git clone https://github.com/Sheep26/gokart.git
 
 cd gokart/service
 
+# Compile pi fm rds.
+echo "Compiling pi fm rds."
+git clone https://github.com/ChristopheJacquet/PiFmRds.git
+cd PiFmRds/src
+make clean
+make
+mv ./pi_fm_rds /usr/bin/pi_fm_rds
+cd ../../
+rm -rf PiFmRds
+
 # Compile executable.
 echo "Compiling executable."
 chmod a+x ./compile.sh
