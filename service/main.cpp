@@ -167,9 +167,8 @@ void Threads::radio_t() {
     snd_pcm_t* handle;
     snd_pcm_hw_params_t* params;
     unsigned int rate = 44100; // Sample rate
-    int channels = 1;          // Mono
     snd_pcm_uframes_t frames = 32; // Frames per period
-    int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
+    int buffer_size = frames * 2; // 2 bytes per sample (16-bit audio)
     char* buffer = new char[buffer_size];
     bool recording_last = false;
     bool recording = false;
