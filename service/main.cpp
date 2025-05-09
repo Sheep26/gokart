@@ -287,7 +287,7 @@ void Threads::radio_t() {
         }
 
         recording_last = recording;
-        sleep_for(milliseconds(50));
+        if (!recording) sleep_for(milliseconds(50));
     }
 
     cout << "Recording stopped." << endl;
