@@ -187,14 +187,13 @@ void Threads::radio_t() {
     int channels = 1;          // Mono
     snd_pcm_uframes_t frames = 32; // Frames per period
     int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
-    char* buffer = new char[buffer_size];
+    //char* buffer = new char[buffer_size];
     bool recording_last = false;
     bool recording = false;
 
     // Open PCM device for recording
     if (snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0) < 0) {
         cerr << "Error: Unable to open PCM device." << endl;
-        delete[] buffer;
         return;
     }
 
@@ -220,15 +219,6 @@ void Threads::radio_t() {
 
     snd_pcm_hw_params_free(params); // Free hardware parameters object
 
-    // Open output file for saving recorded audio
-    FILE* output_file = fopen("/tmp/mic_recording.wav", "wb");
-    if (!output_file) {
-        cerr << "Error: Unable to open output file for recording." << endl;
-        snd_pcm_close(handle);
-        delete[] buffer;
-        return;
-    }
-
     WAVHeader header;
     memset(&header, 0, sizeof(WAVHeader));
     memcpy(header.riff, "RIFF", 4);
@@ -246,12 +236,22 @@ void Threads::radio_t() {
 
     // Recording loop
     size_t total_data_size = 0;
+    FILE* output_file = null;
     while (true) {
         recording = (digitalRead(RADIO_BUTTON) == HIGH);
         if (recording) {
-            buffer = new char[buffer_size];
             if (!recording_last) {
                 cout << "Recording started." << endl;
+                char* buffer = new char[buffer_size];
+
+                // Open output file for saving recorded audio
+                output_file = fopen("/tmp/mic_recording.wav", "wb");
+                if (!output_file) {
+                    cerr << "Error: Unable to open output file for recording." << endl;
+                    snd_pcm_close(handle);
+                    delete[] buffer;
+                    return;
+                }
             }
 
             int rc = snd_pcm_readi(handle, buffer, frames);
@@ -277,11 +277,13 @@ void Threads::radio_t() {
             fwrite(&header, sizeof(WAVHeader), 1, output_file);
             fclose(output_file);
 
+            delete[] buffer;
+
             // Send radio message.
-            system("/usr/bin/pi_fm_rds -audio /tmp/mic_recording.wav")
+            system("/usr/bin/pi_fm_rds -freq 103.7 -audio /tmp/mic_recording.wav")
 
             // Cleanup.
-            system("rm /mnt/mic_recording.mp3");
+            system("rm /tmp/mic_recording.wav");
         }
 
         recording_last = recording;
@@ -290,9 +292,9 @@ void Threads::radio_t() {
     cout << "Recording stopped." << endl;
 
     // Cleanup
-    fclose(output_file);
+    //fclose(output_file);
     snd_pcm_close(handle);
-    delete[] buffer;
+    //delete[] buffer;
 }
 
 void start_telementry() {
