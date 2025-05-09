@@ -3,6 +3,7 @@
 #include <wiringPiSPI.h>
 #include <thread>
 #include <chrono>
+#include <cstring>
 #include <alsa/asoundlib.h> // Include ALSA library
 
 #include "data.h"
@@ -162,14 +163,16 @@ void Threads::display_t() {
 }
 
 void Threads::radio_t() {
-    const char* device = "plughw:1,0"; // ALSA device (adjust based on your hardware)
+    const char* device = "plughw:1,0"; // ALSA device (adjust later if needed)
     snd_pcm_t* handle;
     snd_pcm_hw_params_t* params;
     unsigned int rate = 44100; // Sample rate
-    int channels = 2;          // Stereo
+    int channels = 1;          // Mono
     snd_pcm_uframes_t frames = 32; // Frames per period
     int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
     char* buffer = new char[buffer_size];
+    bool recording_last = false;
+    bool recording = false;
 
     // Open PCM device for recording
     if (snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0) < 0) {
@@ -209,24 +212,33 @@ void Threads::radio_t() {
         return;
     }
 
-    cout << "Recording started. Press the button to stop." << endl;
-
     // Recording loop
-    while (digitalRead(RADIO_BUTTON) == HIGH) {
-        int rc = snd_pcm_readi(handle, buffer, frames);
-        if (rc == -EPIPE) {
-            // Buffer overrun
-            cerr << "Warning: Buffer overrun occurred." << endl;
-            snd_pcm_prepare(handle);
-        } else if (rc < 0) {
-            cerr << "Error: Failed to read from PCM device: " << snd_strerror(rc) << endl;
-            break;
-        } else if (rc != (int)frames) {
-            cerr << "Warning: Short read, only " << rc << " frames captured." << endl;
+    while (true) {
+        recording = (digitalRead(RADIO_BUTTON) == HIGH);
+        if (recording) {
+            int rc = snd_pcm_readi(handle, buffer, frames);
+            if (rc == -EPIPE) {
+                // Buffer overrun
+                cerr << "Warning: Buffer overrun occurred." << endl;
+                snd_pcm_prepare(handle);
+            } else if (rc < 0) {
+                cerr << "Error: Failed to read from PCM device: " << snd_strerror(rc) << endl;
+                break;
+            } else if (rc != (int)frames) {
+                cerr << "Warning: Short read, only " << rc << " frames captured." << endl;
+            }
+
+            // Write captured audio to file
+            fwrite(buffer, 1, buffer_size, output_file);
+        } else if (recording_last) {
+            // Send radio message.
+            system("/usr/bin/pi_fm_rds -audio /tmp/mic_recording.raw")
+
+            // Cleanup.
+            system("rm /mnt/mic_recording.mp3");
         }
 
-        // Write captured audio to file
-        fwrite(buffer, 1, buffer_size, output_file);
+        recording_last = recording;
     }
 
     cout << "Recording stopped." << endl;
