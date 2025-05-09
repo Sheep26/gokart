@@ -13,6 +13,12 @@ if ! $(apt list --installed | grep -q ffmpeg); then
     apt install ffmpeg -y
 fi
 
+if ! $(apt list --installed | grep -q libsndfile1-dev); then
+    echo "libsndfile1-dev Missing, installing."
+
+    apt install libsndfile1-dev -y
+fi
+
 echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
 
