@@ -24,6 +24,23 @@ using namespace std::chrono;
 
 bool telementry_running = false;
 
+// WAV file header structure
+struct WAVHeader {
+    char riff[4];            // "RIFF"
+    uint32_t chunk_size;     // File size - 8 bytes
+    char wave[4];            // "WAVE"
+    char fmt[4];             // "fmt "
+    uint32_t subchunk1_size; // Size of the fmt chunk (16 for PCM)
+    uint16_t audio_format;   // Audio format (1 for PCM)
+    uint16_t num_channels;   // Number of channels
+    uint32_t sample_rate;    // Sample rate
+    uint32_t byte_rate;      // Byte rate = sample_rate * num_channels * bytes_per_sample
+    uint16_t block_align;    // Block align = num_channels * bytes_per_sample
+    uint16_t bits_per_sample;// Bits per sample
+    char data[4];            // "data"
+    uint32_t subchunk2_size; // Size of the data chunk
+};
+
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
  Display pinout.
@@ -167,8 +184,9 @@ void Threads::radio_t() {
     snd_pcm_t* handle;
     snd_pcm_hw_params_t* params;
     unsigned int rate = 44100; // Sample rate
+    int channels = 1;          // Mono
     snd_pcm_uframes_t frames = 32; // Frames per period
-    int buffer_size = frames * 2; // 2 bytes per sample (16-bit audio)
+    int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
     char* buffer = new char[buffer_size];
     bool recording_last = false;
     bool recording = false;
@@ -203,7 +221,7 @@ void Threads::radio_t() {
     snd_pcm_hw_params_free(params); // Free hardware parameters object
 
     // Open output file for saving recorded audio
-    FILE* output_file = fopen("/tmp/mic_recording.raw", "wb");
+    FILE* output_file = fopen("/tmp/mic_recording.wav", "wb");
     if (!output_file) {
         cerr << "Error: Unable to open output file for recording." << endl;
         snd_pcm_close(handle);
@@ -211,10 +229,31 @@ void Threads::radio_t() {
         return;
     }
 
+    WAVHeader header;
+    memset(&header, 0, sizeof(WAVHeader));
+    memcpy(header.riff, "RIFF", 4);
+    memcpy(header.wave, "WAVE", 4);
+    memcpy(header.fmt, "fmt");
+    header.subchunk1_size = 16; // PCM format.
+    header.audio_format = 1; // PCM format.
+    header.num_channels = channels;
+    header.sample_rate = rate;
+    header.bits_per_sample = 16;
+    header.byte_rate = rate * channels * (header.bits_per_sample / 8);
+    memcpy(header.data, "data", 4);
+    header.subchunk2_size = 0; // Will update later.
+    header.chunk_size = 36 + header.subchunk2_size; // Will update later.
+
     // Recording loop
+    size_t total_data_size = 0;
     while (true) {
         recording = (digitalRead(RADIO_BUTTON) == HIGH);
         if (recording) {
+            buffer = new char[buffer_size];
+            if (!recording_last) {
+                cout << "Recording started." << endl;
+            }
+
             int rc = snd_pcm_readi(handle, buffer, frames);
             if (rc == -EPIPE) {
                 // Buffer overrun
@@ -228,10 +267,18 @@ void Threads::radio_t() {
             }
 
             // Write captured audio to file
-            fwrite(buffer, 1, buffer_size, output_file);
+            size_t written = fwrite(buffer, 1, buffer_size, output_file);
+            total_data_size += written;
         } else if (recording_last) {
+            cout << "Recording stopped." << endl;
+            header.subchunk2_size = total_data_size;
+            header.chunk_size = 36 + header.subchunk2_size;
+            fseek(output_file, 0, SEEK_SET);
+            fwrite(&header, sizeof(WAVHeader), 1, output_file);
+            fclose(output_file);
+
             // Send radio message.
-            system("/usr/bin/pi_fm_rds -audio /tmp/mic_recording.raw")
+            system("/usr/bin/pi_fm_rds -audio /tmp/mic_recording.wav")
 
             // Cleanup.
             system("rm /mnt/mic_recording.mp3");
