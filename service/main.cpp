@@ -277,7 +277,11 @@ void Threads::radio_t() {
             fwrite(&header, sizeof(WAVHeader), 1, output_file);
             fclose(output_file);
 
-            delete[] buffer;
+            try {
+                delete[] buffer;
+            } catch (...) {
+                cout << "Buffer doesn't exist?? This shouldn't happen." << endl;
+            }
 
             // Send radio message.
             system("/usr/bin/pi_fm_rds -freq 103.7 -audio /tmp/mic_recording.wav")
