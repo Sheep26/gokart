@@ -1,9 +1,12 @@
 const api_url = "https://gokart.sheepland.xyz"
 
-class DATA {
-    constructor(api_url = "") {
+class Connection {
+    login = ""
+
+    constructor(api_url = "", login) {
         this.data = null;
         this.api_url = api_url;
+        this.login = login;
     }
 
     async update_data() {
@@ -11,7 +14,12 @@ class DATA {
 
         try {
             // Request data from api
-            const response = await fetch(this.api_url + "/api/get_data");
+            const response = await fetch(this.api_url + "/api/get_data", {
+                method: "GET",
+                headers: {
+                    "X-API-KEY-B64": this.login,
+                }
+            });
 
             if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
@@ -37,6 +45,8 @@ class DATA {
     }
 }
 
+// [element, unit_of_mesurement(str)]
+// We store the elements we are using to display data here so we don't have to call for them later.
 let elements = {
     speed: [document.getElementById("speed-data"), "km/h"],
     speed_avg: [document.getElementById("speed-data-avg"), "km/h"],
@@ -52,14 +62,18 @@ let elements = {
     throttle_max: [document.getElementById("throttle-data-max"), "%"],
 }
 
-let data = new DATA(api_url);
-
+let connection = null;
 let flvPlayer = null;
 
+function login(login_details) {
+    // Login here, return api key, api key, encode api key base 64.
+    connection = new Connection(api_url, "" /* Encoded base 64 key*/);
+}
+
 function update_statistics() {
-    data.update_data();
+    connection.update_data();
     // Check if online
-    if (data.data != null && !data.get_online()) {
+    if (connection.data != null && !connection.get_online()) {
         // Set element data to 0.
         for (let key in elements) {
             elements[key][0].innerHTML = "0" + elements[key][1]
@@ -70,8 +84,8 @@ function update_statistics() {
     // Update elements
     for (let key in elements) {
         // Check if json data isn't null.
-        if (data.data != null && data.get_data()[key] != undefined) {
-            elements[key][0].innerHTML = data.get_data()[key] + elements[key][1];
+        if (connection.data != null && connection.get_data()[key] != undefined) {
+            elements[key][0].innerHTML = connection.get_data()[key] + elements[key][1];
         }
     }
 }
@@ -80,8 +94,8 @@ setInterval(update_statistics, 100);
 setInterval(check_online, 100);
 
 function check_online() {
-    if (data.data != null == null) return;
-    if (data.get_online()) {
+    if (connection.data != null == null) return;
+    if (connection.get_online()) {
         if (flvPlayer == null) {
             create_flv();
         }

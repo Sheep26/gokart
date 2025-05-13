@@ -6,44 +6,48 @@
     <title>Go-kart</title>
   </head>
   <body>
-    <script src="flv.min.js"></script>
-    <video id="videoElement" class="cam" controls autoplay></video>
-    <div class="data-table-div">
-      <h1>Data</h1>
-      <table>
-        <tr>
-            <th></th>
-            <th>Speed</th>
-            <th>RPM</th>
-            <th>Power</th>
-            <th>Throttle</th>
-        </tr>
-        <!--Current values-->
-        <tr>
-            <td>Current</td>
-            <td id="speed-data">0km/h</td>
-            <td id="rpm-data">0rpm</td>
-            <td id="power-data">0W</td>
-            <td id="throttle-data">0%</td>
-        </tr>
-        <!--Average values-->
-        <tr>
-            <td>Average</td>
-            <td id="speed-data-avg">0km/h</td>
-            <td id="rpm-data-avg">0rpm</td>
-            <td id="power-data-avg">0W</td>
-            <td id="throttle-data-avg">0%</td>
-        </tr>
-        <!--Maximum values-->
-        <tr>
-            <td>Maximum</td>
-            <td id="speed-data-max">0km/h</td>
-            <td id="rpm-data-max">0rpm</td>
-            <td id="power-data-max">0W</td>
-            <td id="throttle-data-max">0%</td>
-        </tr>
-    </table>
+    <div class="login">
+
     </div>
+    <main id="main">
+      <video id="videoElement" class="cam" controls autoplay></video>
+      <div class="data-table-div">
+        <h1>Data</h1>
+        <table>
+          <tr>
+              <th></th>
+              <th>Speed</th>
+              <th>RPM</th>
+              <th>Power</th>
+              <th>Throttle</th>
+          </tr>
+          <!--Current values-->
+          <tr>
+              <td>Current</td>
+              <td id="speed-data">0km/h</td>
+              <td id="rpm-data">0rpm</td>
+              <td id="power-data">0W</td>
+              <td id="throttle-data">0%</td>
+          </tr>
+          <!--Average values-->
+          <tr>
+              <td>Average</td>
+              <td id="speed-data-avg">0km/h</td>
+              <td id="rpm-data-avg">0rpm</td>
+              <td id="power-data-avg">0W</td>
+              <td id="throttle-data-avg">0%</td>
+          </tr>
+          <!--Maximum values-->
+          <tr>
+              <td>Maximum</td>
+              <td id="speed-data-max">0km/h</td>
+              <td id="rpm-data-max">0rpm</td>
+              <td id="power-data-max">0W</td>
+              <td id="throttle-data-max">0%</td>
+          </tr>
+      </table>
+      </div>
+    </main>
     <script src="./script.js"></script>
   </body>
 </html>
