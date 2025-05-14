@@ -99,8 +99,6 @@ async function login(username, passwd) {
     return true;
 }
 
-login("admin", "admin");
-
 function update_statistics() {
     connection.update_data();
     // Check if online
