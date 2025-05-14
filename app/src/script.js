@@ -1,7 +1,7 @@
 const api_url = "https://gokart.sheepland.xyz"
 
 class Connection {
-    login = {}
+    login = []
 
     constructor(api_url = "", login) {
         this.data = null;
@@ -17,8 +17,8 @@ class Connection {
             const response = await fetch(this.api_url + "/api/get_data", {
                 method: "GET",
                 headers: {
-                    "SESSION": this.login.session,
-                    "ID": this.login.id
+                    "SESSION": this.login[1], // Session
+                    "ID": this.login[0] // Id
                 }
             });
 
@@ -76,7 +76,23 @@ let flvPlayer = null;
 
 function login(login_details) {
     // Login here, return session.
-    connection = new Connection(api_url, {session: "", id: ""});
+    var session;
+    
+    fetch(this.api_url + "/api/login", {
+        method: "GET",
+        headers: {
+            "USERNAME": login_details.username,
+            "PASSWD": login_details.password
+        }
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(data => session = data);
+        } else {
+            throw new Error(`Response status: ${response.status}`);
+        }
+    });
+    
+    connection = new Connection(api_url, session);
 
     setInterval(update_statistics, 100);
     setInterval(check_online, 100);

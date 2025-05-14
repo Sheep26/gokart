@@ -94,7 +94,7 @@ app.get("/api/login", (req, res) => {
     for (user in json_config.login) {
         if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
             sessions[user] = randStr(32);
-            res.send({user: sessions[user]});
+            res.send([user, sessions[user]]); // List [0] is ID [1] is Session.
             return;
         }
     }
