@@ -72,6 +72,20 @@ function randStr(len) {
     return result;
 }
 
+app.post("/api/logout", (req, res) => {
+    var id = req.header("ID");
+    var session = req.header("SESSION");
+
+    // Check if the session exists and matches
+    if (sessions[id] && sessions[id] === session) {
+        delete sessions[id]; // Remove the session
+        res.sendStatus(200); // Successfully logged out
+        return;
+    }
+
+    res.sendStatus(401); // Unauthorized
+});
+
 app.get("/api/login", (req, res) => {
     var username = req.header("USERNAME");
     var passwd = "";
@@ -80,9 +94,12 @@ app.get("/api/login", (req, res) => {
     for (user in json_config.login) {
         if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
             sessions[user] = randStr(32);
-            break;
+            res.send({user: sessions[user]});
+            return;
         }
     }
+    
+    res.sendStatus(401);
 });
 
 app.get("/api/get_data", (req, res) => {
