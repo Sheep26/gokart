@@ -61,14 +61,26 @@ async function sha256Hash(text) {
   return hashHex;
 }
 
+function randStr(len) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    let result = '';
+    for (let i = 0; i < len; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return result;
+}
+
 app.get("/api/login", (req, res) => {
     var username = req.header("USERNAME");
     var passwd = "";
     sha256Hash(req.header("PASSWD")).then(data => passwd = data);
 
     for (user in json_config.login) {
-        if (json_config.login[user].username != username || json_config.login[user].passwdsha256 != passwd) {
-
+        if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
+            sessions[user] = randStr(32);
+            break;
         }
     }
 });
@@ -77,36 +89,38 @@ app.get("/api/get_data", (req, res) => {
     var user_session = req.header("SESSION");
     var user_id = req.header("ID");
     for (let session in sessions) {
-        if (session["id"] == user_id && session["session"] == user_session) {
-            res.sendStatus(401);
+        if (session == user_id && sessions[session] == user_session) {
+            if (Date.now() - last_online > 5000) {
+                data.online = false;
+                for (key in data.data) {
+                    data.data[key] = 0;
+                }
+            }
+
+            res.send(data);
             return;
         }
     }
-
-    if (Date.now() - last_online > 5000) {
-        data.online = false;
-        for (key in data.data) {
-            data.data[key] = 0;
-        }
-    }
-
-    res.send(data);
+    
+    res.sendStatus(401);
 });
 
 app.post("/api/update_data", (req, res) => {
     var user_session = req.header("SESSION");
     var user_id = req.header("ID");
     for (let session in sessions) {
-        if (session["id"] != user_id || session["session"] != user_session) res.sendStatus(401);
-        return;
+        if (session == user_id && sessions[session] == user_session) {
+            last_online = Date.now();
+            data = {
+                online: true,
+                data: req.body
+            };
+            res.sendStatus(200);
+            return;
+        }
     }
-
-    last_online = Date.now();
-    data = {
-        online: true,
-        data: req.body
-    };
-    res.sendStatus(200);
+    
+    res.sendStatus(401);
 });
 
 app.listen(PORT, "0.0.0.0", function (err) {
