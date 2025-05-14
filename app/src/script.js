@@ -75,6 +75,10 @@ let elements = {
 let connection = null;
 let flvPlayer = null;
 
+// Hide/Show elements.
+function hide_element(element) {element.style.display = "none";}
+function show_element(element) {element.style.display = "block";}
+
 async function login(username, passwd) {
     // Login here, return session.
     const response = await fetch("http://localhost:8001/api/login", {
@@ -142,3 +146,5 @@ function create_flv() {
         flvPlayer.play();
     }
 }
+
+hide_element(document.getElementById("main"));
