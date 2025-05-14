@@ -1,4 +1,5 @@
-const api_url = "https://gokart.sheepland.xyz"
+// const api_url = "https://gokart.sheepland.xyz"
+const api_url = "http://localhost:8001"
 
 class Connection {
     login = []
@@ -74,29 +75,31 @@ let elements = {
 let connection = null;
 let flvPlayer = null;
 
-function login(login_details) {
+async function login(username, passwd) {
     // Login here, return session.
-    var session;
-    
-    fetch(this.api_url + "/api/login", {
+    const response = await fetch("http://localhost:8001/api/login", {
         method: "GET",
         headers: {
-            "USERNAME": login_details.username,
-            "PASSWD": login_details.password
-        }
-    }).then(response => {
-        if (response.ok) {
-            response.text().then(data => session = data);
-        } else {
-            throw new Error(`Response status: ${response.status}`);
+            "USERNAME": username,
+            "PASSWD": passwd
         }
     });
+
+    if (!response.ok) {
+        return false;
+    }
+
+    var text = (await response.text()).split(",");
     
-    connection = new Connection(api_url, session);
+    connection = new Connection(api_url, text);
 
     setInterval(update_statistics, 100);
     setInterval(check_online, 100);
+
+    return true;
 }
+
+login("admin", "admin");
 
 function update_statistics() {
     connection.update_data();

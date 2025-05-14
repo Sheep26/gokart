@@ -86,15 +86,14 @@ app.post("/api/logout", (req, res) => {
     res.sendStatus(401); // Unauthorized
 });
 
-app.get("/api/login", (req, res) => {
+app.get("/api/login", async (req, res) => {
     var username = req.header("USERNAME");
-    var passwd = "";
-    sha256Hash(req.header("PASSWD")).then(data => passwd = data);
+    var passwd = await sha256Hash(req.header("PASSWD"));
 
-    for (user in json_config.login) {
+    for (let user in json_config.login) {
         if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
             sessions[user] = randStr(32);
-            res.send([user, sessions[user]]); // List [0] is ID [1] is Session.
+            res.send(user + "," + sessions[user]); // List [0] is ID [1] is Session.
             return;
         }
     }
