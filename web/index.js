@@ -1,5 +1,7 @@
 const express = require("express");
 const NodeMediaServer = require('node-media-server');
+var fs = require('fs');
+var json_config;
 
 const app = express();
 
@@ -18,6 +20,13 @@ const config = {
 };
 
 let last_online = Date.now();
+
+var sessions = {}
+
+fs.readFile('config.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    json_config = JSON.parse(data);
+});
 
 // Encode and parse data.
 app.use(express.json());
@@ -43,17 +52,55 @@ let data = {
     }
 }
 
+async function sha256Hash(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+app.get("/api/login", (req, res) => {
+    var username = req.header("USERNAME");
+    var passwd = "";
+    sha256Hash(req.header("PASSWD")).then(data => passwd = data);
+
+    for (user in json_config.login) {
+        if (json_config.login[user].username != username || json_config.login[user].passwdsha256 != passwd) {
+
+        }
+    }
+});
+
 app.get("/api/get_data", (req, res) => {
+    var user_session = req.header("SESSION");
+    var user_id = req.header("ID");
+    for (let session in sessions) {
+        if (session["id"] == user_id && session["session"] == user_session) {
+            res.sendStatus(401);
+            return;
+        }
+    }
+
     if (Date.now() - last_online > 5000) {
         data.online = false;
         for (key in data.data) {
             data.data[key] = 0;
         }
     }
+
     res.send(data);
 });
 
 app.post("/api/update_data", (req, res) => {
+    var user_session = req.header("SESSION");
+    var user_id = req.header("ID");
+    for (let session in sessions) {
+        if (session["id"] != user_id || session["session"] != user_session) res.sendStatus(401);
+        return;
+    }
+
     last_online = Date.now();
     data = {
         online: true,

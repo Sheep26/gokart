@@ -1,7 +1,7 @@
 const api_url = "https://gokart.sheepland.xyz"
 
 class Connection {
-    login = ""
+    login = {}
 
     constructor(api_url = "", login) {
         this.data = null;
@@ -17,7 +17,8 @@ class Connection {
             const response = await fetch(this.api_url + "/api/get_data", {
                 method: "GET",
                 headers: {
-                    "X-API-KEY-B64": this.login,
+                    "SESSION": this.login.session,
+                    "ID": this.login.id
                 }
             });
 
@@ -37,10 +38,18 @@ class Connection {
     }
 
     get_data() {
+        if (this.data == null) {
+            return null;
+        }
+
         return this.data.data;
     }
 
     get_online() {
+        if (this.data == null) {
+            return false;
+        }
+
         return this.data.online;
     }
 }
@@ -66,14 +75,17 @@ let connection = null;
 let flvPlayer = null;
 
 function login(login_details) {
-    // Login here, return api key, api key, encode api key base 64.
-    connection = new Connection(api_url, "" /* Encoded base 64 key*/);
+    // Login here, return session.
+    connection = new Connection(api_url, {session: "", id: ""});
+
+    setInterval(update_statistics, 100);
+    setInterval(check_online, 100);
 }
 
 function update_statistics() {
     connection.update_data();
     // Check if online
-    if (connection.data != null && !connection.get_online()) {
+    if (!connection.get_online()) {
         // Set element data to 0.
         for (let key in elements) {
             elements[key][0].innerHTML = "0" + elements[key][1]
@@ -84,17 +96,13 @@ function update_statistics() {
     // Update elements
     for (let key in elements) {
         // Check if json data isn't null.
-        if (connection.data != null && connection.get_data()[key] != undefined) {
+        if (connection.get_data()[key] != undefined) {
             elements[key][0].innerHTML = connection.get_data()[key] + elements[key][1];
         }
     }
 }
 
-setInterval(update_statistics, 100);
-setInterval(check_online, 100);
-
 function check_online() {
-    if (connection.data != null == null) return;
     if (connection.get_online()) {
         if (flvPlayer == null) {
             create_flv();
