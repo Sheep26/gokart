@@ -19,24 +19,28 @@ if ! $(apt list --installed | grep -q libsndfile1-dev); then
     apt install libsndfile1-dev -y
 fi
 
-# Get login details
-logged_in=1
-while [ logged_in ]; do
-    echo "Please enter login details."
-    echo "Server ip: "
-    read serverip
-    echo "Username: "
-    read username
-    echo "Password: "
-    read password
+echo "Telementry [y/n]"
+read telementry
+if [ "${telementry,,}" == "y" ]; then
+    # Get login details
+    logged_in=1
+    while [ ! "$logged_in" ]; do
+        echo "Please enter login details."
+        echo "Server ip: "
+        read serverip
+        echo "Username: "
+        read username
+        echo "Password: "
+        read password
 
-    # Check login
+        # Check login
 
-    # Configure login for software.
-    export SERVERIP="$serverip"
-    export SERVERUSERNAME="$username"
-    export SERVERPASsWD="$password"
-done
+        # Configure login for software.
+        export SERVERIP="$serverip"
+        export SERVERUSERNAME="$username"
+        export SERVERPASsWD="$password"
+    done
+fi
 
 echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
