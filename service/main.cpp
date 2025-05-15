@@ -120,6 +120,7 @@ void Threads::ffmpeg_t() {
 
     // Start ffmpeg.
     int ret = system(("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip + "/live/stream").c_str());
+    
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
