@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cstring>
 #include <alsa/asoundlib.h> // Include ALSA library
+#include <cstdlib>
 
 #include "data.h"
 #include "networking.h"
@@ -41,6 +42,12 @@ struct WAVHeader {
     uint32_t subchunk2_size; // Size of the data chunk
 };
 
+struct Server { // I don't want to have to deal with memory realloc, lets use strings.
+    string ip;
+    string username;
+    string passwd;
+};
+
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
  Display pinout.
@@ -52,6 +59,8 @@ struct WAVHeader {
  DC     --- GPIO17(Pin#5) (You can use Any Pin)
  CS     --- CS0(Pin#24)
 */
+
+Server server;
 
 void Threads::data_t() {
     // Send data to server every 100ms
@@ -80,7 +89,7 @@ void Threads::data_t() {
                 })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
                 const char* body_cstr = body.c_str();
     
-                curl_easy_setopt(curl, CURLOPT_URL, "https://gokart.sheepland.xyz/api/update_data");
+                curl_easy_setopt(curl, CURLOPT_URL, ("https://" + SERVERIP + "/api/update_data").c_str());
                 curl_easy_setopt(curl, CURLOPT_POST, 1L);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_cstr);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
@@ -110,7 +119,7 @@ void Threads::ffmpeg_t() {
     cout << "Starting ffmpeg live video feed.";
 
     // Start ffmpeg.
-    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://gokart.sheepland.xyz/live/stream");
+    int ret = system("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip + "/live/stream");
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
@@ -316,6 +325,11 @@ void start_telementry() {
 
 int main(int argc, char **argv) {
     cout << "Starting gokart service." << endl;
+
+    cout << "Reading environment varibles" << end;
+    server.ip = (string) getenv("SERVERIP");
+    server.username = (string) getenv("SERVERUSERNAME");
+    server.passwd = (string) getenv("SERVERPASSWD");
 
     // Setup GPIO
     cout << "Initalizing GPIO" << endl;
