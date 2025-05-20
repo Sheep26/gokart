@@ -144,5 +144,11 @@ app.listen(PORT, "0.0.0.0", function (err) {
     console.log("Server listening on PORT", PORT);
 });
 
+function check_sessions() {
+
+}
+
+setInterval(check_sessions, 5000);
+
 const nms = new NodeMediaServer(config);
 nms.run();
