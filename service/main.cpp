@@ -252,19 +252,21 @@ void Threads::radio_t() {
     // Recording loop
     size_t total_data_size = 0;
     FILE* output_file = null;
+    char* buffer = new char[buffer_size];
+
     while (true) {
         recording = (digitalRead(RADIO_BUTTON) == HIGH);
         if (recording) {
             if (!recording_last) {
                 cout << "Recording started." << endl;
-                char* buffer = new char[buffer_size];
+                buffer = new char[buffer_size];
 
                 // Open output file for saving recorded audio
                 output_file = fopen("/tmp/mic_recording.wav", "wb");
                 if (!output_file) {
                     cerr << "Error: Unable to open output file for recording." << endl;
                     snd_pcm_close(handle);
-                    delete[] buffer;
+                    buffer = new char[buffer_size];
                     return;
                 }
             }
@@ -292,14 +294,10 @@ void Threads::radio_t() {
             fwrite(&header, sizeof(WAVHeader), 1, output_file);
             fclose(output_file);
 
-            try {
-                delete[] buffer;
-            } catch (...) {
-                cout << "Buffer doesn't exist?? This shouldn't happen." << endl;
-            }
+            buffer = new char[buffer_size];
 
             // Send radio message.
-            system("/usr/bin/pi_fm_rds -freq 103.7 -audio /tmp/mic_recording.wav")
+            system("/usr/bin/pi_fm_rds -freq 106.1 -audio /tmp/mic_recording.wav");
 
             // Cleanup.
             system("rm /tmp/mic_recording.wav");
