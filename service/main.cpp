@@ -96,16 +96,22 @@ void Threads::data_t() {
                 curl_easy_setopt(curl, CURLOPT_POST, 1L);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_cstr);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
-        
+                
+                // Set headers
+                struct curl_slist* headers = nullptr;
+                headers = curl_slist_append(headers, ("ID: " + server.id).c_str());
+                headers = curl_slist_append(headers, ("SESSION: " + server.session).c_str());
+                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+                
                 CURLcode res = curl_easy_perform(curl);
     
                 // Clean up memory.
                 curl_easy_cleanup(curl);
         
                 if (res == CURLE_OK) {
-                    std::cout << "Response:\n" << std::endl;
+                    cout << "Response:\n" << endl;
                 } else {
-                    std::cerr << "Request failed: " << curl_easy_strerror(res) << std::endl;
+                    cerr << "Request failed: " << curl_easy_strerror(res) << endl;
                 }
             }
     
