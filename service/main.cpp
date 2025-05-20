@@ -129,7 +129,7 @@ void Threads::ffmpeg_t() {
 
     // Start ffmpeg.
     string cmd = "ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip +
-                  "/live/stream?id=" + server.id + "&session=" + server.session;
+                  "/live/stream";
     int ret = system(cmd.c_str());
 
     if (ret != 0) {
