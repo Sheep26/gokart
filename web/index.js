@@ -92,8 +92,11 @@ app.get("/api/login", async (req, res) => {
 
     for (let user in json_config.login) {
         if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
-            sessions[user] = randStr(32);
-            res.send(user + "," + sessions[user]); // List [0] is ID [1] is Session.
+            sessions[user] = {
+                "session": randStr(32),
+                "timestamp": Date.now()
+            };
+            res.send(user + "," + sessions[user].session); // List [0] is ID [1] is Session.
             return;
         }
     }
@@ -105,7 +108,9 @@ app.get("/api/get_data", (req, res) => {
     var user_session = req.header("SESSION");
     var user_id = req.header("ID");
     for (let session in sessions) {
-        if (session == user_id && sessions[session] == user_session) {
+        if (session == user_id && sessions[session].session == user_session) {
+            sessions[session].timestamp = Date.now();
+            
             if (Date.now() - last_online > 5000) {
                 data.online = false;
                 for (key in data.data) {
@@ -145,7 +150,11 @@ app.listen(PORT, "0.0.0.0", function (err) {
 });
 
 function check_sessions() {
-
+    for (session in sessions) {
+        if (Date.now() - sessions[session].timestamp > 5000) {
+            delete sessions[session];
+        }
+    }
 }
 
 setInterval(check_sessions, 5000);
