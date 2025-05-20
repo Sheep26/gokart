@@ -98,7 +98,18 @@ async function login(api_url, username, passwd) {
     setInterval(check_online, 100);
     
     hide_element(document.getElementById("login"));
+    show_element(document.getElementById("main"));
     return true;
+}
+
+function check_login() {
+    login(document.getElementById("server-ip").value, document.getElementById("username").value, document.getElementById("password").value).then(result => {
+        if (!result) {
+            login_ell = document.getElementById("login-ell")
+            show_element(login_ell);
+            login_ell.innerHTML = "Invalid login."
+        }
+    });
 }
 
 function update_statistics() {
@@ -146,3 +157,4 @@ function create_flv() {
 }
 
 hide_element(document.getElementById("main"));
+hide_element(document.getElementById("login-ell"));

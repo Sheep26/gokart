@@ -26,3 +26,7 @@ h1, h2, h3, p, a {
 table, th, td {
     border: 1px solid white;
 }
+
+.login-ell {
+    color: rgb(255, 50, 50);
+}
