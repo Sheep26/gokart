@@ -41,7 +41,7 @@ if [ "${telementry,,}" == "y" ]; then
             # Configure login for software.
             export SERVERIP="$serverip"
             export SERVERUSERNAME="$username"
-            export SERVERPASsWD="$password"
+            export SERVERPASSWD="$password"
         fi
     done
 fi
