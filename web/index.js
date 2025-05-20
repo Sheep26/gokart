@@ -160,7 +160,7 @@ setInterval(check_sessions, 5000);
 
 const nms = new NodeMediaServer(config);
 
-/*nms.on('prePublish', (id, StreamPath, args) => {
+nms.on('prePublish', (id, StreamPath, args) => {
     var success = false;
     for (let session in sessions) {
         if (session == args.id && sessions[session] == args.session) {
@@ -173,7 +173,7 @@ const nms = new NodeMediaServer(config);
         let session = nms.getSession(id);
         session.reject();
     }
-});*/
+});
 
 nms.on('prePlay', (id, StreamPath, args) => {
     var success = false;
