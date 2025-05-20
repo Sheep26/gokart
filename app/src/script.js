@@ -148,7 +148,7 @@ function create_flv() {
         var videoElement = document.getElementById('videoElement');
         flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: connection.api_url + '/live/stream.flv'
+            url: connection.api_url + '/live/stream.flv?id=' + connection.login[0] + "&session=" + connection.login[1];
         });
         flvPlayer.attachMediaElement(videoElement);
         flvPlayer.load();
