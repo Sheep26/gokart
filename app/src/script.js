@@ -1,6 +1,3 @@
-// const api_url = "https://gokart.sheepland.xyz"
-const api_url = "http://localhost:8001"
-
 class Connection {
     login = []
 
@@ -79,9 +76,9 @@ let flvPlayer = null;
 function hide_element(element) {element.style.display = "none";}
 function show_element(element) {element.style.display = "block";}
 
-async function login(username, passwd) {
+async function login(api_url, username, passwd) {
     // Login here, return session.
-    const response = await fetch("http://localhost:8001/api/login", {
+    const response = await fetch(api_url + "/api/login", {
         method: "GET",
         headers: {
             "USERNAME": username,
@@ -99,7 +96,8 @@ async function login(username, passwd) {
 
     setInterval(update_statistics, 100);
     setInterval(check_online, 100);
-
+    
+    hide_element(document.getElementById("login"));
     return true;
 }
 
@@ -139,7 +137,7 @@ function create_flv() {
         var videoElement = document.getElementById('videoElement');
         flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: api_url + '/live/stream.flv'
+            url: connection.api_url + '/live/stream.flv'
         });
         flvPlayer.attachMediaElement(videoElement);
         flvPlayer.load();

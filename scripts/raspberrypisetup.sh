@@ -34,11 +34,15 @@ if [ "${telementry,,}" == "y" ]; then
         read password
 
         # Check login
-
-        # Configure login for software.
-        export SERVERIP="$serverip"
-        export SERVERUSERNAME="$username"
-        export SERVERPASsWD="$password"
+        login_status=$(curl -s -o /dev/null -w "%{http_code}" "$serverip/api/login")
+        if [ "$login_status" == "200" ]; then
+            # Login successful.
+            logged_in=0
+            # Configure login for software.
+            export SERVERIP="$serverip"
+            export SERVERUSERNAME="$username"
+            export SERVERPASsWD="$password"
+        fi
     done
 fi
 
