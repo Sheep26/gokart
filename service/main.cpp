@@ -20,6 +20,7 @@ using namespace std::chrono;
 #define TELEMENTRY_PIN 10
 #define RADIO_BUTTON 11
 #define RADIO_SWITCH 12
+#define RADIO_PIN 7
 #define DC 5
 #define RST 6
 
