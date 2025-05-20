@@ -159,37 +159,4 @@ function check_sessions() {
 setInterval(check_sessions, 5000);
 
 const nms = new NodeMediaServer(config);
-
-/*nms.on('prePublish', (id, StreamPath, args) => {
-    var success = false;
-    for (let session in sessions) {
-        if (session == args.id && sessions[session] == args.session) {
-            success = true;
-            console.log("Successful login.")
-            break;
-        }
-    }
-
-    if (!success) {
-        let session = nms.getSession(id);
-        session.reject();
-    }
-});
-
-nms.on('prePlay', (id, StreamPath, args) => {
-    var success = false;
-    for (let session in sessions) {
-        if (session == args.id && sessions[session] == args.session) {
-            success = true;
-            console.log("Successful login.")
-            break;
-        }
-    }
-
-    if (!success) {
-        let session = nms.getSession(id);
-        session.reject();
-    }
-});*/
-
 nms.run();
