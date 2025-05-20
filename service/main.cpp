@@ -332,7 +332,7 @@ int main(int argc, char **argv) {
     cout << "Starting gokart service." << endl;
 
     // Configure server.
-    cout << "Reading environment varibles" << end;
+    cout << "Reading environment varibles" << endl;
     server.ip = (string) getenv("SERVERIP");
     server.username = (string) getenv("SERVERUSERNAME");
     server.passwd = (string) getenv("SERVERPASSWD");
