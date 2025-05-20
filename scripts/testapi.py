@@ -16,7 +16,7 @@ data = {
         "throttle_max": 100
 }
 
-session = requests.get("https://gokart.sheepland.xyz/api/login", headers={"username": "admin", "passwd": "admin"})
+session = requests.get("https://gokart.sheepland.xyz/api/login", headers={"username": "rpi", "passwd": "admin"})
 print(session.status_code)
 
 # sending post request and saving response as response object
