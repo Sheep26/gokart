@@ -46,6 +46,8 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
     string ip;
     string username;
     string passwd;
+    string session;
+    string id;
 };
 
 /*
@@ -119,7 +121,9 @@ void Threads::ffmpeg_t() {
     cout << "Starting ffmpeg live video feed.";
 
     // Start ffmpeg.
-    int ret = system(("ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip + "/live/stream").c_str());
+    string cmd = "ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip +
+                  "/live/stream?id=" + server.id + "&session=" + server.session;
+    int ret = system(cmd.c_str());
 
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;

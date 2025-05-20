@@ -2,8 +2,14 @@ const express = require("express");
 const NodeMediaServer = require('node-media-server');
 var fs = require('fs');
 var json_config;
-
+let last_online = Date.now();
+var sessions = {}
 const app = express();
+
+fs.readFile('config.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    json_config = JSON.parse(data);
+});
 
 const config = {
     rtmp: {
@@ -15,18 +21,9 @@ const config = {
     },
     http: {
         port: 8002,
-        allow_origin: '*',
-    },
+        allow_origin: '*'
+    }
 };
-
-let last_online = Date.now();
-
-var sessions = {}
-
-fs.readFile('config.json', 'utf8', function (err, data) {
-    if (err) throw err;
-    json_config = JSON.parse(data);
-});
 
 // Encode and parse data.
 app.use(express.json());
@@ -87,6 +84,7 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.get("/api/login", async (req, res) => {
+    console.log(json_config);
     var username = req.header("USERNAME");
     var passwd = await sha256Hash(req.header("PASSWD"));
 
@@ -110,7 +108,7 @@ app.get("/api/get_data", (req, res) => {
     for (let session in sessions) {
         if (session == user_id && sessions[session].session == user_session) {
             sessions[session].timestamp = Date.now();
-            
+
             if (Date.now() - last_online > 5000) {
                 data.online = false;
                 for (key in data.data) {
@@ -150,7 +148,7 @@ app.listen(PORT, "0.0.0.0", function (err) {
 });
 
 function check_sessions() {
-    for (session in sessions) {
+    for (let session in sessions) {
         if (Date.now() - sessions[session].timestamp > 5000) {
             delete sessions[session];
         }
@@ -160,4 +158,35 @@ function check_sessions() {
 setInterval(check_sessions, 5000);
 
 const nms = new NodeMediaServer(config);
+
+nms.on('prePublish', (id, StreamPath, args) => {
+    var success = false;
+    for (let session in sessions) {
+        if (session == args.id && sessions[session] == args.session) {
+            success = true;
+            break;
+        }
+    }
+
+    if (!success) {
+        let session = nms.getSession(id);
+        session.reject();
+    }
+});
+
+nms.on('prePlay', (id, StreamPath, args) => {
+    var success = false;
+    for (let session in sessions) {
+        if (session == args.id && sessions[session] == args.session) {
+            success = true;
+            break;
+        }
+    }
+
+    if (!success) {
+        let session = nms.getSession(id);
+        session.reject();
+    }
+});
+
 nms.run();
