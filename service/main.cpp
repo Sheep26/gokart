@@ -228,7 +228,6 @@ void Threads::radio_t() {
         cerr << "Error: Unable to set hardware parameters." << endl;
         snd_pcm_hw_params_free(params);
         snd_pcm_close(handle);
-        delete[] buffer;
         return;
     }
 
