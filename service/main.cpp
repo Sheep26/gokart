@@ -92,7 +92,7 @@ void Threads::data_t() {
                 })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
                 const char* body_cstr = body.c_str();
     
-                curl_easy_setopt(curl, CURLOPT_URL, ("https://" + SERVERIP + "/api/update_data").c_str());
+                curl_easy_setopt(curl, CURLOPT_URL, ("https://" + server.ip + "/api/update_data").c_str());
                 curl_easy_setopt(curl, CURLOPT_POST, 1L);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_cstr);
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
@@ -250,7 +250,7 @@ void Threads::radio_t() {
 
     // Recording loop
     size_t total_data_size = 0;
-    FILE* output_file = null;
+    FILE* output_file = NULL;
     char* buffer = new char[buffer_size];
 
     while (true) {
