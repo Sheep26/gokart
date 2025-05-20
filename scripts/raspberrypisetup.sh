@@ -23,8 +23,8 @@ echo "Telementry [y/n]"
 read telementry
 if [ "${telementry,,}" == "y" ]; then
     # Get login details
-    logged_in=1
-    while [ ! "$logged_in" ]; do
+    logged_in=0
+    while [ "$logged_in" -eq 0 ]; do
         echo "Please enter login details."
         echo "Server ip: "
         read serverip
@@ -37,7 +37,7 @@ if [ "${telementry,,}" == "y" ]; then
         login_status=$(curl -s -o /dev/null -w "%{http_code}" "$serverip/api/login")
         if [ "$login_status" == "200" ]; then
             # Login successful.
-            logged_in=0
+            logged_in=1
             # Configure login for software.
             export SERVERIP="$serverip"
             export SERVERUSERNAME="$username"
