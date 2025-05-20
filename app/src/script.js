@@ -15,8 +15,8 @@ class Connection {
             const response = await fetch(this.api_url + "/api/get_data", {
                 method: "GET",
                 headers: {
-                    "SESSION": this.login[1], // Session
-                    "ID": this.login[0] // Id
+                    "session": this.login[1], // Session
+                    "id": this.login[0] // Id
                 }
             });
 
@@ -81,8 +81,8 @@ async function login(api_url, username, passwd) {
     const response = await fetch(api_url + "/api/login", {
         method: "GET",
         headers: {
-            "USERNAME": username,
-            "PASSWD": passwd
+            "username": username,
+            "passwd": passwd
         }
     });
 

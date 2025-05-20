@@ -16,7 +16,13 @@ data = {
         "throttle_max": 100
 }
 
+session = requests.get("http://localhost:8001/api/login", headers={"username": "admin", "passwd": "admin"})
+print(session.status_code)
+
 # sending post request and saving response as response object
 while True:
-        r = requests.post(url="https://gokart.sheepland.xyz/api/update_data", data=data)
+        headers={"id": session.text.split(",")[0], "session": session.text.split(",")[1]}
+        print(headers)
+        r = requests.post(url="http://localhost:8001/api/update_data", data=data, headers=headers)
+        print(r.status_code)
         sleep(0.1)

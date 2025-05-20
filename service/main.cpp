@@ -99,8 +99,8 @@ void Threads::data_t() {
                 
                 // Set headers
                 struct curl_slist* headers = nullptr;
-                headers = curl_slist_append(headers, ("ID: " + server.id).c_str());
-                headers = curl_slist_append(headers, ("SESSION: " + server.session).c_str());
+                headers = curl_slist_append(headers, ("id: " + server.id).c_str());
+                headers = curl_slist_append(headers, ("session: " + server.session).c_str());
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
                 
                 CURLcode res = curl_easy_perform(curl);

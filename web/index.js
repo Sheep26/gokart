@@ -70,8 +70,8 @@ function randStr(len) {
 }
 
 app.post("/api/logout", (req, res) => {
-    var id = req.header("ID");
-    var session = req.header("SESSION");
+    var id = req.header("id");
+    var session = req.header("session");
 
     // Check if the session exists and matches
     if (sessions[id] && sessions[id] === session) {
@@ -84,9 +84,8 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.get("/api/login", async (req, res) => {
-    console.log(json_config);
-    var username = req.header("USERNAME");
-    var passwd = await sha256Hash(req.header("PASSWD"));
+    var username = req.header("username");
+    var passwd = await sha256Hash(req.header("passwd"));
 
     for (let user in json_config.login) {
         if (json_config.login[user].username == username && json_config.login[user].passwdsha256 == passwd) {
@@ -103,8 +102,8 @@ app.get("/api/login", async (req, res) => {
 });
 
 app.get("/api/get_data", (req, res) => {
-    var user_session = req.header("SESSION");
-    var user_id = req.header("ID");
+    var user_session = req.header("session");
+    var user_id = req.header("id");
     for (let session in sessions) {
         if (session == user_id && sessions[session].session == user_session) {
             sessions[session].timestamp = Date.now();
@@ -125,11 +124,13 @@ app.get("/api/get_data", (req, res) => {
 });
 
 app.post("/api/update_data", (req, res) => {
-    var user_session = req.header("SESSION");
-    var user_id = req.header("ID");
+    var user_session = req.header("session");
+    var user_id = req.header("id");
     for (let session in sessions) {
-        if (session == user_id && sessions[session] == user_session) {
+        if (session == user_id && sessions[session].session == user_session) {
+            sessions[session].timestamp = Date.now();
             last_online = Date.now();
+            
             data = {
                 online: true,
                 data: req.body
