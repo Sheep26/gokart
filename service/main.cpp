@@ -237,7 +237,7 @@ void Threads::radio_t() {
     memset(&header, 0, sizeof(WAVHeader));
     memcpy(header.riff, "RIFF", 4);
     memcpy(header.wave, "WAVE", 4);
-    memcpy(header.fmt, "fmt");
+    memcpy(header.fmt, "fmt", 4);
     header.subchunk1_size = 16; // PCM format.
     header.audio_format = 1; // PCM format.
     header.num_channels = channels;
