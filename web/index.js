@@ -160,3 +160,20 @@ setInterval(check_sessions, 5000);
 
 const nms = new NodeMediaServer(config);
 nms.run();
+
+nms.on('preConnect', (id, args) => {
+    console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`);
+    var found = false;
+    
+    for (let session in sessions) {
+        if (session == args.user_id && sessions[session].session == args.session) {
+            found = true;
+            break
+        }
+    }
+
+    if (!found) {
+        let session = nms.getSession(id);
+        session.reject();
+    }
+});
