@@ -21,7 +21,7 @@ const transformationConfig = {
       hlsKeep: false,
     },
   ],
-  MediaRoot: "/media",
+  MediaRoot: "./media",
 };
 
 const config = {
@@ -35,7 +35,7 @@ const config = {
     http: {
         port: 8002,
         allow_origin: '*',
-        mediaroot: '/media'
+        mediaroot: './media'
     },
     trans: transformationConfig
 };
