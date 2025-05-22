@@ -12,7 +12,7 @@ fs.readFile('config.json', 'utf8', function (err, data) {
 });
 
 const transformationConfig = {
-  ffmpeg: "ffmpeg",
+  ffmpeg: "./ffmpeg",
   tasks: [
     {
       app: "live",
