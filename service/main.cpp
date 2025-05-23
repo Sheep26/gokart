@@ -4,7 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <cstring>
-#include <alsa/asoundlib.h> // Include ALSA library
+// #include <alsa/asoundlib.h> // Include ALSA library
 #include <cstdlib>
 
 #include "data.h"
@@ -18,15 +18,14 @@ using namespace std::this_thread;
 using namespace std::chrono;
 
 #define TELEMENTRY_PIN 10
-#define RADIO_BUTTON 11
-#define RADIO_SWITCH 12
-#define RADIO_PIN 7
+/*#define RADIO_BUTTON 11
+#define RADIO_SWITCH 12*/
 #define DC 5
 #define RST 6
 
 bool telementry_running = false;
 
-// WAV file header structure
+/*// WAV file header structure
 struct WAVHeader {
     char riff[4];            // "RIFF"
     uint32_t chunk_size;     // File size - 8 bytes
@@ -41,7 +40,7 @@ struct WAVHeader {
     uint16_t bits_per_sample;// Bits per sample
     char data[4];            // "data"
     uint32_t subchunk2_size; // Size of the data chunk
-};
+};*/
 
 struct Server { // I don't want to have to deal with memory realloc, lets use strings.
     string ip;
@@ -200,7 +199,7 @@ void Threads::display_t() {
     }
 }
 
-void Threads::radio_t() {
+/*void Threads::radio_t() {
     const char* device = "plughw:1,0"; // ALSA device (adjust later if needed)
     snd_pcm_t* handle;
     snd_pcm_hw_params_t* params;
@@ -318,7 +317,7 @@ void Threads::radio_t() {
     //fclose(output_file);
     snd_pcm_close(handle);
     //delete[] buffer;
-}
+}*/
 
 void start_telementry() {
     telementry_running = true;
@@ -354,19 +353,19 @@ int main(int argc, char **argv) {
 
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
-    pinMode(RADIO_BUTTON, INPUT);
-    pinMode(RADIO_PIN, OUTPUT);
+    /*pinMode(RADIO_BUTTON, INPUT);
+    pinMode(RADIO_SWITCH, OUTPUT);*/
 
     // Create display thread.
     thread display_thread(Threads::display_t);
 
     display_thread.detach();
 
-    // Check if radio enabled.
+    /*// Check if radio enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
         thread radio_thread(Threads::radio_t);
         radio_thread.detach();
-    }
+    }*/
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
