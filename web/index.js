@@ -11,20 +11,6 @@ fs.readFile('config.json', 'utf8', function (err, data) {
     json_config = JSON.parse(data);
 });
 
-const transformationConfig = {
-  ffmpeg: "./ffmpeg",
-  tasks: [
-    {
-      app: "live",
-      hls: true,
-      // hls_time=2:hls_list_size=3:
-      hlsFlags: "[hls_flags=delete_segments]",
-      hlsKeep: false,
-    },
-  ],
-  MediaRoot: "./media",
-};
-
 const config = {
     rtmp: {
         port: 1935,
@@ -37,7 +23,6 @@ const config = {
     http: {
         port: 8002,
         allow_origin: '*',
-        mediaroot: './media'
     },
     trans: transformationConfig
 };
@@ -178,7 +163,7 @@ setInterval(check_sessions, 5000);
 const nms = new NodeMediaServer(config);
 nms.run();
 
-nms.on('preConnect', (id, args) => {
+/*nms.on('preConnect', (id, args) => {
     console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`);
     var valid = false;
     
@@ -193,4 +178,4 @@ nms.on('preConnect', (id, args) => {
         let session = nms.getSession(id);
         session.reject();
     }
-});
+});*/
