@@ -18,29 +18,10 @@ using namespace std::this_thread;
 using namespace std::chrono;
 
 #define TELEMENTRY_PIN 10
-/*#define RADIO_BUTTON 11
-#define RADIO_SWITCH 12*/
 #define DC 5
 #define RST 6
 
 bool telementry_running = false;
-
-/*// WAV file header structure
-struct WAVHeader {
-    char riff[4];            // "RIFF"
-    uint32_t chunk_size;     // File size - 8 bytes
-    char wave[4];            // "WAVE"
-    char fmt[4];             // "fmt "
-    uint32_t subchunk1_size; // Size of the fmt chunk (16 for PCM)
-    uint16_t audio_format;   // Audio format (1 for PCM)
-    uint16_t num_channels;   // Number of channels
-    uint32_t sample_rate;    // Sample rate
-    uint32_t byte_rate;      // Byte rate = sample_rate * num_channels * bytes_per_sample
-    uint16_t block_align;    // Block align = num_channels * bytes_per_sample
-    uint16_t bits_per_sample;// Bits per sample
-    char data[4];            // "data"
-    uint32_t subchunk2_size; // Size of the data chunk
-};*/
 
 struct Server { // I don't want to have to deal with memory realloc, lets use strings.
     string ip;
@@ -199,126 +180,6 @@ void Threads::display_t() {
     }
 }
 
-/*void Threads::radio_t() {
-    const char* device = "plughw:1,0"; // ALSA device (adjust later if needed)
-    snd_pcm_t* handle;
-    snd_pcm_hw_params_t* params;
-    unsigned int rate = 44100; // Sample rate
-    int channels = 1;          // Mono
-    snd_pcm_uframes_t frames = 32; // Frames per period
-    int buffer_size = frames * channels * 2; // 2 bytes per sample (16-bit audio)
-    //char* buffer = new char[buffer_size];
-    bool recording_last = false;
-    bool recording = false;
-
-    // Open PCM device for recording
-    if (snd_pcm_open(&handle, device, SND_PCM_STREAM_CAPTURE, 0) < 0) {
-        cerr << "Error: Unable to open PCM device." << endl;
-        return;
-    }
-
-    // Allocate hardware parameters object
-    snd_pcm_hw_params_malloc(&params);
-    snd_pcm_hw_params_any(handle, params);
-
-    // Set hardware parameters
-    snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
-    snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
-    snd_pcm_hw_params_set_channels(handle, params, channels);
-    snd_pcm_hw_params_set_rate_near(handle, params, &rate, nullptr);
-    snd_pcm_hw_params_set_period_size_near(handle, params, &frames, nullptr);
-
-    // Apply hardware parameters
-    if (snd_pcm_hw_params(handle, params) < 0) {
-        cerr << "Error: Unable to set hardware parameters." << endl;
-        snd_pcm_hw_params_free(params);
-        snd_pcm_close(handle);
-        return;
-    }
-
-    snd_pcm_hw_params_free(params); // Free hardware parameters object
-
-    WAVHeader header;
-    memset(&header, 0, sizeof(WAVHeader));
-    memcpy(header.riff, "RIFF", 4);
-    memcpy(header.wave, "WAVE", 4);
-    memcpy(header.fmt, "fmt", 4);
-    header.subchunk1_size = 16; // PCM format.
-    header.audio_format = 1; // PCM format.
-    header.num_channels = channels;
-    header.sample_rate = rate;
-    header.bits_per_sample = 16;
-    header.byte_rate = rate * channels * (header.bits_per_sample / 8);
-    memcpy(header.data, "data", 4);
-    header.subchunk2_size = 0; // Will update later.
-    header.chunk_size = 36 + header.subchunk2_size; // Will update later.
-
-    // Recording loop
-    size_t total_data_size = 0;
-    FILE* output_file = NULL;
-    char* buffer = new char[buffer_size];
-
-    while (true) {
-        recording = (digitalRead(RADIO_BUTTON) == HIGH);
-        if (recording) {
-            if (!recording_last) {
-                cout << "Recording started." << endl;
-                buffer = new char[buffer_size];
-
-                // Open output file for saving recorded audio
-                output_file = fopen("/tmp/mic_recording.wav", "wb");
-                if (!output_file) {
-                    cerr << "Error: Unable to open output file for recording." << endl;
-                    snd_pcm_close(handle);
-                    buffer = new char[buffer_size];
-                    return;
-                }
-            }
-
-            int rc = snd_pcm_readi(handle, buffer, frames);
-            if (rc == -EPIPE) {
-                // Buffer overrun
-                cerr << "Warning: Buffer overrun occurred." << endl;
-                snd_pcm_prepare(handle);
-            } else if (rc < 0) {
-                cerr << "Error: Failed to read from PCM device: " << snd_strerror(rc) << endl;
-                break;
-            } else if (rc != (int)frames) {
-                cerr << "Warning: Short read, only " << rc << " frames captured." << endl;
-            }
-
-            // Write captured audio to file
-            size_t written = fwrite(buffer, 1, buffer_size, output_file);
-            total_data_size += written;
-        } else if (recording_last) {
-            cout << "Recording stopped." << endl;
-            header.subchunk2_size = total_data_size;
-            header.chunk_size = 36 + header.subchunk2_size;
-            fseek(output_file, 0, SEEK_SET);
-            fwrite(&header, sizeof(WAVHeader), 1, output_file);
-            fclose(output_file);
-
-            buffer = new char[buffer_size];
-
-            // Send radio message.
-            system("/usr/bin/pi_fm_rds -freq 106.1 -audio /tmp/mic_recording.wav");
-
-            // Cleanup.
-            system("rm /tmp/mic_recording.wav");
-        }
-
-        recording_last = recording;
-        if (!recording) sleep_for(milliseconds(50));
-    }
-
-    cout << "Recording stopped." << endl;
-
-    // Cleanup
-    //fclose(output_file);
-    snd_pcm_close(handle);
-    //delete[] buffer;
-}*/
-
 void start_telementry() {
     telementry_running = true;
 
@@ -353,19 +214,11 @@ int main(int argc, char **argv) {
 
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
-    /*pinMode(RADIO_BUTTON, INPUT);
-    pinMode(RADIO_SWITCH, OUTPUT);*/
 
     // Create display thread.
     thread display_thread(Threads::display_t);
 
     display_thread.detach();
-
-    /*// Check if radio enabled.
-    if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        thread radio_thread(Threads::radio_t);
-        radio_thread.detach();
-    }*/
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
