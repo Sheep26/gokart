@@ -179,16 +179,16 @@ nms.run();
 
 nms.on('preConnect', (id, args) => {
     console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`);
-    var found = false;
+    var valid = false;
     
     for (let session in sessions) {
         if (session == args.user_id && sessions[session].session == args.session) {
-            found = true;
+            valid = true;
             break
         }
     }
 
-    if (!found) {
+    if (!valid) {
         let session = nms.getSession(id);
         session.reject();
     }
