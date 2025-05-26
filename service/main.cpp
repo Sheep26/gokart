@@ -140,7 +140,7 @@ void Threads::ffmpeg_t() {
     telementry_running = false;
     overlay_thread.detach();
 
-    // Remove the named pipe after use
+    // Remove the named pipe after use.
     system("rm -f /tmp/ffmpeg_overlay.txt");
 
     if (ret != 0) {
