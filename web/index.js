@@ -24,7 +24,6 @@ const config = {
         port: 8002,
         allow_origin: '*',
     },
-    trans: transformationConfig
 };
 
 // Encode and parse data.
