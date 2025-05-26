@@ -107,16 +107,45 @@ void Threads::data_t() {
 void Threads::ffmpeg_t() {
     cout << "Starting ffmpeg live video feed.";
 
-    // Start ffmpeg.
-    string cmd = "ffmpeg -f v4l2 -i /dev/video0 -f flv rtmp://" + server.ip +
-                  ":1935/live/stream";
+    // Create a named pipe for ffmpeg drawtext reloading
+    system("mkfifo /tmp/ffmpeg_overlay.txt");
+
+    // Start a thread to update the overlay text file with telemetry
+    std::thread overlay_thread([]() {
+        while (telementry_running) {
+            char overlay[128];
+            snprintf(overlay, sizeof(overlay), "SPEED:%dkmph RPM:%d PWR:%dw THR:%d%", data.speed.current, data.rpm.current, data.power.current, data.throttle.current);
+            FILE* f = fopen("/tmp/ffmpeg_overlay.txt", "w");
+            if (f) {
+                fprintf(f, "%s", overlay);
+                fclose(f);
+            }
+
+            // Sleep for 100ms to allow ffmpeg to reload the file
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    });
+
+    // ffmpeg command with drawtext filter using reloading file
+    std::string cmd =
+        "ffmpeg -f v4l2 -i /dev/video0 "
+        "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
+        "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=32:fontcolor=white:box=1:boxcolor=black@0.5\" "
+        "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
+    
+    cout << "Running command: " << cmd << endl;
+
     int ret = system(cmd.c_str());
+
+    telementry_running = false;
+    overlay_thread.detach();
+
+    // Remove the named pipe after use
+    system("rm -f /tmp/ffmpeg_overlay.txt");
 
     if (ret != 0) {
         cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
-    
-    telementry_running = false;
 }
 
 void Threads::display_t() {

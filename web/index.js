@@ -167,7 +167,7 @@ nms.on('preConnect', (id, args) => {
     var valid = false;
     
     for (let session in sessions) {
-        if (session == args.user_id && sessions[session].session == args.session) {
+        if (session == args.id && sessions[session].session == args.session) {
             valid = true;
             break
         }
