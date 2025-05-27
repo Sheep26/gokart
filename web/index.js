@@ -7,7 +7,12 @@ var sessions = {}
 const app = express();
 
 fs.readFile('config.json', 'utf8', function (err, data) {
-    if (err) throw err;
+    if (err) {
+        console.error("Error reading config file:", err);
+        process.exit(1);
+    }
+
+    // Parse the JSON data
     json_config = JSON.parse(data);
 });
 
