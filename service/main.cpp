@@ -114,7 +114,7 @@ void Threads::ffmpeg_t() {
     std::thread overlay_thread([]() {
         while (telementry_running) {
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "SPD:%dkmph RPM:%d PWR:%dw THR:%d%", data.speed.current, data.rpm.current, data.power.current, data.throttle.current);
+            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nThrottle:%d%", data.speed.current, data.rpm.current, data.power.current, data.throttle.current);
             FILE* f = fopen("/tmp/ffmpeg_overlay.txt", "w");
             if (f) {
                 fprintf(f, "%s", overlay);
