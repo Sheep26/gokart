@@ -130,7 +130,7 @@ void Threads::ffmpeg_t() {
     string cmd =
         "ffmpeg -f v4l2 -i /dev/video0 "
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
-        "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.5\" "
+        "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.75\" "
         "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
     
     cout << "Running command: " << cmd << endl;
