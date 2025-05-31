@@ -123,7 +123,7 @@ void Threads::data_t() {
                 "throttle_max": {}
             })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
             true, headers)) {
-            std::cerr << "Error: Failed to send telemetry data." << endl;
+            std::cerr << "Error: Failed to send telemetry data." << std::endl;
         } else {
             telementry_running = false;
             return;
@@ -165,7 +165,7 @@ void Threads::ffmpeg_t() {
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.75\" "
         "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
     
-    cout << "Running command: " << cmd << endl;
+    cout << "Running command: " << cmd << std::endl;
 
     int ret = system(cmd.c_str());
 
@@ -174,7 +174,7 @@ void Threads::ffmpeg_t() {
     system("rm -f /tmp/ffmpeg_overlay.txt");
 
     if (ret != 0) {
-        std::cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
+        std::cerr << "Error: ffmpeg command failed with exit code " << ret << std::endl;
     }
 }
 
@@ -258,17 +258,17 @@ void start_telementry() {
 }
 
 int main(int argc, char **argv) {
-    std::cout << "Starting gokart service." << endl;
+    std::cout << "Starting gokart service." << std::endl;
 
     // Configure server.
-    std::cout << "Reading environment varibles" << endl;
+    std::cout << "Reading environment varibles" << std::endl;
     server.ip = (string) getenv("SERVERIP");
     server.username = (string) getenv("SERVERUSERNAME");
     server.passwd = (string) getenv("SERVERPASSWD");
-    std::cout << "Server configured at " << server.ip << endl;
-    std::cout << "Waiting for network" << endl;
+    std::cout << "Server configured at " << server.ip << std::endl;
+    std::cout << "Waiting for network" << std::endl;
     std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s" << std::endl;
-    std::cout << "attempting login" << endl;
+    std::cout << "attempting login" << std::endl;
 
     // Login.
     struct curl_slist* login_headers = nullptr;
@@ -280,13 +280,13 @@ int main(int argc, char **argv) {
         server.id = parts[0];
         server.session = parts[1];
     } else {
-        std::cerr << "Login failed" << endl;
+        std::cerr << "Login failed" << std::endl;
     }
 
     // Setup GPIO
-    std::cout << "Initalizing GPIO" << endl;
+    std::cout << "Initalizing GPIO" << std::endl;
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
-        std::cerr << "Error: Failed to initialize GPIO." << endl;
+        std::cerr << "Error: Failed to initialize GPIO." << std::endl;
         return -1;
     }
 
@@ -300,8 +300,8 @@ int main(int argc, char **argv) {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        std::cout << "Waiting for network." << endl;
-        std::cout << "Network connected, took " << Networking::wait_for_network() << "s" << endl;
+        std::cout << "Waiting for network." << std::endl;
+        std::cout << "Network connected, took " << Networking::wait_for_network() << "s" << std::endl;
     
         while (true) {
             if (Networking::check_network() && !telementry_running) {
