@@ -19,7 +19,7 @@ bool Networking::send_http_request(const string& url, const string& body, const 
         } else {
             std::cerr << "Error initializing CURL." << endl;
         }
-    catch (...) {
+    } catch (...) {
         return false;
     }
 }
