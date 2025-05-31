@@ -22,7 +22,7 @@ public:
     static void set_wifi(bool enabled);
     static void scan_wifi();
     static void connect_wifi(std::string ssid, std::string passwd);
-    static HTTP_Request send_http_request(const std::string& url, const std::string& body, const CURLoption method, const struct curl_slist* headers);
+    static HTTP_Request send_http_request(const std::string& url, const std::string& body, const bool is_post, const struct curl_slist* headers);
 };
 
 #endif
