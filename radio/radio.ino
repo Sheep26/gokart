@@ -43,10 +43,11 @@ void setup() {
     Serial.println("LoRa init failed. Check wiring.");
     while (true); // Stop here if failed
   }
-
-  LoRa.setSpreadingFactor(7);      // Low spreading factor (faster, less range)
-  LoRa.setSignalBandwidth(125E3);  // Wide bandwidth (faster, less range)
-  LoRa.setCodingRate4(5);          // Minimal error correction
+  
+  LoRa.setSpreadingFactor(9);      // Good compromise for ~1 km
+  LoRa.setSignalBandwidth(125E3);  // Wide enough for 4kHz audio
+  LoRa.setCodingRate4(5);          // Faster with basic error correction
+  LoRa.setPreambleLength(8);       // Default preamble
 }
 
 void loop() {
