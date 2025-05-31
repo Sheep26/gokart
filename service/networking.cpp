@@ -68,7 +68,7 @@ bool Networking::check_network() {
     // Trim any trailing whitespace (e.g., newline)
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    return result.find("connected") != string::npos;
+    return result.find("connected") != std::string::npos;
 }
 
 bool Networking::wifi_enabled() {
