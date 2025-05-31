@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <chrono>
 #include <thread>
+#include <cstring>
 #include <curl/curl.h>
 
 using namespace std;

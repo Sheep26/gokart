@@ -3,8 +3,6 @@
 #include <wiringPiSPI.h>
 #include <thread>
 #include <chrono>
-#include <cstring>
-#include <cstdlib>
 #include <atomic>
 
 #include "data.h"
