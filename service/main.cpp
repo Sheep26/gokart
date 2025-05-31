@@ -45,6 +45,30 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
 
 Server server;
 
+void send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header) {
+    CURL* curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, method, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body.c_str()));
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        CURLcode res = curl_easy_perform(curl);
+    
+        // Clean up memory.
+        curl_easy_cleanup(curl);
+        
+        if (res == CURLE_OK) {
+            cout << "Response:\n" << endl;
+        } else {
+            cerr << "Request failed: " << curl_easy_strerror(res) << endl;
+        }
+    } else {
+        cerr << "Error initializing CURL." << endl;
+    }
+}
+
 void Threads::data_t() {
     // Send data to server every 100ms
     try {
@@ -53,7 +77,7 @@ void Threads::data_t() {
                 return;
             }
 
-            CURL* curl = curl_easy_init();
+            /*CURL* curl = curl_easy_init();
     
             if (curl) {
                 string body = fmt::format(R"({
@@ -93,8 +117,30 @@ void Threads::data_t() {
                 } else {
                     cerr << "Request failed: " << curl_easy_strerror(res) << endl;
                 }
-            }
-    
+            }*/
+
+            // Set headers
+            struct curl_slist* headers = nullptr;
+            headers = curl_slist_append(headers, ("id: " + server.id).c_str());
+            headers = curl_slist_append(headers, ("session: " + server.session).c_str());
+
+            send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
+                    "speed": {},
+                    "speed_avg": {},
+                    "speed_max": {},
+                    "rpm": {},
+                    "rpm_avg": {},
+                    "rpm_max": {},
+                    "power": {},
+                    "power_avg": {},
+                    "power_max": {},
+                    "throttle": {},
+                    "throttle_avg": {},
+                    "throttle_max": {}
+                })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
+                CURLOPT_POST, headers);
+            
+            // Sleep for 100ms
             sleep_for(milliseconds(100));
         }
     }
