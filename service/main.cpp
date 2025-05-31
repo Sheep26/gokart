@@ -204,8 +204,13 @@ void Threads::display_t() {
         digitalWrite(DC, LOW);
         wiringPiSPIDataRW(0, poscode, 3);
         digitalWrite(DC, HIGH);
-        wiringPiSPIDataRW(0, oled.pix_buf, 1024);
 
+        digitalWrite(DC, LOW);
+        wiringPiSPIDataRW(0, oled.pix_buf, 1024);
+        digitalWrite(DC, HIGH);
+
+        // Sleep for 33ms to achieve ~30 FPS
+        // This is a rough approximation, actual frame rate may vary.
         sleep_for(milliseconds(33));
     }
 }
