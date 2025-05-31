@@ -61,7 +61,7 @@ bool Networking::check_network() {
     // Close the pipe
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        std::cerr << "Error: nmcli command failed with return code " << return_code << endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << std::endl;
         return false;
     }
 
@@ -74,7 +74,7 @@ bool Networking::check_network() {
 bool Networking::wifi_enabled() {
     FILE* pipe = popen("nmcli radio wifi", "r");
     if (!pipe) {
-        std::cerr << "Error: Failed to open pipe for Wi-Fi status check." << endl;
+        std::cerr << "Error: Failed to open pipe for Wi-Fi status check." << std::endl;
         return false;
     }
 
@@ -89,7 +89,7 @@ bool Networking::wifi_enabled() {
     // Close the pipe and check the return code
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        std::cerr << "Error: nmcli command failed with return code " << return_code << endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << std::endl;
         return false;
     }
 
@@ -107,7 +107,7 @@ void Networking::set_wifi(bool enabled) {
     if (pipe) {
         pclose(pipe);
     } else{
-        std::cerr << "Error: Failed to execute command.";
+        std::cerr << "Error: Failed to execute command." << std::endl;
     }
 }
 
@@ -127,17 +127,17 @@ void Networking::scan_wifi() {
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        std::cerr << "Error: Failed to execute Wi-Fi scan command." << endl;
+        std::cerr << "Error: Failed to execute Wi-Fi scan command." << std::endl;
     }
 }
 
-void Networking::connect_wifi(string ssid, string passwd) {
+void Networking::connect_wifi(std::string ssid, std::string passwd) {
     std::string cmd = "raspi-config nonint do_wifi_ssid_passphrase" + ssid + " " + passwd;
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << endl;
+        std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << std::endl;
     }
 }

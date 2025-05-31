@@ -20,11 +20,11 @@
 std::atomic<bool> telementry_running;
 
 struct Server { // I don't want to have to deal with memory realloc, lets use strings.
-    string ip;
-    string username;
-    string passwd;
-    string session;
-    string id;
+    std::string ip;
+    std::string username;
+    std::string passwd;
+    std::string session;
+    std::string id;
 };
 
 /*
@@ -41,7 +41,7 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
 
 Server server;
 
-std::vector<std::string> split_string(const std::string& input, char delimiter) {
+std::vector<std::string> split_string(const std::string& input, const char* delimiter) {
     std::vector<std::string> tokens;
     std::stringstream ss(input);
     std::string item;
@@ -159,13 +159,13 @@ void Threads::ffmpeg_t() {
     overlay_thread.detach();
 
     // ffmpeg command with drawtext filter using reloading file
-    string cmd =
+    std::string cmd =
         "ffmpeg -f v4l2 -i /dev/video0 "
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.75\" "
         "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
     
-    cout << "Running command: " << cmd << std::endl;
+    std::cout << "Running command: " << cmd << std::endl;
 
     int ret = system(cmd.c_str());
 
@@ -249,8 +249,8 @@ void start_telementry() {
     telementry_running = true;
 
     // Create threads
-    thread ffmpeg_thread(Threads::ffmpeg_t);
-    thread data_thread(Threads::data_t);
+    std::thread ffmpeg_thread(Threads::ffmpeg_t);
+    std::thread data_thread(Threads::data_t);
 
     // Detach threads to allow independent execution
     ffmpeg_thread.detach();
@@ -262,9 +262,9 @@ int main(int argc, char **argv) {
 
     // Configure server.
     std::cout << "Reading environment varibles" << std::endl;
-    server.ip = (string) getenv("SERVERIP");
-    server.username = (string) getenv("SERVERUSERNAME");
-    server.passwd = (string) getenv("SERVERPASSWD");
+    server.ip = (std::string) getenv("SERVERIP");
+    server.username = (std::string) getenv("SERVERUSERNAME");
+    server.passwd = (std::string) getenv("SERVERPASSWD");
     std::cout << "Server configured at " << server.ip << std::endl;
     std::cout << "Waiting for network" << std::endl;
     std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s" << std::endl;
@@ -272,8 +272,8 @@ int main(int argc, char **argv) {
 
     // Login.
     struct curl_slist* login_headers = nullptr;
-    login_headers = curl_slist_append(headers, ("username: " + server.username).c_str());
-    login_headers = curl_slist_append(headers, ("passwd: " + server.passwd).c_str());
+    login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
+    login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
     HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
     if (login_request.status_code == 200) {
         std::vector<std::string> parts = split_string(login_request.text, ",");
@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
     pinMode(TELEMENTRY_PIN, INPUT);
 
     // Create display thread.
-    thread display_thread(Threads::display_t);
+    std::display_thread(Threads::display_t);
 
     display_thread.detach();
 
