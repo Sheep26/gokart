@@ -33,6 +33,12 @@
 |                    | ANT         | Antenna   | Connect proper antenna                     |
 */
 
+const int sampleRate = 4000;          // 4 kHz
+const int bufferSize = 40;            // 10 ms of audio
+uint8_t audioBuffer[bufferSize];
+unsigned long lastSampleMicros = 0;
+int bufferIndex = 0;
+
 void setup() {
   Serial.begin(115200);
   pinMode(TOGGLE_PIN, INPUT_PULLUP);
@@ -51,21 +57,29 @@ void setup() {
 }
 
 void loop() {
-    if (digitalRead(TOGGLE_PIN) == HIGH) {
-        // Transmit audio sample
-        int sample = analogRead(MIC_PIN) >> 4; // 0–4095 → 0–255
+  if (digitalRead(TOGGLE_PIN) == HIGH) {
+    unsigned long currentMicros = micros();
+    if (currentMicros - lastSampleMicros >= 1000000UL / sampleRate) {
+      lastSampleMicros = currentMicros;
+
+      int sample = analogRead(MIC_PIN) >> 4; // 12-bit to 8-bit
+      audioBuffer[bufferIndex++] = (uint8_t)sample;
+
+      if (bufferIndex >= bufferSize) {
         LoRa.beginPacket();
-        LoRa.write(sample);
-        LoRa.endPacket(true); // async
-        delayMicroseconds(250); // ~4kHz
-    } else {
-        // Check for received packet
-        int packetSize = LoRa.parsePacket();
-        if (packetSize > 0) {
-            while (LoRa.available()) {
-                uint8_t sample = LoRa.read();
-                dacWrite(SPEAKER_PIN, sample);
-            }
-        }
+        LoRa.write(audioBuffer, bufferSize);
+        LoRa.endPacket(true);
+        bufferIndex = 0;
+      }
     }
+  } else {
+      // Check for received packet
+    int packetSize = LoRa.parsePacket();
+    if (packetSize > 0) {
+      while (LoRa.available()) {
+        uint8_t sample = LoRa.read();
+        dacWrite(SPEAKER_PIN, sample);
+      }
+    }
+  }
 }
