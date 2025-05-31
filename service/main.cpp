@@ -189,7 +189,8 @@ void Threads::display_t() {
     
     // init
     digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, initcode, 28);
+    wiringPiSPIDataRW(0, initcode, 28); // Send init commands, 28 bytes long
+    digitalWrite(DC, HIGH);
 
     while (true) {
         // Oled data.
