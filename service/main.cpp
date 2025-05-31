@@ -4,6 +4,8 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <sstream>
+#include <vector>
 
 #include "data.h"
 #include "networking.h"
@@ -38,6 +40,18 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
 */
 
 Server server;
+
+std::vector<std::string> split_string(const std::string& input, char delimiter) {
+    std::vector<std::string> tokens;
+    std::stringstream ss(input);
+    std::string item;
+    
+    while (std::getline(ss, item, delimiter)) {
+        tokens.push_back(item);
+    }
+    
+    return tokens;
+}
 
 void Threads::data_t() {
     // Send data to server every 100ms
@@ -108,7 +122,7 @@ void Threads::data_t() {
                 "throttle_avg": {},
                 "throttle_max": {}
             })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
-            CURLOPT_POST, headers)) {
+            true, headers)) {
             std::cerr << "Error: Failed to send telemetry data." << endl;
         } else {
             telementry_running = false;
@@ -252,15 +266,27 @@ int main(int argc, char **argv) {
     server.username = (string) getenv("SERVERUSERNAME");
     server.passwd = (string) getenv("SERVERPASSWD");
     std::cout << "Server configured at " << server.ip << endl;
+    std::cout << "Waiting for network" << endl;
+    std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s" << std::endl;
     std::cout << "attempting login" << endl;
 
     // Login.
-    
+    struct curl_slist* login_headers = nullptr;
+    login_headers = curl_slist_append(headers, ("username: " + server.username).c_str());
+    login_headers = curl_slist_append(headers, ("passwd: " + server.passwd).c_str());
+    HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, CURLOPT_GET, login_headers);
+    if (login_request.status_code == 200) {
+        std::vector<std::string> parts = split_string(login_request.text, ",");
+        server.id = parts[0];
+        server.session = parts[1];
+    } else {
+        std::cerr << "Login failed" << endl;
+    }
 
     // Setup GPIO
     std::cout << "Initalizing GPIO" << endl;
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
-        cerr << "Error: Failed to initialize GPIO." << endl;
+        std::cerr << "Error: Failed to initialize GPIO." << endl;
         return -1;
     }
 

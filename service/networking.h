@@ -9,7 +9,10 @@
 #include <cstring>
 #include <curl/curl.h>
 
-using namespace std;
+struct HTTP_Request {
+    std::string text;
+    long status_code;
+}
 
 class Networking {
 public:
@@ -19,7 +22,7 @@ public:
     static void set_wifi(bool enabled);
     static void scan_wifi();
     static void connect_wifi(string ssid, string passwd);
-    static bool send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* headers);
+    static HTTP_Request send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* headers);
 };
 
 #endif

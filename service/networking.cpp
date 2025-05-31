@@ -1,40 +1,57 @@
 #include "./networking.h"
 
-bool Networking::send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* headers) {
-    try {
-        CURL* curl = curl_easy_init();
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, method, 1L);
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body.c_str()));
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
+    userp->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
 
-            CURLcode res = curl_easy_perform(curl);
-        
-            // Clean up memory.
-            curl_easy_cleanup(curl);
-            
-            return res == CURLE_OK;
-        } else {
-            std::cerr << "Error initializing CURL." << endl;
+HTTP_Request Networking::send_http_request(const std::string& url, const std::string& body, bool is_post, const struct curl_slist* headers) {
+    CURL* curl = curl_easy_init();
+    HTTP_Request response = {"", 0};
+
+    if (curl) {
+        std::string readBuffer;
+
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        if (is_post) {
+            curl_easy_setopt(curl, CURLOPT_POST, 1L);
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
         }
-    } catch (...) {
-        return false;
+
+        CURLcode res = curl_easy_perform(curl);
+
+        if (res == CURLE_OK) {
+            long http_code = 0;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+            response.status_code = http_code;
+            response.text = readBuffer;
+        } else {
+            std::cerr << "CURL error: " << curl_easy_strerror(res) << std::endl;
+            response.status_code = -1;
+        }
+
+        curl_easy_cleanup(curl);
+    } else {
+        std::cerr << "Error initializing CURL." << std::endl;
+        response.status_code = -1;
     }
 
-    return false;
+    return response;
 }
 
 bool Networking::check_network() {
     FILE* pipe = popen("nmcli device status | grep wlan", "r");
     if (!pipe) {
-        cerr << "Error: Failed to open pipe for network check." << std::endl;
+        std::cerr << "Error: Failed to open pipe for network check." << std::endl;
         return false;
     }
 
     char buffer[128];
-    string result = "";
+    std::string result = "";
 
     // Read the output of the command
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
@@ -57,12 +74,12 @@ bool Networking::check_network() {
 bool Networking::wifi_enabled() {
     FILE* pipe = popen("nmcli radio wifi", "r");
     if (!pipe) {
-        cerr << "Error: Failed to open pipe for Wi-Fi status check." << endl;
+        std::cerr << "Error: Failed to open pipe for Wi-Fi status check." << endl;
         return false;
     }
 
     char buffer[128];
-    string result = "";
+    std::string result = "";
 
     // Read the output of the command
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
@@ -83,7 +100,7 @@ bool Networking::wifi_enabled() {
 }
 
 void Networking::set_wifi(bool enabled) {
-    string cmd = "nmcli radio wifi ";
+    std::string cmd = "nmcli radio wifi ";
     cmd += enabled ? "on" : "off";
     FILE* pipe = popen(cmd.c_str(), "r");
 
@@ -115,7 +132,7 @@ void Networking::scan_wifi() {
 }
 
 void Networking::connect_wifi(string ssid, string passwd) {
-    string cmd = "raspi-config nonint do_wifi_ssid_passphrase" + ssid + " " + passwd;
+    std::string cmd = "raspi-config nonint do_wifi_ssid_passphrase" + ssid + " " + passwd;
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
