@@ -47,11 +47,11 @@ Server server;
 
 void Threads::data_t() {
     // Send data to server every 100ms
-    try {
-        while (true) {
-            if (!Networking::check_network() || !telementry_running) {
-                return;
-            }
+    
+    while (true) {
+        if (!Networking::check_network() || !telementry_running) {
+            return;
+        }
 
             /*CURL* curl = curl_easy_init();
     
@@ -96,33 +96,33 @@ void Threads::data_t() {
             }*/
 
             // Set headers
-            struct curl_slist* headers = nullptr;
-            headers = curl_slist_append(headers, ("id: " + server.id).c_str());
-            headers = curl_slist_append(headers, ("session: " + server.session).c_str());
+        struct curl_slist* headers = nullptr;
+        headers = curl_slist_append(headers, ("id: " + server.id).c_str());
+        headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-            Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
-                    "speed": {},
-                    "speed_avg": {},
-                    "speed_max": {},
-                    "rpm": {},
-                    "rpm_avg": {},
-                    "rpm_max": {},
-                    "power": {},
-                    "power_avg": {},
-                    "power_max": {},
-                    "throttle": {},
-                    "throttle_avg": {},
-                    "throttle_max": {}
-                })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
-                CURLOPT_POST, headers);
-            
-            // Sleep for 100ms
-            sleep_for(milliseconds(100));
+        if (!Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
+                "speed": {},
+                "speed_avg": {},
+                "speed_max": {},
+                "rpm": {},
+                "rpm_avg": {},
+                "rpm_max": {},
+                "power": {},
+                "power_avg": {},
+                "power_max": {},
+                "throttle": {},
+                "throttle_avg": {},
+                "throttle_max": {}
+            })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
+            CURLOPT_POST, headers)) {
+                cerr << "Error: Failed to send telemetry data." << endl;
+        } else {
+            telementry_running = false;
+            return;
         }
-    }
-    catch (...) {
-        telementry_running = false;
-        return;
+ 
+        // Sleep for 100ms
+        sleep_for(milliseconds(100));
     }
 }
 
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
     cout << "attempting login" << endl;
 
     // Login.
-    server.session = Networking::login(server.ip, server.username, server.passwd);
+    
 
     // Setup GPIO
     cout << "Initalizing GPIO" << endl;
