@@ -44,9 +44,9 @@ void setup() {
     while (true); // Stop here if failed
   }
 
-  // Optional: Improve range with lower bandwidth
-  LoRa.setSpreadingFactor(7);           // 6–12 (higher = more range, less data rate)
-  LoRa.setSignalBandwidth(62.5E3);      // Narrower = more range, less speed
+  LoRa.setSpreadingFactor(7);      // Low spreading factor (faster, less range)
+  LoRa.setSignalBandwidth(125E3);  // Wide bandwidth (faster, less range)
+  LoRa.setCodingRate4(5);          // Minimal error correction
 }
 
 void loop() {
