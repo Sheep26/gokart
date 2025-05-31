@@ -54,6 +54,7 @@ void setup() {
   LoRa.setSignalBandwidth(125E3);  // Wide enough for 4kHz audio
   LoRa.setCodingRate4(5);          // Faster with basic error correction
   LoRa.setPreambleLength(8);       // Default preamble
+  LoRa.setTxPower(17);             // Max power
 }
 
 void loop() {
