@@ -109,7 +109,7 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-        if (!Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
+        if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
                 "speed": {},
                 "speed_avg": {},
                 "speed_max": {},
@@ -123,9 +123,8 @@ void Threads::data_t() {
                 "throttle_avg": {},
                 "throttle_max": {}
             })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
-            true, headers)) {
+            true, headers).status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data." << std::endl;
-        } else {
             telementry_running = false;
             return;
         }
@@ -136,7 +135,7 @@ void Threads::data_t() {
 }
 
 void Threads::ffmpeg_t() {
-    cout << "Starting ffmpeg live video feed.";
+    std::cout << "Starting ffmpeg live video feed.";
 
     // Create a named pipe for ffmpeg drawtext reloading
     system("mkfifo /tmp/ffmpeg_overlay.txt");
