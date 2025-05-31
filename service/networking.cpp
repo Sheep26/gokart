@@ -1,6 +1,6 @@
 #include "./networking.h"
 
-bool Networking::send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header) {
+bool Networking::send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* headers) {
     try {
         CURL* curl = curl_easy_init();
         if (curl) {

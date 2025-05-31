@@ -17,7 +17,7 @@ public:
     static void set_wifi(bool enabled);
     static void scan_wifi();
     static void connect_wifi(string ssid, string passwd);
-    static bool send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header);
+    static bool send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* headers);
 };
 
 #endif

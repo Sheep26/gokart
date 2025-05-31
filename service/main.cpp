@@ -17,7 +17,7 @@
 #define DC 5
 #define RST 6
 
-std::atomic<bool> telementry_running = false;
+std::atomic<bool> telementry_running;
 
 struct Server { // I don't want to have to deal with memory realloc, lets use strings.
     string ip;
