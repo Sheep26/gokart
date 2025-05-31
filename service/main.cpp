@@ -4,8 +4,8 @@
 #include <thread>
 #include <chrono>
 #include <cstring>
-// #include <alsa/asoundlib.h> // Include ALSA library
 #include <cstdlib>
+#include <atomic>
 
 #include "data.h"
 #include "networking.h"
@@ -13,15 +13,11 @@
 #include "ssd1309.h"
 #include "OledScreen.h"
 
-using namespace std;
-using namespace std::this_thread;
-using namespace std::chrono;
-
 #define TELEMENTRY_PIN 10
 #define DC 5
 #define RST 6
 
-bool telementry_running = false;
+std::atomic<bool> telementry_running = false;
 
 struct Server { // I don't want to have to deal with memory realloc, lets use strings.
     string ip;
@@ -115,14 +111,14 @@ void Threads::data_t() {
                 "throttle_max": {}
             })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
             CURLOPT_POST, headers)) {
-                cerr << "Error: Failed to send telemetry data." << endl;
+            std::cerr << "Error: Failed to send telemetry data." << endl;
         } else {
             telementry_running = false;
             return;
         }
  
         // Sleep for 100ms
-        sleep_for(milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
@@ -148,6 +144,8 @@ void Threads::ffmpeg_t() {
         }
     });
 
+    overlay_thread.detach();
+
     // ffmpeg command with drawtext filter using reloading file
     string cmd =
         "ffmpeg -f v4l2 -i /dev/video0 "
@@ -160,13 +158,11 @@ void Threads::ffmpeg_t() {
     int ret = system(cmd.c_str());
 
     telementry_running = false;
-    overlay_thread.detach();
-
     // Remove the named pipe after use.
     system("rm -f /tmp/ffmpeg_overlay.txt");
 
     if (ret != 0) {
-        cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
+        std::cerr << "Error: ffmpeg command failed with exit code " << ret << endl;
     }
 }
 
@@ -206,7 +202,7 @@ void Threads::display_t() {
     
     // reset
     digitalWrite(RST,  LOW);
-    sleep_for(milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     digitalWrite(RST,  HIGH);
     
     // init
@@ -233,7 +229,7 @@ void Threads::display_t() {
 
         // Sleep for 33ms to achieve ~30 FPS
         // This is a rough approximation, actual frame rate may vary.
-        sleep_for(milliseconds(33));
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
 }
 
@@ -250,21 +246,21 @@ void start_telementry() {
 }
 
 int main(int argc, char **argv) {
-    cout << "Starting gokart service." << endl;
+    std::cout << "Starting gokart service." << endl;
 
     // Configure server.
-    cout << "Reading environment varibles" << endl;
+    std::cout << "Reading environment varibles" << endl;
     server.ip = (string) getenv("SERVERIP");
     server.username = (string) getenv("SERVERUSERNAME");
     server.passwd = (string) getenv("SERVERPASSWD");
-    cout << "Server configured at " << server.ip << endl;
-    cout << "attempting login" << endl;
+    std::cout << "Server configured at " << server.ip << endl;
+    std::cout << "attempting login" << endl;
 
     // Login.
     
 
     // Setup GPIO
-    cout << "Initalizing GPIO" << endl;
+    std::cout << "Initalizing GPIO" << endl;
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         cerr << "Error: Failed to initialize GPIO." << endl;
         return -1;
@@ -280,15 +276,15 @@ int main(int argc, char **argv) {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        cout << "Waiting for network." << endl;
-        cout << "Network connected, took " << Networking::wait_for_network() << "s" << endl;
+        std::cout << "Waiting for network." << endl;
+        std::cout << "Network connected, took " << Networking::wait_for_network() << "s" << endl;
     
         while (true) {
             if (Networking::check_network() && !telementry_running) {
                 start_telementry();
             }
 
-            sleep_for(milliseconds(10000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         }
     }
 

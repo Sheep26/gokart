@@ -1,8 +1,5 @@
 #include "./networking.h"
 
-using namespace std::this_thread;
-using namespace std::chrono;
-
 bool Networking::send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header) {
     try {
         CURL* curl = curl_easy_init();
@@ -20,7 +17,7 @@ bool Networking::send_http_request(const string& url, const string& body, const 
             
             return res == CURLE_OK;
         } else {
-            cerr << "Error initializing CURL." << endl;
+            std::cerr << "Error initializing CURL." << endl;
         }
     catch (...) {
         return false;
@@ -45,7 +42,7 @@ bool Networking::check_network() {
     // Close the pipe
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        cerr << "Error: nmcli command failed with return code " << return_code << endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << endl;
         return false;
     }
 
@@ -73,7 +70,7 @@ bool Networking::wifi_enabled() {
     // Close the pipe and check the return code
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        cerr << "Error: nmcli command failed with return code " << return_code << endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << endl;
         return false;
     }
 
@@ -91,7 +88,7 @@ void Networking::set_wifi(bool enabled) {
     if (pipe) {
         pclose(pipe);
     } else{
-        cerr << "Error: Failed to execute command.";
+        std::cerr << "Error: Failed to execute command.";
     }
 }
 
@@ -99,7 +96,7 @@ int Networking::wait_for_network() {
     int elapsed_seconds = 0;
 
     while (!Networking::check_network()) {
-        this_thread::sleep_for(chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         elapsed_seconds++;
     }
 
@@ -111,7 +108,7 @@ void Networking::scan_wifi() {
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        cerr << "Error: Failed to execute Wi-Fi scan command." << endl;
+        std::cerr << "Error: Failed to execute Wi-Fi scan command." << endl;
     }
 }
 
@@ -122,6 +119,6 @@ void Networking::connect_wifi(string ssid, string passwd) {
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << endl;
+        std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << endl;
     }
 }
