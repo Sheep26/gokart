@@ -3,6 +3,30 @@
 using namespace std::this_thread;
 using namespace std::chrono;
 
+void Networking::send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header) {
+    CURL* curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, method, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body.c_str()));
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        CURLcode res = curl_easy_perform(curl);
+    
+        // Clean up memory.
+        curl_easy_cleanup(curl);
+        
+        if (res == CURLE_OK) {
+            cout << "Response:\n" << endl;
+        } else {
+            cerr << "Request failed: " << curl_easy_strerror(res) << endl;
+        }
+    } else {
+        cerr << "Error initializing CURL." << endl;
+    }
+}
+
 bool Networking::check_network() {
     FILE* pipe = popen("nmcli device status | grep wlan", "r");
     if (!pipe) {

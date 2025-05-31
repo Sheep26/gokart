@@ -45,30 +45,6 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
 
 Server server;
 
-void send_http_request(const string& url, const string& body, const CURLoption method, const struct curl_slist* header) {
-    CURL* curl = curl_easy_init();
-    if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, method, 1L);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body.c_str()));
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-        CURLcode res = curl_easy_perform(curl);
-    
-        // Clean up memory.
-        curl_easy_cleanup(curl);
-        
-        if (res == CURLE_OK) {
-            cout << "Response:\n" << endl;
-        } else {
-            cerr << "Request failed: " << curl_easy_strerror(res) << endl;
-        }
-    } else {
-        cerr << "Error initializing CURL." << endl;
-    }
-}
-
 void Threads::data_t() {
     // Send data to server every 100ms
     try {
@@ -124,7 +100,7 @@ void Threads::data_t() {
             headers = curl_slist_append(headers, ("id: " + server.id).c_str());
             headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-            send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
+            Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
                     "speed": {},
                     "speed_avg": {},
                     "speed_max": {},
@@ -285,6 +261,7 @@ int main(int argc, char **argv) {
     cout << "attempting login" << endl;
 
     // Login.
+    server.session = Networking::login(server.ip, server.username, server.passwd);
 
     // Setup GPIO
     cout << "Initalizing GPIO" << endl;
