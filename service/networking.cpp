@@ -22,6 +22,8 @@ bool Networking::send_http_request(const string& url, const string& body, const 
     } catch (...) {
         return false;
     }
+
+    return false;
 }
 
 bool Networking::check_network() {
