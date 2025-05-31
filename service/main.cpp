@@ -294,8 +294,7 @@ int main(int argc, char **argv) {
     pinMode(TELEMENTRY_PIN, INPUT);
 
     // Create display thread.
-    std::display_thread(Threads::display_t);
-
+    std::thread display_thread(Threads::display_t);
     display_thread.detach();
 
     // Check if telementry enabled.
