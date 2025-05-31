@@ -6,6 +6,7 @@
 #include <atomic>
 #include <sstream>
 #include <vector>
+#include <string>
 
 #include "data.h"
 #include "networking.h"
