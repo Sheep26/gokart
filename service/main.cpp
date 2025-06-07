@@ -7,26 +7,21 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
+#include <unistd.h>
+#include <sys/socket.h>
 
 #include "data.h"
 #include "networking.h"
 #include "threads.h"
 #include "ssd1309.h"
 #include "OledScreen.h"
+#include "commandListener.h"
 
 #define TELEMENTRY_PIN 10
 #define DC 5
 #define RST 6
-
-std::atomic<bool> telementry_running;
-
-struct Server { // I don't want to have to deal with memory realloc, lets use strings.
-    std::string ip;
-    std::string username;
-    std::string passwd;
-    std::string session;
-    std::string id;
-};
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -40,7 +35,17 @@ struct Server { // I don't want to have to deal with memory realloc, lets use st
  CS     --- CS0(Pin#24)
 */
 
+struct Server {
+    std::string ip;
+    std::string username;
+    std::string passwd;
+    std::string session;
+    std::string id;
+};
+
 Server server;
+CommandListener commandListener;
+std::atomic<bool> telementry_running;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
@@ -111,20 +116,13 @@ void Threads::data_t() {
 
         if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
                 "speed": {},
-                "speed_avg": {},
-                "speed_max": {},
                 "rpm": {},
-                "rpm_avg": {},
-                "rpm_max": {},
                 "power": {},
-                "power_avg": {},
-                "power_max": {},
+                "battery": {},
                 "throttle": {},
-                "throttle_avg": {},
-                "throttle_max": {}
-            })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max),
+            })", data.speed, data.rpm, data.power, data.battery, data.throttle),
             true, headers).status_code != 200) {
-            std::cerr << "Error: Failed to send telemetry data." << std::endl;
+            std::cerr << "Error: Failed to send telemetry data.\n";
             telementry_running = false;
             return;
         }
@@ -144,7 +142,7 @@ void Threads::ffmpeg_t() {
     std::thread overlay_thread([]() {
         while (telementry_running) {
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nThrottle:%d%", data.speed.current, data.rpm.current, data.power.current, data.throttle.current);
+            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nBattery:%d\nThrottle:%d%", data.speed, data.rpm, data.power, data.battery, data.throttle);
             FILE* f = fopen("/tmp/ffmpeg_overlay.txt", "w");
             if (f) {
                 fprintf(f, "%s", overlay);
@@ -162,10 +160,10 @@ void Threads::ffmpeg_t() {
     std::string cmd =
         "ffmpeg -f v4l2 -i /dev/video0 "
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
-        "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.75\" "
+        "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=12:fontcolor=white:box=1:boxcolor=black@0.50\" "
         "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
     
-    std::cout << "Running command: " << cmd << std::endl;
+    std::cout << "Running command: " << cmd << "\n";
 
     int ret = system(cmd.c_str());
 
@@ -174,7 +172,7 @@ void Threads::ffmpeg_t() {
     system("rm -f /tmp/ffmpeg_overlay.txt");
 
     if (ret != 0) {
-        std::cerr << "Error: ffmpeg command failed with exit code " << ret << std::endl;
+        std::cerr << "Error: ffmpeg command failed with exit code " << ret << "\n";
     }
 }
 
@@ -245,6 +243,47 @@ void Threads::display_t() {
     }
 }
 
+void bluetooth_server() {
+    struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
+    int server_sock, client_sock;
+    socklen_t opt = sizeof(rem_addr);
+
+    // Create Bluetooth socket
+    server_sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+    loc_addr.rc_family = AF_BLUETOOTH;
+    loc_addr.rc_bdaddr = *BDADDR_ANY;
+    loc_addr.rc_channel = 1;
+    bind(server_sock, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
+    listen(server_sock, 1);
+
+    std::cout << "[BT] Listening on RFCOMM channel 1...\n";
+
+    while (running) {
+        char client_addr[18] = { 0 };
+        client_sock = accept(server_sock, (struct sockaddr *)&rem_addr, &opt);
+        ba2str(&rem_addr.rc_bdaddr, client_addr);
+        std::cout << "[BT] Client connected: " << client_addr << "\n";
+
+        char buf[1024];
+        int bytes_read;
+        while ((bytes_read = read(client_sock, buf, sizeof(buf) - 1)) > 0) {
+            buf[bytes_read] = '\0';
+            std::string cmd(buf);
+            // Trim newline if needed
+            cmd.erase(cmd.find_last_not_of("\r\n") + 1);
+            std::string response = commandListener.handle_command(cmd);
+            std::cout << "[BT]" << response << "\n";
+            write(client_sock, response.c_str(), response.length());
+        }
+
+        std::cout << "[BT] Client disconnected.\n";
+        close(client_sock);
+    }
+
+    close(server_sock);
+    std::cout << "[BT] Server stopped.\n";
+}
+
 void start_telementry() {
     telementry_running = true;
 
@@ -258,35 +297,12 @@ void start_telementry() {
 }
 
 int main(int argc, char **argv) {
-    std::cout << "Starting gokart service." << std::endl;
-
-    // Configure server.
-    std::cout << "Reading environment varibles" << std::endl;
-    server.ip = (std::string) getenv("SERVERIP");
-    server.username = (std::string) getenv("SERVERUSERNAME");
-    server.passwd = (std::string) getenv("SERVERPASSWD");
-    std::cout << "Server configured at " << server.ip << std::endl;
-    std::cout << "Waiting for network" << std::endl;
-    std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s" << std::endl;
-    std::cout << "attempting login" << std::endl;
-
-    // Login.
-    struct curl_slist* login_headers = nullptr;
-    login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
-    login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
-    HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
-    if (login_request.status_code == 200) {
-        std::vector<std::string> parts = split_string(login_request.text, ',');
-        server.id = parts[0];
-        server.session = parts[1];
-    } else {
-        std::cerr << "Login failed" << std::endl;
-    }
+    std::cout << "Starting gokart service.\n";
 
     // Setup GPIO
-    std::cout << "Initalizing GPIO" << std::endl;
+    std::cout << "Init GPIO\n";
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
-        std::cerr << "Error: Failed to initialize GPIO." << std::endl;
+        std::cerr << "Error: Failed to initialize GPIO.\n";
         return -1;
     }
 
@@ -299,8 +315,32 @@ int main(int argc, char **argv) {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        std::cout << "Waiting for network." << std::endl;
-        std::cout << "Network connected, took " << Networking::wait_for_network() << "s" << std::endl;
+        std::cout << "Waiting for network.\n";
+        std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
+
+        // Configure server.
+        std::cout << "Reading environment varibles.\n";
+        server.ip = (std::string) getenv("SERVERIP");
+        server.username = (std::string) getenv("SERVERUSERNAME");
+        server.passwd = (std::string) getenv("SERVERPASSWD");
+        std::cout << "Server configured at " << server.ip << "\n";
+        std::cout << "Waiting for network.\n";
+        std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s.\n";
+        std::cout << "Attempting login.\n";
+
+        // Login.
+        struct curl_slist* login_headers = nullptr;
+        login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
+        login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
+        HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
+        if (login_request.status_code == 200) {
+            std::vector<std::string> parts = split_string(login_request.text, ',');
+            server.id = parts[0];
+            server.session = parts[1];
+        } else {
+            std::cerr << "Login failed\n";
+            return 1;
+        }
     
         while (true) {
             if (Networking::check_network() && !telementry_running) {

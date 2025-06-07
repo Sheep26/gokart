@@ -30,13 +30,13 @@ HTTP_Request Networking::send_http_request(const std::string& url, const std::st
             response.status_code = http_code;
             response.text = readBuffer;
         } else {
-            std::cerr << "CURL error: " << curl_easy_strerror(res) << std::endl;
+            std::cerr << "CURL error: " << curl_easy_strerror(res) << "\n";
             response.status_code = -1;
         }
 
         curl_easy_cleanup(curl);
     } else {
-        std::cerr << "Error initializing CURL." << std::endl;
+        std::cerr << "Error initializing CURL." << "\n";
         response.status_code = -1;
     }
 
@@ -46,7 +46,7 @@ HTTP_Request Networking::send_http_request(const std::string& url, const std::st
 bool Networking::check_network() {
     FILE* pipe = popen("nmcli device status | grep wlan", "r");
     if (!pipe) {
-        std::cerr << "Error: Failed to open pipe for network check." << std::endl;
+        std::cerr << "Error: Failed to open pipe for network check." << "\n";
         return false;
     }
 
@@ -61,7 +61,7 @@ bool Networking::check_network() {
     // Close the pipe
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        std::cerr << "Error: nmcli command failed with return code " << return_code << std::endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << "\n";
         return false;
     }
 
@@ -74,7 +74,7 @@ bool Networking::check_network() {
 bool Networking::wifi_enabled() {
     FILE* pipe = popen("nmcli radio wifi", "r");
     if (!pipe) {
-        std::cerr << "Error: Failed to open pipe for Wi-Fi status check." << std::endl;
+        std::cerr << "Error: Failed to open pipe for Wi-Fi status check." << "\n";
         return false;
     }
 
@@ -89,7 +89,7 @@ bool Networking::wifi_enabled() {
     // Close the pipe and check the return code
     int return_code = pclose(pipe);
     if (return_code != 0) {
-        std::cerr << "Error: nmcli command failed with return code " << return_code << std::endl;
+        std::cerr << "Error: nmcli command failed with return code " << return_code << "\n";
         return false;
     }
 
@@ -107,7 +107,7 @@ void Networking::set_wifi(bool enabled) {
     if (pipe) {
         pclose(pipe);
     } else{
-        std::cerr << "Error: Failed to execute command." << std::endl;
+        std::cerr << "Error: Failed to execute command." << "\n";
     }
 }
 
@@ -127,7 +127,7 @@ void Networking::scan_wifi() {
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        std::cerr << "Error: Failed to execute Wi-Fi scan command." << std::endl;
+        std::cerr << "Error: Failed to execute Wi-Fi scan command." << "\n";
     }
 }
 
@@ -138,6 +138,6 @@ void Networking::connect_wifi(std::string ssid, std::string passwd) {
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
     } else {
-        std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << std::endl;
+        std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << "\n";
     }
 }

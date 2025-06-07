@@ -19,6 +19,24 @@ if ! $(apt list --installed | grep -q libsndfile1-dev); then
     apt install libsndfile1-dev -y
 fi
 
+if ! $(apt list --installed | grep -q bluetooth); then
+    echo "bluetooth Missing, installing."
+
+    apt install bluetooth -y
+fi
+
+if ! $(apt list --installed | grep -q bluez); then
+    echo "bluez Missing, installing."
+
+    apt install bluez -y
+fi
+
+if ! $(apt list --installed | grep -q libbluetooth-dev); then
+    echo "libbluetooth-dev Missing, installing."
+
+    apt install libbluetooth-dev -y
+fi
+
 echo "Telementry [y/n]"
 read telementry
 if [ "${telementry,,}" == "y" ]; then
@@ -71,7 +89,9 @@ echo "Creating service."
 mv main /usr/bin/gokart-main
 mv gokart.service /etc/systemd/system/gokart.service
 
-# Enable service.
+# Enable services.
+systemctl enable bluetooth
+systemctl start bluetooth
 systemctl enable gokart.service
 systemctl start gokart.service
 

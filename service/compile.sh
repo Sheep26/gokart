@@ -53,6 +53,13 @@ if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
     apt install libcurl4-openssl-dev -y
 fi
 
+if ! $(apt list --installed | grep -q libbluetooth-dev); then
+    echo "Dependency libbluetooth-dev missing, installing."
+
+    # Install libcurl library
+    apt install libbluetooth-dev -y
+fi
+
 #if ! $(apt list --installed | grep -q libasound2-dev); then
 #    echo "Dependency libasound2-dev missing, installing"
 

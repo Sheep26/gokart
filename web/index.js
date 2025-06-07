@@ -41,17 +41,10 @@ let data = {
     online: false, 
     data: {
         "speed": 0,
-        "speed_avg": 0,
-        "speed_max": 0,
         "rpm": 0,
-        "rpm_avg": 0,
-        "rpm_max": 0,
         "power": 0,
-        "power_avg": 0,
-        "power_max": 0,
+        "battery": 0,
         "throttle": 0,
-        "throttle_avg": 0,
-        "throttle_max": 0
     }
 }
 
@@ -156,13 +149,13 @@ app.listen(PORT, "0.0.0.0", function (err) {
 
 function check_sessions() {
     for (let session in sessions) {
-        if (Date.now() - sessions[session].timestamp > 5000) {
+        if (Date.now() - sessions[session].timestamp > 60000) {
             delete sessions[session];
         }
     }
 }
 
-setInterval(check_sessions, 5000);
+setInterval(check_sessions, 60000);
 
 const nms = new NodeMediaServer(config);
 nms.run();
