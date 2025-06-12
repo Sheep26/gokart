@@ -63,9 +63,7 @@ void Threads::data_t() {
     // Send data to server every 100ms
     
     while (true) {
-        if (!Networking::check_network() || !telementry_running) {
-            return;
-        }
+        if (!Networking::check_network() || !telementry_running) return;
 
             /*CURL* curl = curl_easy_init();
     
@@ -127,8 +125,8 @@ void Threads::data_t() {
             return;
         }
  
-        // Sleep for 100ms
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // Sleep for 1000ms
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -136,7 +134,7 @@ void Threads::ffmpeg_t() {
     std::cout << "Starting ffmpeg live video feed.";
 
     // Create a named pipe for ffmpeg drawtext reloading
-    system("mkfifo /tmp/ffmpeg_overlay.txt");
+    system("touch /tmp/ffmpeg_overlay.txt");
 
     // Start a thread to update the overlay text file with telemetry
     std::thread overlay_thread([]() {
