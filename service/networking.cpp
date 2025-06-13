@@ -131,13 +131,15 @@ void Networking::scan_wifi() {
     }
 }
 
-void Networking::connect_wifi(std::string ssid, std::string passwd) {
+bool Networking::connect_wifi(std::string ssid, std::string passwd) {
     std::string cmd = "raspi-config nonint do_wifi_ssid_passphrase" + ssid + " " + passwd;
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
         pclose(pipe); // Close the pipe after executing the command
+        return true;
     } else {
         std::cerr << "Error: Failed to connect to Wi-Fi network: " << ssid << "\n";
+        return false;
     }
 }

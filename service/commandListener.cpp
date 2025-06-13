@@ -2,7 +2,7 @@
 
 std::string help(std::vector<std::string> args) {
     std::string output = "Help\n";
-    
+
     for (const auto& cmd : commands) {
         output += cmd.name + "\n";
     }
@@ -11,10 +11,9 @@ std::string help(std::vector<std::string> args) {
 }
 
 std::string connect_wifi(std::vector<std::string> args) {
-    std::string output = "";
-    Networking::connnect_wifi(args[0], args[1]);
+    if (Networking::connnect_wifi(args[0], args[1])) return "Connection successful.";
 
-    return output;
+    return "Failed to connect";
 }
 
 void CommandListener::init_commands() {
