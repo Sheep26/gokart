@@ -70,5 +70,5 @@ fi
 # -lasound
 
 # Compile.
-g++ main.cpp networking.cpp OledScreen.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ *.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
 chmod a+x main
