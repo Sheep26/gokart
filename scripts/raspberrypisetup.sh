@@ -64,6 +64,8 @@ if [ "${telementry,,}" == "y" ]; then
     done
 fi
 
+raspi-config nonint do_boot_wait 0
+
 echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
 
