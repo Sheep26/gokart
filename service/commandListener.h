@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include "networking.h"
 
 struct Command {
     std::string name;

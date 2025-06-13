@@ -269,7 +269,9 @@ void bluetooth_server() {
             std::string cmd(buf);
             // Trim newline if needed
             cmd.erase(cmd.find_last_not_of("\r\n") + 1);
-            std::string response = commandListener.handle_command(cmd);
+            std::vector<std::string> parts = split_string(cmd, ' ');
+            std::vector<std::string> args(parts.begin() + 1, parts.end());
+            std::string response = commandListener.handle_command(cmd, args);
             std::cout << "[BT]" << response << "\n";
             write(client_sock, response.c_str(), response.length());
         }

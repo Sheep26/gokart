@@ -1,4 +1,4 @@
-#include "./networking.h"
+#include "networking.h"
 
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
     userp->append((char*)contents, size * nmemb);
