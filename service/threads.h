@@ -14,5 +14,5 @@ public:
     static void data_t();
     static void ffmpeg_t();
     static void display_t();
-    static void radio_t();
+    static void bluetooth_server();
 };

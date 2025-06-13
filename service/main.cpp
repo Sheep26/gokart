@@ -241,7 +241,7 @@ void Threads::display_t() {
     }
 }
 
-void bluetooth_server() {
+void Threads::bluetooth_server() {
     struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
     int server_sock, client_sock;
     socklen_t opt = sizeof(rem_addr);
@@ -256,7 +256,7 @@ void bluetooth_server() {
 
     std::cout << "[BT] Listening on RFCOMM channel 1...\n";
 
-    while (running) {
+    while (telementry_running) {
         char client_addr[18] = { 0 };
         client_sock = accept(server_sock, (struct sockaddr *)&rem_addr, &opt);
         ba2str(&rem_addr.rc_bdaddr, client_addr);
@@ -290,10 +290,12 @@ void start_telementry() {
     // Create threads
     std::thread ffmpeg_thread(Threads::ffmpeg_t);
     std::thread data_thread(Threads::data_t);
+    std::thread = bluetooth_thread(Threads::bluetooth_server);
 
     // Detach threads to allow independent execution
     ffmpeg_thread.detach();
     data_thread.detach();
+    bluetooth_thread.detach();
 }
 
 int main(int argc, char **argv) {
@@ -344,6 +346,7 @@ int main(int argc, char **argv) {
     
         while (true) {
             if (Networking::check_network() && !telementry_running) {
+                std::cout << "Starting telementry.\n";
                 start_telementry();
             }
 
