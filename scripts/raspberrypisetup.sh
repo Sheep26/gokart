@@ -101,5 +101,5 @@ echo "Cleaning up."
 cd ../../
 rm -rf gokart
 
-echo "Gokart service setup Rebooting raspberry pi"
+echo "Gokart service setup Rebooting raspberry pi."
 reboot
