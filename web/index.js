@@ -73,7 +73,7 @@ app.post("/api/logout", (req, res) => {
     var session = req.header("session");
 
     // Check if the session exists and matches
-    if (sessions[id] && sessions[id] === session) {
+    if (sessions[id] && sessions[id] == session) {
         delete sessions[id]; // Remove the session
         res.sendStatus(200); // Successfully logged out
         return;

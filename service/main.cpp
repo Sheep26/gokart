@@ -68,7 +68,7 @@ void Threads::data_t() {
             /*CURL* curl = curl_easy_init();
     
             if (curl) {
-                string body = fmt::format(R"({
+                string body = fmt::format(R"({{
                     "speed": {},
                     "speed_avg": {},
                     "speed_max": {},
@@ -81,7 +81,7 @@ void Threads::data_t() {
                     "throttle": {},
                     "throttle_avg": {},
                     "throttle_max": {}
-                })", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
+    }})", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
                 const char* body_cstr = body.c_str();
     
                 curl_easy_setopt(curl, CURLOPT_URL, ("https://" + server.ip + "/api/update_data").c_str());
@@ -112,13 +112,13 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-        if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({
+        if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
                 "speed": {},
                 "rpm": {},
                 "power": {},
                 "battery": {},
                 "throttle": {},
-            })", data.speed, data.rpm, data.power, data.battery, data.throttle),
+            }})", data.speed, data.rpm, data.power, data.battery, data.throttle),
             true, headers).status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
             telementry_running = false;
@@ -290,26 +290,24 @@ void start_telementry() {
     // Create threads
     std::thread ffmpeg_thread(Threads::ffmpeg_t);
     std::thread data_thread(Threads::data_t);
-    std::thread = bluetooth_thread(Threads::bluetooth_server);
 
     // Detach threads to allow independent execution
     ffmpeg_thread.detach();
     data_thread.detach();
-    bluetooth_thread.detach();
 }
 
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
 
     // Setup GPIO
-    std::cout << "Init GPIO\n";
+    std::cout << "Init GPIO.\n";
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         std::cerr << "Error: Failed to initialize GPIO.\n";
         return -1;
     }
 
     // Set pin modes.
-    pinMode(TELEMENTRY_PIN, INPUT);
+    pinMode(TELEMENTRY_PIN, INPUT_PULLDOWN);
 
     // Create display thread.
     std::thread display_thread(Threads::display_t);
@@ -317,6 +315,10 @@ int main(int argc, char **argv) {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
+        std::cout << "STarting bluetooth server.\n";
+        std::thread bluetooth_thread(Threads::bluetooth_server);
+        bluetooth_thread.detach();
+
         std::cout << "Waiting for network.\n";
         std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
 
