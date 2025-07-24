@@ -271,7 +271,7 @@ void Threads::bluetooth_server() {
             cmd.erase(cmd.find_last_not_of("\r\n") + 1);
             std::vector<std::string> parts = split_string(cmd, ' ');
             std::vector<std::string> args(parts.begin() + 1, parts.end());
-            std::string response = commandListener.handle_command(cmd, args);
+            std::string response = commandListener.handle_command(args[0], args);
             std::cout << "[BT]" << response << "\n";
             write(client_sock, response.c_str(), response.length());
         }
@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
 
     // Check if telementry enabled.
     if (digitalRead(TELEMENTRY_PIN) == HIGH){
-        std::cout << "STarting bluetooth server.\n";
+        std::cout << "Starting bluetooth server.\n";
         std::thread bluetooth_thread(Threads::bluetooth_server);
         bluetooth_thread.detach();
 
