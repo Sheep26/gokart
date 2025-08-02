@@ -138,18 +138,26 @@ void Threads::ffmpeg_t() {
 
     // Start a thread to update the overlay text file with telemetry
     std::thread overlay_thread([]() {
+        FILE* f = fopen("/tmp/ffmpeg_overlay.txt", "w");
+        
         while (telementry_running) {
-            char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nBattery:%d\nThrottle:%d%", data.speed, data.rpm, data.power, data.battery, data.throttle);
-            FILE* f = fopen("/tmp/ffmpeg_overlay.txt", "w");
-            if (f) {
-                fprintf(f, "%s", overlay);
-                fclose(f);
+            // Check if file handle exists.
+            if (!f) {
+                telementry_running = false;
+
+                break;
             }
 
-            // Sleep for 100ms to allow ffmpeg to reload the file
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            char overlay[128];
+            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nBattery:%d\nThrottle:%d%", data.speed, data.rpm, data.power, data.battery, data.throttle);
+            
+            fprintf(f, "%s", overlay);
+
+            // Sleep for 1 second to allow ffmpeg to reload the file
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
+
+        fclose(f);
     });
 
     overlay_thread.detach();
