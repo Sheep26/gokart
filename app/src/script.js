@@ -55,18 +55,11 @@ class Connection {
 // [element, unit_of_mesurement(str)]
 // We store the elements we are using to display data here so we don't have to call for them later.
 let elements = {
-    speed: [document.getElementById("speed-data"), "km/h"],
-    speed_avg: [document.getElementById("speed-data-avg"), "km/h"],
-    speed_max: [document.getElementById("speed-data-max"), "km/h"],
-    rpm: [document.getElementById("rpm-data"), "rpm"],
-    rpm_avg: [document.getElementById("rpm-data-avg"), "rpm"],
-    rpm_max: [document.getElementById("rpm-data-max"), "rpm"],
+    speed: [document.getElementById("speed-data"), "KM/H"],
+    rpm: [document.getElementById("rpm-data"), "RPM"],
     power: [document.getElementById("power-data"), "W"],
-    power_avg: [document.getElementById("power-data-avg"), "W"],
-    power_max: [document.getElementById("power-data-max"), "W"],
     throttle: [document.getElementById("throttle-data"), "%"],
-    throttle_avg: [document.getElementById("throttle-data-avg"), "%"],
-    throttle_max: [document.getElementById("throttle-data-max"), "%"],
+    battery: [document.getElementById("battery-data"), "V"],
 }
 
 let connection = null;
@@ -94,8 +87,8 @@ async function login(api_url, username, passwd) {
     
     connection = new Connection(api_url, text);
 
-    setInterval(update_statistics, 100);
     setInterval(check_online, 100);
+    setInterval(update_statistics, 100);
     
     hide_element(document.getElementById("login"));
     show_element(document.getElementById("main"));
@@ -134,6 +127,7 @@ function update_statistics() {
 
 function check_online() {
     var online = connection.get_online();
+    
     document.getElementById("status").innerHTML = online ? "Online" : "Offline";
     if (connection.get_online()) {
         if (flvPlayer == null) {
