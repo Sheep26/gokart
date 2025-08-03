@@ -55,10 +55,8 @@ class Connection {
 // [element, unit_of_mesurement(str)]
 // We store the elements we are using to display data here so we don't have to call for them later.
 let elements = {
-    speed: [document.getElementById("speed-data"), "KM/H"],
-    rpm: [document.getElementById("rpm-data"), "RPM"],
-    power: [document.getElementById("power-data"), "W"],
-    throttle: [document.getElementById("throttle-data"), "%"],
+    speed: [document.getElementById("speed-data"), "km/h"],
+    rpm: [document.getElementById("rpm-data"), "rpm"],
     battery: [document.getElementById("battery-data"), "V"],
 }
 

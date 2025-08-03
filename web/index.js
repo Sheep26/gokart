@@ -42,9 +42,7 @@ let data = {
     data: {
         "speed": 0,
         "rpm": 0,
-        "power": 0,
         "battery": 0,
-        "throttle": 0,
     }
 }
 

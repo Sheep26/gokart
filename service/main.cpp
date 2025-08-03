@@ -115,10 +115,8 @@ void Threads::data_t() {
         if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
                 "speed": {},
                 "rpm": {},
-                "power": {},
                 "battery": {},
-                "throttle": {},
-            }})", data.speed, data.rpm, data.power, data.battery, data.throttle),
+            }})", data.speed, data.rpm, data.battery),
             true, headers).status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
             telementry_running = false;
@@ -149,7 +147,7 @@ void Threads::ffmpeg_t() {
             }
 
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nRPM:%d\nPower:%dw\nBattery:%d\nThrottle:%d%", data.speed, data.rpm, data.power, data.battery, data.throttle);
+            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nrpm:%d\nBattery:V%d", data.speed, data.rpm, data.battery);
             
             fprintf(f, "%s", overlay);
 
