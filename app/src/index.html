@@ -21,27 +21,13 @@
         <p id="login-ell" class="login-ell"></p>
       </center>
     </div>
+
+    <nav>
+      <a onclick="toggle_view(menuElement.camera)">Camera</a>
+    </nav>
+
     <main id="main">
       <video id="videoElement" class="cam" controls autoplay></video>
-      <div class="data-table-div">
-        <h1>Data</h1>
-        <p class="connection-status">Status: <span id="status">Offline</span></p>
-        <table>
-          <tr>
-              <th></th>
-              <th>Speed</th>
-              <th>RPM</th>
-              <th>BATTERY</th>
-          </tr>
-          <!--Current values-->
-          <tr>
-              <td>Current</td>
-              <td id="speed-data">0km/h</td>
-              <td id="rpm-data">0rpm</td>
-              <td id="battery-data">0V</td>
-          </tr>
-      </table>
-      </div>
     </main>
     <script src="./script.js"></script>
   </body>

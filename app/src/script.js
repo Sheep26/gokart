@@ -60,6 +60,10 @@ let elements = {
     battery: [document.getElementById("battery-data"), "V"],
 }
 
+let menuElements = {
+    camera: document.getElementById("videoElement"),
+}
+
 let connection = null;
 let flvPlayer = null;
 
@@ -91,6 +95,16 @@ async function login(api_url, username, passwd) {
     hide_element(document.getElementById("login"));
     show_element(document.getElementById("main"));
     return true;
+}
+
+function toggle_view(view) {
+    for (let element in menuElements) {
+        if (element == view) continue;
+
+        hide_element(element);
+    }
+
+    show_element(view);
 }
 
 function check_login() {
