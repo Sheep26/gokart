@@ -30,8 +30,8 @@
  VCC    --- 3.3V
  DO     --- SCLK(Pin#23)
  DI     --- MOSI(Pin#19)
- RES/RST    --- GPIO18(Pin#6) (You can use Any Pin)
- DC     --- GPIO17(Pin#5) (You can use Any Pin)
+ RES/RST    --- GPIO18(Pin#6)
+ DC     --- GPIO17(Pin#5)
  CS     --- CS0(Pin#24)
 */
 
@@ -153,8 +153,8 @@ void Threads::ffmpeg_t() {
             
             fprintf(f, "%s", overlay);
 
-            // Sleep for 1 second to allow ffmpeg to reload the file
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            // Sleep for 100ms second to allow ffmpeg to reload the file
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         fclose(f);
@@ -164,7 +164,7 @@ void Threads::ffmpeg_t() {
 
     // ffmpeg command with drawtext filter using reloading file
     std::string cmd =
-        "ffmpeg -f v4l2 -i /dev/video0 "
+        "ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -i /dev/video0 "
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=12:fontcolor=white:box=1:boxcolor=black@0.50\" "
         "-f flv rtmp://" + server.ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
