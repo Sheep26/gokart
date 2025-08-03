@@ -162,7 +162,7 @@ void Threads::ffmpeg_t() {
 
     overlay_thread.detach();
 
-    // ffmpeg command with drawtext filter using reloading file
+    // ffmpeg command with drawtext filter using reloading file.
     std::string cmd =
         "ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -i /dev/video0 "
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
