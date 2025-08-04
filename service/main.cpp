@@ -72,9 +72,7 @@ std::vector<std::string> split_string(const std::string& input, char delimiter) 
 void Threads::data_t() {
     // Send data to server every 100ms
     
-    while (true) {
-        if (!Networking::check_network() || !telementry_running) return;
-
+    while (telementry_running) {
             /*CURL* curl = curl_easy_init();
     
             if (curl) {
@@ -125,12 +123,13 @@ void Threads::data_t() {
         if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
                 "speed": {},
                 "rpm": {},
-                "battery": {},
-            }})", data.speed, data.rpm, data.battery),
+                "batteryVolt": {},
+                "batteryPercent": {},
+            }})", data.speed, data.rpm, data.batteryVolt, data.batteryPercent),
             true, headers).status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
             telementry_running = false;
-            return;
+            break;
         }
  
         // Sleep for 1000ms

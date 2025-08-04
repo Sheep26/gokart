@@ -57,7 +57,8 @@ class Connection {
 let elements = {
     speed: [document.getElementById("speed-data"), "km/h"],
     rpm: [document.getElementById("rpm-data"), "rpm"],
-    battery: [document.getElementById("battery-data"), "V"],
+    batteryVolt: [document.getElementById("battery-volt-data"), "V"],
+    batteryPercent: [document.getElementById("battery-percent-data"), "%"],
 }
 
 let menuElements = {
@@ -131,7 +132,7 @@ function update_statistics() {
     // Update elements
     for (let key in elements) {
         // Check if json data isn't null.
-        if (connection.get_data()[key] != undefined) {
+        if (connection.get_data()[key] != undefined && elements[key][0] != undefined && elements[key][0] != null) {
             elements[key][0].innerHTML = connection.get_data()[key] + elements[key][1];
         }
     }

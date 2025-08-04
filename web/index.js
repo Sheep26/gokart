@@ -42,7 +42,8 @@ let data = {
     data: {
         "speed": 0,
         "rpm": 0,
-        "battery": 0,
+        "batteryVolt": 0,
+        "batteryPercent": 0,
     }
 }
 
