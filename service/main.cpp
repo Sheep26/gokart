@@ -115,7 +115,7 @@ void Threads::data_t() {
                 }
             }*/
 
-            // Set headers
+        // Set headers
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
