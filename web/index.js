@@ -40,10 +40,11 @@ const PORT = process.env.PORT || 8001;
 let data = {
     online: false, 
     data: {
+        "num": 0,
         "speed": 0,
         "rpm": 0,
-        "batteryVolt": 0,
-        "batteryPercent": 0,
+        "batteryVolt": 0.00,
+        "batteryPercent": 0.00,
     }
 }
 

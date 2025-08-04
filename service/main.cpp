@@ -73,60 +73,22 @@ void Threads::data_t() {
     // Send data to server every 100ms
     
     while (telementry_running) {
-            /*CURL* curl = curl_easy_init();
-    
-            if (curl) {
-                string body = fmt::format(R"({{
-                    "speed": {},
-                    "speed_avg": {},
-                    "speed_max": {},
-                    "rpm": {},
-                    "rpm_avg": {},
-                    "rpm_max": {},
-                    "power": {},
-                    "power_avg": {},
-                    "power_max": {},
-                    "throttle": {},
-                    "throttle_avg": {},
-                    "throttle_max": {}
-    }})", data.speed.current, data.speed.avg, data.speed.max, data.rpm.current, data.rpm.avg, data.rpm.max, data.power.current, data.power.avg, data.power.max, data.throttle.current, data.throttle.avg, data.throttle.max);
-                const char* body_cstr = body.c_str();
-    
-                curl_easy_setopt(curl, CURLOPT_URL, ("https://" + server.ip + "/api/update_data").c_str());
-                curl_easy_setopt(curl, CURLOPT_POST, 1L);
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_cstr);
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(body_cstr));
-                
-                // Set headers
-                struct curl_slist* headers = nullptr;
-                headers = curl_slist_append(headers, ("id: " + server.id).c_str());
-                headers = curl_slist_append(headers, ("session: " + server.session).c_str());
-                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-                
-                CURLcode res = curl_easy_perform(curl);
-    
-                // Clean up memory.
-                curl_easy_cleanup(curl);
-        
-                if (res == CURLE_OK) {
-                    cout << "Response:\n" << endl;
-                } else {
-                    cerr << "Request failed: " << curl_easy_strerror(res) << endl;
-                }
-            }*/
-
         // Set headers
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
-
-        if (Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
+        
+        // Make the http request.
+        HTTP_Request update_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
+                "num": {},
                 "speed": {},
                 "rpm": {},
                 "batteryVolt": {},
                 "batteryPercent": {},
-            }})", data.speed, data.rpm, data.batteryVolt, data.batteryPercent),
-            true, headers).status_code != 200) {
+            }})", data.num, data.speed, data.rpm, data.batteryVolt, data.batteryPercent),
+            true, headers);
+
+        if (update_request.status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
             telementry_running = false;
             break;
