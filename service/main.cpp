@@ -379,11 +379,11 @@ int main(int argc, char **argv) {
         }
 
         if ((digitalRead(TELEMENTRY_PIN) == LOW) != display_on) {
-            display_on = digitalRead(TELEMENTRY_PIN) == LOW;
-
             if (!display_on) {
                 start_display_thread();
             }
+
+            display_on = digitalRead(TELEMENTRY_PIN) == LOW;
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
