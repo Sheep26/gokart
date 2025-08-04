@@ -4,8 +4,9 @@
 struct DATA {
     int speed;
     int rpm;
-    int batteryVolt;
-    int batteryPercent;
+    float batteryVolt;
+    float batteryPercent;
+    int num;
 };
 
 DATA data;

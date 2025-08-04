@@ -64,6 +64,11 @@ if [ "${telementry,,}" == "y" ]; then
     done
 fi
 
+# Get race number.
+echo "Enter race number"
+read racenum
+export RACENUM="$racenum"
+
 raspi-config nonint do_boot_wait 0
 
 echo "Cloning github repository."

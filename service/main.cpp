@@ -156,7 +156,7 @@ void Threads::ffmpeg_t() {
             }
 
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Speed:%dkmph\nrpm:%d\nBattery:V%d", data.speed, data.rpm, data.battery);
+            snprintf(overlay, sizeof(overlay), "Num:%d\nSpeed:%dkmph\nrpm:%d\nBattery:V%d", data.num, data.speed, data.rpm, data.battery);
             
             fprintf(f, "%s", overlay);
 
@@ -349,6 +349,16 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    // Configure server.
+    std::cout << "Reading environment varibles.\n";
+    server.ip = (std::string) getenv("SERVERIP");
+    server.username = (std::string) getenv("SERVERUSERNAME");
+    server.passwd = (std::string) getenv("SERVERPASSWD");
+    std::cout << "Server configured at " << server.ip << "\n";
+    
+    // Set race number.
+    data.num = (std::string) getenv("RACENUM");
+
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT_PULLUP);
     pinMode(DISPLAY_PIN, INPUT_PULLUP);
@@ -375,12 +385,7 @@ int main(int argc, char **argv) {
             std::cout << "Waiting for network.\n";
             std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
 
-            // Configure server.
-            std::cout << "Reading environment varibles.\n";
-            server.ip = (std::string) getenv("SERVERIP");
-            server.username = (std::string) getenv("SERVERUSERNAME");
-            server.passwd = (std::string) getenv("SERVERPASSWD");
-            std::cout << "Server configured at " << server.ip << "\n";
+            // Login to server.
             std::cout << "Waiting for network.\n";
             std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s.\n";
             std::cout << "Attempting login.\n";
