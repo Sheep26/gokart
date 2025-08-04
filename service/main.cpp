@@ -20,6 +20,7 @@
 #include "commandListener.h"
 
 #define TELEMENTRY_PIN 10
+#define DISPLAY_PIN 11
 #define DC 5
 #define RST 6
 
@@ -46,6 +47,7 @@ struct Server {
 Server server;
 CommandListener commandListener;
 std::atomic<bool> telementry_running;
+std::atomic<bool> display_on;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
@@ -242,6 +244,15 @@ void Threads::display_t() {
         wiringPiSPIDataRW(0, oled.pix_buf, 1024);
         digitalWrite(DC, HIGH);
 
+        if (!display_on) {
+            // Power off the display.
+            digitalWrite(DC, LOW);
+            wiringPiSPIDataRW(0, 0xAE, 1);
+            digitalWrite(DC, HIGH);
+
+            break;
+        }
+
         // Sleep for 33ms to achieve ~30 FPS
         // This is a rough approximation, actual frame rate may vary.
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
@@ -303,6 +314,13 @@ void start_telementry() {
     data_thread.detach();
 }
 
+void start_display_thread() {
+    std::thread display_thread(Threads::display_t);
+    display_thread.detach();
+
+    display_on = true;
+}
+
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
 
@@ -314,14 +332,14 @@ int main(int argc, char **argv) {
     }
 
     // Set pin modes.
-    pinMode(TELEMENTRY_PIN, INPUT_PULLDOWN);
+    pinMode(TELEMENTRY_PIN, INPUT_PULLUP);
+    pinMode(DISPLAY_PIN, INPUT_PULLUP);
 
     // Create display thread.
-    std::thread display_thread(Threads::display_t);
-    display_thread.detach();
+    start_display_thread();
 
     // Check if telementry enabled.
-    if (digitalRead(TELEMENTRY_PIN) == HIGH){
+    if (digitalRead(TELEMENTRY_PIN) == LOW) {
         std::cout << "Starting bluetooth server.\n";
         std::thread bluetooth_thread(Threads::bluetooth_server);
         bluetooth_thread.detach();
@@ -352,15 +370,25 @@ int main(int argc, char **argv) {
             std::cerr << "Login failed\n";
             return 1;
         }
-    
-        while (true) {
-            if (Networking::check_network() && !telementry_running) {
-                std::cout << "Starting telementry.\n";
-                start_telementry();
+    }
+
+    while (true) {
+        if (Networking::check_network() && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
+            std::cout << "Starting telementry.\n";
+            start_telementry();
+        }
+
+        if ((digitalRead(TELEMENTRY_PIN) == LOW) != display_on) {
+            if (!display_on) {
+                start_display_thread();
             }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+            display_on = digitalRead(TELEMENTRY_PIN) == LOW;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
     }
 
     // Return 0.
