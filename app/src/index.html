@@ -23,11 +23,18 @@
     </div>
 
     <nav>
-      <a onclick="toggle_view(menuElement.camera)">Camera</a>
+      <a onclick="toggle_camera()">Live Camera</a>
+      <a onclick="toggle_stats()">Live Stats</a>
     </nav>
 
     <main id="main">
-      <center><video id="videoElement" class="cam" controls autoplay></video></center>
+      <div id="videoPage">
+        <center><video id="videoElement" class="cam" controls autoplay></video></center>
+      </div>
+
+      <div id="statsPage">
+
+      </div>
     </main>
     <script src="./script.js"></script>
   </body>

@@ -62,7 +62,8 @@ let elements = {
 }
 
 let menuElements = {
-    camera: document.getElementById("videoElement"),
+    camera: document.getElementById("videoPage"),
+    stats: document.getElementById("statsPage"),
 }
 
 let connection = null;
@@ -95,6 +96,7 @@ async function login(api_url, username, passwd) {
     
     hide_element(document.getElementById("login"));
     show_element(document.getElementById("main"));
+    toggle_view(menuElement.camera);
     return true;
 }
 
@@ -165,5 +167,14 @@ function create_flv() {
     }
 }
 
-hide_element(document.getElementById("main"));
+function toggle_camera() {
+    toggle_view(menuElement.camera);
+}
+
+function toggle_stats() {
+    toggle_view(menuElement.stats);
+}
+
+// Change this line back to hide_element(document.getElementById("main")); when finished testing.
+hide_element(document.getElementById("login"));
 hide_element(document.getElementById("login-ell"));

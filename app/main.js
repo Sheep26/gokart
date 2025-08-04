@@ -13,7 +13,7 @@ const createWindow = () => {
 
   win.removeMenu();
   win.maximize();
-  win.loadFile('src/index.html')
+  win.loadFile('src/index.html');
 }
 
 app.whenReady().then(() => {
