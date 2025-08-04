@@ -96,6 +96,7 @@ async function login(api_url, username, passwd) {
     
     hide_element(document.getElementById("login"));
     show_element(document.getElementById("main"));
+    show_element(document.getElementById("nav"));
     toggle_view(menuElements.camera);
     return true;
 }
@@ -169,4 +170,5 @@ function create_flv() {
 
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
 hide_element(document.getElementById("main"));
+hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));
