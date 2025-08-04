@@ -21,6 +21,7 @@
 
 #define TELEMENTRY_PIN 10
 #define DISPLAY_PIN 11
+#define SHUTDOWN_PIN 12
 #define DC 5
 #define RST 6
 
@@ -48,6 +49,7 @@ Server server;
 CommandListener commandListener;
 std::atomic<bool> telementry_running;
 std::atomic<bool> display_on;
+std::atomic<bool> shutting_down;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
@@ -232,8 +234,12 @@ void Threads::display_t() {
         // Clear screen.
         oled.clear();
 
-        // Print Hello World to display.
-        oled.println("Hello world!", 16, 16, 32, 1);
+        if (!shutting_down) {
+            // Print Hello World to display.
+            oled.println("Hello world!", 16, 16, 32, 1);
+        } else {
+            oled.println("Shutting down.", 16, 16, 32, 1);
+        }
         
         // Send data to display.
         digitalWrite(DC, LOW);
@@ -324,6 +330,8 @@ void start_display_thread() {
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
 
+    shutting_down = false;
+
     // Setup GPIO
     std::cout << "Init GPIO.\n";
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
@@ -334,46 +342,53 @@ int main(int argc, char **argv) {
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT_PULLUP);
     pinMode(DISPLAY_PIN, INPUT_PULLUP);
+    pinMode(SHUTDOWN_PIN, INPUT_PULLUP);
 
     // Create display thread.
     start_display_thread();
 
-    // Check if telementry enabled.
-    if (digitalRead(TELEMENTRY_PIN) == LOW) {
-        std::cout << "Starting bluetooth server.\n";
-        std::thread bluetooth_thread(Threads::bluetooth_server);
-        bluetooth_thread.detach();
-
-        std::cout << "Waiting for network.\n";
-        std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
-
-        // Configure server.
-        std::cout << "Reading environment varibles.\n";
-        server.ip = (std::string) getenv("SERVERIP");
-        server.username = (std::string) getenv("SERVERUSERNAME");
-        server.passwd = (std::string) getenv("SERVERPASSWD");
-        std::cout << "Server configured at " << server.ip << "\n";
-        std::cout << "Waiting for network.\n";
-        std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s.\n";
-        std::cout << "Attempting login.\n";
-
-        // Login.
-        struct curl_slist* login_headers = nullptr;
-        login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
-        login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
-        HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
-        if (login_request.status_code == 200) {
-            std::vector<std::string> parts = split_string(login_request.text, ',');
-            server.id = parts[0];
-            server.session = parts[1];
-        } else {
-            std::cerr << "Login failed\n";
-            return 1;
-        }
-    }
-
     while (true) {
-        if (Networking::check_network() && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
+        if (digitalRead(SHUTDOWN_PIN) == LOW) {
+            shutting_down = true;
+
+            // Wait a second.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+            system("shutdown now");
+        }
+
+        if (!telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
+            std::cout << "Starting bluetooth server.\n";
+            std::thread bluetooth_thread(Threads::bluetooth_server);
+            bluetooth_thread.detach();
+
+            std::cout << "Waiting for network.\n";
+            std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
+
+            // Configure server.
+            std::cout << "Reading environment varibles.\n";
+            server.ip = (std::string) getenv("SERVERIP");
+            server.username = (std::string) getenv("SERVERUSERNAME");
+            server.passwd = (std::string) getenv("SERVERPASSWD");
+            std::cout << "Server configured at " << server.ip << "\n";
+            std::cout << "Waiting for network.\n";
+            std::cout << "Network connected took " << std::to_string(Networking::wait_for_network()) << "s.\n";
+            std::cout << "Attempting login.\n";
+
+            // Login.
+            struct curl_slist* login_headers = nullptr;
+            login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
+            login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
+            HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
+            if (login_request.status_code == 200) {
+                std::vector<std::string> parts = split_string(login_request.text, ',');
+                server.id = parts[0];
+                server.session = parts[1];
+            } else {
+                std::cerr << "Login failed\n";
+                return 1;
+            }
+
             std::cout << "Starting telementry.\n";
             start_telementry();
         }
