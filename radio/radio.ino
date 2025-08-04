@@ -58,7 +58,7 @@ void setup() {
 }
 
 void loop() {
-  if (digitalRead(TOGGLE_PIN) == HIGH) {
+  if (digitalRead(TOGGLE_PIN) == LOW) {
     unsigned long currentMicros = micros();
     if (currentMicros - lastSampleMicros >= 1000000UL / sampleRate) {
       lastSampleMicros = currentMicros;
