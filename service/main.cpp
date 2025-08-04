@@ -338,6 +338,7 @@ int main(int argc, char **argv) {
         return -1;
     }
     
+    std::cout << "Init SPI.\n";
     if (wiringPiSPISetup(0, 8*1000*1000) == -1) {
         std::cerr << "Error: Failed to initialize SPI.\n";
         return -1;
