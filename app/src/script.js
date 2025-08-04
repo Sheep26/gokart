@@ -96,15 +96,15 @@ async function login(api_url, username, passwd) {
     
     hide_element(document.getElementById("login"));
     show_element(document.getElementById("main"));
-    toggle_view(menuElement.camera);
+    toggle_view(menuElements.camera);
     return true;
 }
 
 function toggle_view(view) {
     for (let element in menuElements) {
-        if (element == view) continue;
+        if (menuElements[element] == view) continue;
 
-        hide_element(element);
+        hide_element(menuElements[element]);
     }
 
     show_element(view);
@@ -165,14 +165,6 @@ function create_flv() {
         flvPlayer.load();
         flvPlayer.play();
     }
-}
-
-function toggle_camera() {
-    toggle_view(menuElement.camera);
-}
-
-function toggle_stats() {
-    toggle_view(menuElement.stats);
 }
 
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
