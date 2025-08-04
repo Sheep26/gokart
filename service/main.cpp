@@ -37,6 +37,12 @@
  CS     --- CE0_N OR GND
 */
 
+/*
+ ESP32 Pinout
+ 5V  --- 5V
+ GND --- GND
+*/
+
 struct Server {
     std::string ip;
     std::string username;
