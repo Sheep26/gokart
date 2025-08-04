@@ -22,19 +22,19 @@
 #define TELEMENTRY_PIN 10
 #define DISPLAY_PIN 11
 #define SHUTDOWN_PIN 12
-#define DC 5
-#define RST 6
+#define DC 17
+#define RST 18
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
  Display pinout.
  GND    --- Gnd
  VCC    --- 3.3V
- DO     --- SCLK(Pin#23)
- DI     --- MOSI(Pin#19)
- RES/RST    --- GPIO18(Pin#6)
- DC     --- GPIO17(Pin#5)
- CS     --- CS0(Pin#24)
+ DO     --- SCLK
+ DI     --- MOSI
+ RES/RST    --- GPIO18(Pin#12)
+ DC     --- GPIO17(Pin#11)
+ CS     --- CE0_N OR GND
 */
 
 struct Server {
