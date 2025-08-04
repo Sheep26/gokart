@@ -217,7 +217,6 @@ void Threads::display_t() {
 
     pinMode (DC, OUTPUT);
     pinMode (RST, OUTPUT);
-    wiringPiSPISetup(0, 8*1000*1000);
     
     // reset
     digitalWrite(RST,  LOW);
@@ -336,6 +335,11 @@ int main(int argc, char **argv) {
     std::cout << "Init GPIO.\n";
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         std::cerr << "Error: Failed to initialize GPIO.\n";
+        return -1;
+    }
+    
+    if (wiringPiSPISetup(0, 8*1000*1000) == -1) {
+        std::cerr << "Error: Failed to initialize SPI.\n";
         return -1;
     }
 
