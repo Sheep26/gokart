@@ -129,14 +129,16 @@ app.get("/api/get_data", (req, res) => {
 app.post("/api/update_data", (req, res) => {
     var user_session = req.header("session");
     var user_id = req.header("id");
+    const date = new Date();
+
     for (let session in sessions) {
         if (session == user_id && sessions[session].session == user_session) {
-            sessions[session].timestamp = Date.now();
-            last_online = Date.now();
+            sessions[session].timestamp = date.now();
+            last_online = date.now();
             
             data.online = true;
             data.data = req.body;
-            data.speedData.labels.push(Date.toLocaleTimeString());
+            data.speedData.labels.push(date.toLocaleTimeString());
             data.speedData.data.push(data.data.speed);
 
             res.sendStatus(200);
