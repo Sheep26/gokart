@@ -195,12 +195,17 @@ function create_charts() {
             }]
         },
         options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            },
             responsive: true
         }
     });
 }
 
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
-hide_element(document.getElementById("main"));
+hide_element(document.getElementById("admin"));
 hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));
