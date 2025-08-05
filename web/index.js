@@ -40,11 +40,15 @@ const PORT = process.env.PORT || 8001;
 let data = {
     online: false, 
     data: {
-        "num": 0,
-        "speed": 0,
-        "rpm": 0,
-        "batteryVolt": 0.00,
-        "batteryPercent": 0.00,
+        num: 0,
+        speed: 0,
+        rpm: 0,
+        batteryVolt: 0.00,
+        batteryPercent: 0.00
+    },
+    speedData: {
+        labels: [],
+        data: []
     }
 }
 
@@ -127,13 +131,14 @@ app.post("/api/update_data", (req, res) => {
     var user_id = req.header("id");
     for (let session in sessions) {
         if (session == user_id && sessions[session].session == user_session) {
-            sessions[session].timestamp = Date.now();
-            last_online = Date.now();
+            sessions[session].timestamp = new Date().now();
+            last_online = new Date().now();
             
-            data = {
-                online: true,
-                data: req.body
-            };
+            data.online = true;
+            data.data = req.body;
+            data.speedData.labels.push(new Date().toLocaleTimeString());
+            data.speedData.data.push(data.data.speed);
+
             res.sendStatus(200);
             return;
         }

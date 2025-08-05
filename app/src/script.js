@@ -50,6 +50,14 @@ class Connection {
 
         return this.data.online;
     }
+
+    get_speedData() {
+        if (this.data == null) {
+            return false;
+        }
+
+        return this.data.speedData;
+    }
 }
 
 // [element, unit_of_mesurement(str)]
@@ -68,6 +76,8 @@ let menuElements = {
 
 let connection = null;
 let flvPlayer = null;
+const ctx = document.getElementById('speedChart');
+let speedChart = null;
 
 // Hide/Show elements.
 function hide_element(element) {element.style.display = "none";}
@@ -90,7 +100,8 @@ async function login(api_url, username, passwd) {
     var text = (await response.text()).split(",");
     
     connection = new Connection(api_url, text);
-
+    
+    create_charts();
     setInterval(check_online, 100);
     setInterval(update_statistics, 100);
     
@@ -132,6 +143,10 @@ function update_statistics() {
         return;
     }
 
+    speedChart.data.labels = connection.get_speedData().labels;
+    speedChart.data.data = connection.get_speedData().data;
+    speedChart.update();
+
     // Update elements
     for (let key in elements) {
         // Check if json data isn't null.
@@ -168,7 +183,24 @@ function create_flv() {
     }
 }
 
+function create_charts() {
+    speedChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [new Date()],
+            datasets: [{
+            label: 'Speed',
+            data: [0],
+            borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+}
+
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
-hide_element(document.getElementById("main"));
-hide_element(document.getElementById("nav"));
+hide_element(document.getElementById("login"));
+//hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));
