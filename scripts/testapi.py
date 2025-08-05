@@ -1,5 +1,6 @@
 import requests
 from time import sleep
+from random import randint
 
 data = {
         "num": 12,
@@ -14,8 +15,9 @@ print(session.status_code)
 
 # sending post request and saving response as response object
 while True:
+        data["speed"] = randint(0, 50)
         headers={"id": session.text.split(",")[0], "session": session.text.split(",")[1]}
         print(headers)
         r = requests.post(url="https://gokart.sheepland.xyz/api/update_data", data=data, headers=headers)
         print(r.status_code)
-        sleep(0.1)
+        sleep(1)

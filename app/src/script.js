@@ -144,7 +144,7 @@ function update_statistics() {
     }
 
     speedChart.data.labels = connection.get_speedData().labels;
-    speedChart.data.data = connection.get_speedData().data;
+    speedChart.data.datasets[0].data = connection.get_speedData().data;
     speedChart.update();
 
     // Update elements
@@ -206,6 +206,6 @@ function create_charts() {
 }
 
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
-hide_element(document.getElementById("admin"));
+hide_element(document.getElementById("main"));
 hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));

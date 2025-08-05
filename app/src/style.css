@@ -2,6 +2,10 @@ body {
     background-color: rgb(21, 21, 21);
 }
 
+main {
+    margin-top: 10%;
+}
+
 h1, h2, h3, p, a {
     color: white;
 }
@@ -9,6 +13,7 @@ h1, h2, h3, p, a {
 nav {
     background-color: #252525;
     padding: 5px;
+    position: absolute;
 }
 
 .cam {
@@ -21,7 +26,7 @@ nav {
 }
 
 .connection-status {
-    position: fixed;
-    top: 0;
-    right: 0;
+    position: absolute;
+    top: 5;
+    right: 5;
 }
