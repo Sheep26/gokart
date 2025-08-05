@@ -51,7 +51,7 @@ class Connection {
         return this.data.online;
     }
 
-    get_speedData() {
+    get_speed_data() {
         if (this.data == null) {
             return false;
         }
@@ -133,8 +133,8 @@ function update_statistics() {
         return;
     }
 
-    speedChart.data.labels = connection.get_speedData().labels;
-    speedChart.data.datasets[0].data = connection.get_speedData().data;
+    speedChart.data.labels = connection.get_speed_data().labels;
+    speedChart.data.datasets[0].data = connection.get_speed_data().data;
     speedChart.update();
 
     /*// Update elements
