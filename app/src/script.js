@@ -201,6 +201,6 @@ function create_charts() {
 }
 
 // Change this line back to hide_element(document.getElementById("main")); when finished testing.
-hide_element(document.getElementById("login"));
-//hide_element(document.getElementById("nav"));
+hide_element(document.getElementById("main"));
+hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));
