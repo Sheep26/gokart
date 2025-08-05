@@ -2,18 +2,11 @@ import requests
 from time import sleep
 
 data = {
-        "speed": 20,
-        "speed_avg": 20,
-        "speed_max": 20,
+        "num": 12,
+        "speed": 12,
         "rpm": 1000,
-        "rpm_avg": 1000,
-        "rpm_max": 1000,
-        "power": 1000,
-        "power_avg": 1000,
-        "power_max": 1000,
-        "throttle": 100,
-        "throttle_avg": 100,
-        "throttle_max": 100
+        "batteryVolt": 46.43,
+        "batteryPercent": 29.00
 }
 
 session = requests.get("https://gokart.sheepland.xyz/api/login", headers={"username": "rpi", "passwd": "admin"})
