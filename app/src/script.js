@@ -67,7 +67,6 @@ let menuElements = {
 
 let connection = null;
 let flvPlayer = null;
-const ctx = document.getElementById('speedChart');
 let speedChart = null;
 
 // Hide/Show elements.
@@ -173,8 +172,21 @@ function create_flv() {
 
 function create_charts() {
     Chart.register(ChartZoom);
+    const speedChartCtx = document.getElementById('speedChart');
 
-    speedChart = new Chart(ctx, {
+    const zoomOptions = {
+        zoom: {
+            wheel: {
+                enabled: true,
+            },
+            pinch: {
+                enabled: true
+            },
+            mode: 'xy'
+        }
+    }
+
+    speedChart = new Chart(speedChartCtx, {
         type: 'line',
         data: {
             labels: [new Date()],
@@ -192,22 +204,8 @@ function create_charts() {
             },
             responsive: true,
             plugins: {
-                zoom: {
-                    zoom: {
-                        wheel: {
-                            enabled: true,
-                        },
-                        pinch: {
-                            enabled: true
-                        },
-                        mode: 'xy',
-                    },
-                    pan: {
-                        enabled: true,
-                        mode: 'xy',
-                    }
-                },
-            }
+                zoom: zoomOptions
+            },
         }
     });
 }
