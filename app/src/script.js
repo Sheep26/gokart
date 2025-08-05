@@ -157,9 +157,6 @@ function update_statistics() {
 }
 
 function check_online() {
-    var online = connection.get_online();
-    
-    document.getElementById("status").innerHTML = online ? "Online" : "Offline";
     if (connection.get_online()) {
         if (flvPlayer == null) {
             create_flv();

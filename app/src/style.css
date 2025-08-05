@@ -19,9 +19,3 @@ nav {
 .login-ell {
     color: rgb(255, 50, 50);
 }
-
-.connection-status {
-    position: absolute;
-    top: 5;
-    right: 5;
-}
