@@ -60,15 +60,6 @@ class Connection {
     }
 }
 
-// [element, unit_of_mesurement(str)]
-// We store the elements we are using to display data here so we don't have to call for them later.
-let elements = {
-    speed: [document.getElementById("speed-data"), "km/h"],
-    rpm: [document.getElementById("rpm-data"), "rpm"],
-    batteryVolt: [document.getElementById("battery-volt-data"), "V"],
-    batteryPercent: [document.getElementById("battery-percent-data"), "%"],
-}
-
 let menuElements = {
     camera: document.getElementById("videoPage"),
     stats: document.getElementById("statsPage"),
@@ -137,9 +128,9 @@ function update_statistics() {
     // Check if online
     if (!connection.get_online()) {
         // Set element data to 0.
-        for (let key in elements) {
+        /*for (let key in elements) {
             elements[key][0].innerHTML = "0" + elements[key][1]
-        }
+        }*/
         return;
     }
 
@@ -147,13 +138,13 @@ function update_statistics() {
     speedChart.data.datasets[0].data = connection.get_speedData().data;
     speedChart.update();
 
-    // Update elements
+    /*// Update elements
     for (let key in elements) {
         // Check if json data isn't null.
         if (connection.get_data()[key] != undefined && elements[key][0] != undefined && elements[key][0] != null) {
             elements[key][0].innerHTML = connection.get_data()[key] + elements[key][1];
         }
-    }
+    }*/
 }
 
 function check_online() {
@@ -181,6 +172,8 @@ function create_flv() {
 }
 
 function create_charts() {
+    Chart.register(ChartZoom);
+
     speedChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -193,11 +186,28 @@ function create_charts() {
         },
         options: {
             scales: {
-            y: {
-                beginAtZero: true
-            }
+                y: {
+                    beginAtZero: true
+                }
             },
-            responsive: true
+            responsive: true,
+            plugins: {
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy',
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                    }
+                },
+            }
         }
     });
 }

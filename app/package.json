@@ -31,6 +31,7 @@
     "electron": "^36.1.0"
   },
   "dependencies": {
+    "chartjs-plugin-zoom": "^2.2.0",
     "electron-squirrel-startup": "^1.0.1",
     "flv.js": "^1.6.2"
   }
