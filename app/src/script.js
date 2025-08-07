@@ -125,11 +125,6 @@ function check_login() {
     });
 }
 
-function parseTimeLabel(label) {
-    // Assumes format like "6:52 AM"
-    return new Date(`1970-01-01T${label}`).getTime();
-}
-
 function update_statistics() {
     connection.update_data();
     // Check if online
@@ -143,6 +138,7 @@ function update_statistics() {
 
     statsChart.data.labels = connection.get_speed_data().labels;
     statsChart.data.datasets[0].data = connection.get_speed_data().data;
+
     statsChart.update();
 
     /*// Update elements
@@ -218,7 +214,7 @@ function create_charts() {
                 }
             },
             responsive: true,
-            animation: false,
+            animation: true,
             plugins: {
                 zoom: zoomOptions
             },
