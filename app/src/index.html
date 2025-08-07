@@ -9,6 +9,9 @@
     <script src="flv.min.js"></script>
     <script src="../node_modules/chart.js/dist/chart.umd.min.js"></script>
     <script src="../node_modules/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
     <div id="login" class="login">
       <center>
         <h1>Login</h1>
@@ -35,9 +38,7 @@
       </div>
 
       <div id="statsPage">
-        <div>
-          <canvas id="speedChart"></canvas>
-        </div>
+        <canvas id="statsChart"></canvas>
       </div>
     </main>
     <script src="./script.js"></script>

@@ -67,7 +67,10 @@ let menuElements = {
 
 let connection = null;
 let flvPlayer = null;
-let speedChart = null;
+let statsChart = null;
+let isPanning = false;
+let startX = 0;
+let startY = 0;
 
 // Hide/Show elements.
 function hide_element(element) {element.style.display = "none";}
@@ -122,6 +125,11 @@ function check_login() {
     });
 }
 
+function parseTimeLabel(label) {
+    // Assumes format like "6:52 AM"
+    return new Date(`1970-01-01T${label}`).getTime();
+}
+
 function update_statistics() {
     connection.update_data();
     // Check if online
@@ -133,9 +141,9 @@ function update_statistics() {
         return;
     }
 
-    speedChart.data.labels = connection.get_speed_data().labels;
-    speedChart.data.datasets[0].data = connection.get_speed_data().data;
-    speedChart.update();
+    statsChart.data.labels = connection.get_speed_data().labels;
+    statsChart.data.datasets[0].data = connection.get_speed_data().data;
+    statsChart.update();
 
     /*// Update elements
     for (let key in elements) {
@@ -171,8 +179,7 @@ function create_flv() {
 }
 
 function create_charts() {
-    Chart.register(ChartZoom);
-    const speedChartCtx = document.getElementById('speedChart');
+    const statsChartCtx = document.getElementById('statsChart');
 
     const zoomOptions = {
         zoom: {
@@ -182,11 +189,16 @@ function create_charts() {
             pinch: {
                 enabled: true
             },
-            mode: 'xy'
+            mode: 'x',
+        },
+        pan: {
+            enabled: true,
+            mode: 'xy',
+            modifierKey: null
         }
-    }
+    };
 
-    speedChart = new Chart(speedChartCtx, {
+    statsChart = new Chart(statsChartCtx, {
         type: 'line',
         data: {
             labels: [new Date()],
@@ -200,13 +212,45 @@ function create_charts() {
             scales: {
                 y: {
                     beginAtZero: true
+                },
+                x: {
+                    type: 'time'
                 }
             },
             responsive: true,
+            animation: false,
             plugins: {
                 zoom: zoomOptions
             },
         }
+    });
+
+    const canvas = document.getElementById('statsChart');
+
+    canvas.addEventListener('mousedown', (e) => {
+        isPanning = true;
+        startX = e.clientX;
+        startY = e.clientY;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isPanning) return;
+
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        statsChart.pan({ x: deltaX, y: deltaY });
+
+        startX = e.clientX;
+        startY = e.clientY;
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isPanning = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        isPanning = false;
     });
 }
 
@@ -214,3 +258,5 @@ function create_charts() {
 hide_element(document.getElementById("main"));
 hide_element(document.getElementById("nav"));
 hide_element(document.getElementById("login-ell"));
+
+Chart.register(ChartZoom);

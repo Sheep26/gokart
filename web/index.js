@@ -137,7 +137,7 @@ app.post("/api/update_data", (req, res) => {
             
             data.online = true;
             data.data = req.body;
-            data.speedData.labels.push(new Date().toLocaleTimeString());
+            data.speedData.labels.push(Date.now());
             data.speedData.data.push(data.data.speed);
 
             res.sendStatus(200);
