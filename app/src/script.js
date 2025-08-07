@@ -214,7 +214,7 @@ function create_charts() {
                 }
             },
             responsive: true,
-            animation: true,
+            animation: false,
             plugins: {
                 zoom: zoomOptions
             },
