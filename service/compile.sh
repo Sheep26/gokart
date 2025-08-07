@@ -60,12 +60,30 @@ if ! $(apt list --installed | grep -q libbluetooth-dev); then
     apt install libbluetooth-dev -y
 fi
 
-#if ! $(apt list --installed | grep -q libasound2-dev); then
-#    echo "Dependency libasound2-dev missing, installing"
+if ! $(apt list --installed | grep -q libasound2-dev); then
+    echo "Dependency libasound2-dev missing, installing"
 
-    # Install the library.
-#    apt install libasound2-dev -y
-#fi
+     Install the library.
+    apt install libasound2-dev -y
+fi
+
+if ! $(apt list --installed | grep -q bluetooth); then
+    echo "bluetooth Missing, installing."
+
+    apt install bluetooth -y
+fi
+
+if ! $(apt list --installed | grep -q bluez); then
+    echo "bluez Missing, installing."
+
+    apt install bluez -y
+fi
+
+if ! $(apt list --installed | grep -q libsndfile1-dev); then
+    echo "libsndfile1-dev Missing, installing."
+
+    apt install libsndfile1-dev -y
+fi
 
 # -lasound
 

@@ -1,42 +1,3 @@
-# Check dependencies.
-apt update
-
-if ! $(apt list --installed | grep -q git); then
-    echo "Dependency git missing, installing."
-    # Install libcurl library
-    apt install git -y
-fi
-
-if ! $(apt list --installed | grep -q ffmpeg); then
-    echo "Ffmpeg missing, installing."
-    # Install build-essential (includes g++)
-    apt install ffmpeg -y
-fi
-
-if ! $(apt list --installed | grep -q libsndfile1-dev); then
-    echo "libsndfile1-dev Missing, installing."
-
-    apt install libsndfile1-dev -y
-fi
-
-if ! $(apt list --installed | grep -q bluetooth); then
-    echo "bluetooth Missing, installing."
-
-    apt install bluetooth -y
-fi
-
-if ! $(apt list --installed | grep -q bluez); then
-    echo "bluez Missing, installing."
-
-    apt install bluez -y
-fi
-
-if ! $(apt list --installed | grep -q libbluetooth-dev); then
-    echo "libbluetooth-dev Missing, installing."
-
-    apt install libbluetooth-dev -y
-fi
-
 echo "Telementry [y/n]"
 read telementry
 if [ "${telementry,,}" == "y" ]; then
@@ -75,16 +36,6 @@ echo "Cloning github repository."
 git clone https://github.com/Sheep26/gokart.git
 
 cd gokart/service
-
-# Compile pi fm rds.
-echo "Compiling pi fm rds."
-git clone https://github.com/ChristopheJacquet/PiFmRds.git
-cd PiFmRds/src
-make clean
-make
-mv ./pi_fm_rds /usr/bin/pi_fm_rds
-cd ../../
-rm -rf PiFmRds
 
 # Compile executable.
 echo "Compiling executable."
