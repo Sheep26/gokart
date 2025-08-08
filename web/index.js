@@ -51,23 +51,27 @@ let data = {
         datasets: [
             {
                 label: 'Speed',
-                data: [],
-                borderWidth: 1
+                data: [0],
+                borderWidth: 1,
+                borderColor: 'blue',
             },
             {
                 label: 'RPM',
-                data: [],
-                borderWidth: 1
+                data: [0],
+                borderWidth: 1,
+                borderColor: 'red',
             },
             {
                 label: 'Battery Voltage',
-                data: [],
-                borderWidth: 1
+                data: [0],
+                borderWidth: 1,
+                borderColor: 'yellow',
             },
             {
                 label: 'Battery Percent',
-                data: [],
-                borderWidth: 1
+                data: [0],
+                borderWidth: 1,
+                borderColor: 'green',
             }
         ]
     }
