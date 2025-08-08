@@ -51,25 +51,25 @@ let data = {
         datasets: [
             {
                 label: 'Speed',
-                data: [0],
+                data: [],
                 borderWidth: 1,
                 borderColor: 'blue',
             },
             {
                 label: 'RPM',
-                data: [0],
+                data: [],
                 borderWidth: 1,
                 borderColor: 'red',
             },
             {
                 label: 'Battery Voltage',
-                data: [0],
+                data: [],
                 borderWidth: 1,
                 borderColor: 'yellow',
             },
             {
                 label: 'Battery Percent',
-                data: [0],
+                data: [],
                 borderWidth: 1,
                 borderColor: 'green',
             }
@@ -163,10 +163,10 @@ app.post("/api/update_data", (req, res) => {
             data.online = true;
             data.data = req.body;
             data.chart.labels.push(Date.now());
-            data.chart.datasets[0].push(data.data.speed); // Speed dataset.
-            data.chart.datasets[1].push(data.data.rpm); // RPM dataset.
-            data.chart.datasets[1].push(data.data.batteryVolt); // Battery Voltage dataset.
-            data.chart.datasets[1].push(data.data.batteryPercent); // Battery Percent dataset.
+            data.chart.datasets[0].data.push(data.data.speed); // Speed dataset.
+            data.chart.datasets[1].data.push(data.data.rpm); // RPM dataset.
+            data.chart.datasets[2].data.push(data.data.batteryVolt); // Battery Voltage dataset.
+            data.chart.datasets[3].data.push(data.data.batteryPercent); // Battery Percent dataset.
 
             res.sendStatus(200);
             return;

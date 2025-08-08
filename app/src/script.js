@@ -51,12 +51,12 @@ class Connection {
         return this.data.online;
     }
 
-    get_speed_data() {
+    get_chart_data() {
         if (this.data == null) {
             return false;
         }
 
-        return this.data.speedData;
+        return this.data.chart;
     }
 }
 
@@ -136,8 +136,7 @@ function update_statistics() {
         return;
     }
 
-    statsChart.data.labels = connection.get_speed_data().labels;
-    statsChart.data.datasets[0].data = connection.get_speed_data().data;
+    statsChart.data = connection.get_chart_data();
 
     statsChart.update();
 
