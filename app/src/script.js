@@ -197,12 +197,8 @@ function create_charts() {
     statsChart = new Chart(statsChartCtx, {
         type: 'line',
         data: {
-            labels: [new Date()],
-            datasets: [{
-            label: 'Speed',
-            data: [0],
-            borderWidth: 1
-            }]
+            labels: [Date.now()],
+            datasets: []
         },
         options: {
             scales: {

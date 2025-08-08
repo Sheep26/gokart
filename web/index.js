@@ -46,9 +46,30 @@ let data = {
         batteryVolt: 0.00,
         batteryPercent: 0.00
     },
-    speedData: {
+    chart: {
         labels: [],
-        data: []
+        datasets: [
+            {
+                label: 'Speed',
+                data: [],
+                borderWidth: 1
+            },
+            {
+                label: 'RPM',
+                data: [],
+                borderWidth: 1
+            },
+            {
+                label: 'Battery Voltage',
+                data: [],
+                borderWidth: 1
+            },
+            {
+                label: 'Battery Percent',
+                data: [],
+                borderWidth: 1
+            }
+        ]
     }
 }
 
@@ -137,8 +158,11 @@ app.post("/api/update_data", (req, res) => {
             
             data.online = true;
             data.data = req.body;
-            data.speedData.labels.push(Date.now());
-            data.speedData.data.push(data.data.speed);
+            data.chart.labels.push(Date.now());
+            data.chart.datasets[0].push(data.data.speed); // Speed dataset.
+            data.chart.datasets[1].push(data.data.rpm); // RPM dataset.
+            data.chart.datasets[1].push(data.data.batteryVolt); // Battery Voltage dataset.
+            data.chart.datasets[1].push(data.data.batteryPercent); // Battery Percent dataset.
 
             res.sendStatus(200);
             return;
