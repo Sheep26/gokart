@@ -206,6 +206,12 @@ function create_charts() {
                 },
                 x: {
                     type: 'time'
+                },
+                ySmall: {
+                    position: 'left'
+                },
+                yBig: {
+                    position: 'right'
                 }
             },
             responsive: true,

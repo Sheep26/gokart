@@ -52,24 +52,28 @@ let data = {
             {
                 label: 'Speed',
                 data: [],
+                yAxisID: 'ySmall',
                 borderWidth: 1,
                 borderColor: 'blue',
             },
             {
                 label: 'RPM',
                 data: [],
+                yAxisID: 'yBig',
                 borderWidth: 1,
                 borderColor: 'red',
             },
             {
                 label: 'Battery Voltage',
                 data: [],
+                yAxisID: 'ySmall',
                 borderWidth: 1,
                 borderColor: 'yellow',
             },
             {
                 label: 'Battery Percent',
                 data: [],
+                yAxisID: 'ySmall',
                 borderWidth: 1,
                 borderColor: 'green',
             }
