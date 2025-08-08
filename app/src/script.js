@@ -202,15 +202,14 @@ function create_charts() {
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    position: 'left'
                 },
                 x: {
                     type: 'time'
                 },
-                ySmall: {
-                    position: 'left'
-                },
                 yBig: {
+                    beginAtZero: true,
                     position: 'right'
                 }
             },
