@@ -19,3 +19,7 @@ nav {
 .login-ell {
     color: rgb(255, 50, 50);
 }
+
+html, body {
+    overflow: hidden;
+}
