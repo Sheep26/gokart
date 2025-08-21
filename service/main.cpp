@@ -296,6 +296,7 @@ void start_display_thread() {
 
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
+    int serial_fd;
 
     shutting_down = false;
 
@@ -303,13 +304,22 @@ int main(int argc, char **argv) {
     std::cout << "Init GPIO.\n";
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         std::cerr << "Error: Failed to initialize GPIO.\n";
-        return -1;
+        return 1;
     }
     
     std::cout << "Init SPI.\n";
     if (wiringPiSPISetup(0, 8*1000*1000) == -1) {
         std::cerr << "Error: Failed to initialize SPI.\n";
-        return -1;
+        return 2;
+    }
+
+    // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
+    std::cout << "Init Serial.\n";
+    if ((fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
+        printf("Unable to open /dev/ttyS0\n");
+    } else if ((fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
+        printf("Unable to open /dev/ttyAMA0\n");
+        return 3;
     }
 
     // Configure server.
