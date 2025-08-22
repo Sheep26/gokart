@@ -54,7 +54,6 @@ struct Server {
 Server server;
 CommandListener commandListener;
 std::atomic<bool> telementry_running;
-std::atomic<bool> display_on;
 std::atomic<bool> shutting_down;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
@@ -217,15 +216,6 @@ void Threads::display_t() {
         wiringPiSPIDataRW(0, oled.pix_buf, 1024);
         digitalWrite(DC, HIGH);
 
-        if (!display_on) {
-            // Power off the display.
-            digitalWrite(DC, LOW);
-            wiringPiSPIDataRW(0, 0xAE, 1);
-            digitalWrite(DC, HIGH);
-
-            break;
-        }
-
         // Sleep for 33ms to achieve ~30 FPS
         // This is a rough approximation, actual frame rate may vary.
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
@@ -290,8 +280,6 @@ void start_telementry() {
 void start_display_thread() {
     std::thread display_thread(Threads::display_t);
     display_thread.detach();
-
-    display_on = true;
 }
 
 int main(int argc, char **argv) {
@@ -375,16 +363,6 @@ int main(int argc, char **argv) {
 
             std::cout << "Starting telementry.\n";
             start_telementry();
-        }
-
-        if ((digitalRead(TELEMENTRY_PIN) == LOW) != display_on) {
-            if (!display_on) {
-                start_display_thread();
-            }
-
-            display_on = digitalRead(TELEMENTRY_PIN) == LOW;
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10000));
