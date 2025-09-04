@@ -21,6 +21,7 @@ if [ "${telementry,,}" == "y" ]; then
             export SERVERIP="$serverip"
             export SERVERUSERNAME="$username"
             export SERVERPASSWD="$password"
+            break
         fi
     done
 fi
