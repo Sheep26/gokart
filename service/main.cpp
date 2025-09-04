@@ -175,7 +175,7 @@ void Threads::display_t() {
         SET_DISPLAY_CLOCK_DEVICE_RATIO,  0x80, // 0xD5: Set clock divide ratio/oscillator frequency
         SET_MULTIPLEX_RATIO,             0x3F, // 0xA8: Set multiplex ratio (1/64 duty cycle)
         SET_DISPLAY_OFFSET,              0x00, // 0xD3: Set display offset to 0
-        SET_DISPLAY_START_LINE | 0x00,         // 0x40: Set display start line to 0
+        SET_DISPLAY_START_LINE/* | 0x00*/,         // 0x40: Set display start line to 0
         SET_SEGMENT_REMAP_ON,                  // 0xA1: Set segment re-map (column address 127 is mapped to SEG0)
         SET_COM_OUTPUT_SCAN_DIRECTION_8,       // 0xC8: Set COM output scan direction (remapped mode)
         SET_COM_PINS_HARDWARE_CONFIG,    0x12, // 0xDA: Set COM pins hardware configuration
