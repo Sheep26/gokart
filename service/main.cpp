@@ -152,6 +152,21 @@ void Threads::ffmpeg_t() {
     }
 }
 
+void display_write(OledScreen oled) {
+    // Send data to display.
+    digitalWrite(DC, LOW);
+    wiringPiSPIDataRW(0, poscode, 3);
+    digitalWrite(DC, HIGH);
+
+    digitalWrite(DC, LOW);
+    wiringPiSPIDataRW(0, oled.pix_buf, 1024);
+    digitalWrite(DC, HIGH);
+}
+
+void buffer_display(OledScreen oled) {
+    oled.println("Hello world!", 16, 16, 32, 1);
+}
+
 void Threads::display_t() {
     OledScreen oled;
 
@@ -200,21 +215,8 @@ void Threads::display_t() {
         // Clear screen.
         oled.clear();
 
-        if (!shutting_down) {
-            // Print Hello World to display.
-            oled.println("Hello world!", 16, 16, 32, 1);
-        } else {
-            oled.println("Shutting down.", 16, 16, 32, 1);
-        }
-        
-        // Send data to display.
-        digitalWrite(DC, LOW);
-        wiringPiSPIDataRW(0, poscode, 3);
-        digitalWrite(DC, HIGH);
-
-        digitalWrite(DC, LOW);
-        wiringPiSPIDataRW(0, oled.pix_buf, 1024);
-        digitalWrite(DC, HIGH);
+        buffer_display(oled);
+        display_write(oled);
 
         // Sleep for 33ms to achieve ~30 FPS
         // This is a rough approximation, actual frame rate may vary.
