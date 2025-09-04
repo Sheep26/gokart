@@ -13,7 +13,7 @@ if [ "${telementry,,}" == "y" ]; then
         read password
 
         # Check login
-        login_status=$(curl -s -o /dev/null -w "%{http_code}" "$serverip/api/login")
+        login_status=$(curl -s -o /dev/null -w "%{http_code}" -H "username: $username" -H "passwd: $password" "$serverip/api/login")
         if [ "$login_status" == "200" ]; then
             # Login successful.
             logged_in=1
