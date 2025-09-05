@@ -308,7 +308,6 @@ int main(int argc, char **argv) {
         printf("Unable to open /dev/ttyS0\n");
     } else if ((serial_fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
         printf("Unable to open /dev/ttyAMA0\n");
-        return 3;
     }
 
     // Configure server.
