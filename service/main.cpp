@@ -317,7 +317,7 @@ int main(int argc, char **argv) {
     std::cout << "Server configured at " << server.ip << "\n";
     
     // Set race number.
-    data.num = (std::string) getenv("RACENUM");
+    data.num = (int) getenv("RACENUM");
 
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
