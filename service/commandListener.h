@@ -5,7 +5,7 @@
 
 struct Command {
     std::string name;
-    std::function<std::string()> func;
+    std::function<std::string(std::vector<std::string>)> func;
 };
 
 class CommandListener {
