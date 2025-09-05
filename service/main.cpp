@@ -20,7 +20,6 @@
 #include "commandListener.h"
 
 #define TELEMENTRY_PIN 10
-#define DISPLAY_PIN 11
 #define SHUTDOWN_PIN 12
 #define DC 27
 #define RST 22
@@ -321,9 +320,10 @@ int main(int argc, char **argv) {
     data.num = (std::string) getenv("RACENUM");
 
     // Set pin modes.
-    pinMode(TELEMENTRY_PIN, INPUT_PULLUP);
-    pinMode(DISPLAY_PIN, INPUT_PULLUP);
-    pinMode(SHUTDOWN_PIN, INPUT_PULLUP);
+    pinMode(TELEMENTRY_PIN, INPUT);
+    pinMode(SHUTDOWN_PIN, INPUT);
+    pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
+    pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
 
     // Create display thread.
     start_display_thread();
