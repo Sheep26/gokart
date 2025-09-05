@@ -115,7 +115,7 @@ void Threads::ffmpeg_t() {
             }
 
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Num:%d\nSpeed:%dkmph\nrpm:%d\nBattery:V%d", data.num, data.speed, data.rpm, data.battery);
+            snprintf(overlay, sizeof(overlay), "Num:%d\nSpeed:%dkmph\nrpm:%d\nBattery:V%d%Voltage:%dv", data.num, data.speed, data.rpm, data.batteryPercent, data.batteryVoltage);
             
             fprintf(f, "%s", overlay);
 
