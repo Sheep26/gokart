@@ -1,6 +1,6 @@
 #include "commandListener.h"
 
-std::vector<Command> commands;
+std::vector<Command> commands = {};
 
 std::string help(std::vector<std::string> args) {
     std::string output = "Help\n";
@@ -20,13 +20,15 @@ std::string connect_wifi(std::vector<std::string> args) {
 
 void CommandListener::init_commands() {
     commands.clear();
-    commands.push_back({"help", help});
-    commands.push_back({"connect_wifi", connect_wifi});
+    Command help_cmd = {"help", help};
+    Command connect_wifi_cmd = {"help", help};
+    commands.push_back(help_cmd);
+    commands.push_back(connect_wifi_cmd);
 }
 
-std::string CommandListener::handle_command(std::string command, std::vector<std::string> args) {
+std::string CommandListener::handle_command(std::vector<std::string> args) {
     for (const auto& cmd : commands) {
-        if (cmd.name == command) {
+        if (cmd.name == args[0]) {
             return cmd.func(args);
         }
     }

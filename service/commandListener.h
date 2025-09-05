@@ -11,5 +11,5 @@ struct Command {
 class CommandListener {
 public:
     static void init_commands();
-    static std::string handle_command(std::string command);
+    static std::string handle_command(std::vector<std::string> args);
 };
