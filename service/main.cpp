@@ -30,10 +30,10 @@
  Display pinout.
  GND    --- Gnd
  VCC    --- 3.3V
- DO     --- SCLK
- DI     --- MOSI
- RES/RST    --- GPIO18(Pin#12)
- DC     --- GPIO17(Pin#11)
+ SCLK   --- SCLK
+ SDA    --- MOSI
+ RES    --- GPIO18
+ DC     --- GPIO17
  CS     --- CE0_N OR GND
 */
 
@@ -197,8 +197,8 @@ void Threads::display_t() {
         SET_DISPLAY_START_LINE     // line #0
     };
 
-    pinMode (DC, OUTPUT);
-    pinMode (RST, OUTPUT);
+    pinMode(DC, OUTPUT);
+    pinMode(RST, OUTPUT);
     
     // reset
     digitalWrite(RST,  LOW);
