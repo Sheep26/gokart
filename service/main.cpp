@@ -22,8 +22,8 @@
 #define TELEMENTRY_PIN 10
 #define DISPLAY_PIN 11
 #define SHUTDOWN_PIN 12
-#define DC 17
-#define RST 18
+#define DC 27
+#define RST 22
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -32,8 +32,8 @@
  VCC    --- 3.3V
  SCLK   --- SCLK
  SDA    --- MOSI
- RES    --- GPIO18
- DC     --- GPIO17
+ RES    --- GPIO22
+ DC     --- GPIO27
  CS     --- CE0_N OR GND
 */
 
