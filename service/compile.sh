@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 apt update
-apt upgrade
+apt upgrade -y
 
 # Check dependencies.
 if ! $(apt list --installed | grep -q git); then
