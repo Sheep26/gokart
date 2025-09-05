@@ -63,7 +63,7 @@ fi
 if ! $(apt list --installed | grep -q libasound2-dev); then
     echo "Dependency libasound2-dev missing, installing"
 
-     Install the library.
+    # Install the libasound2-dev library.
     apt install libasound2-dev -y
 fi
 
