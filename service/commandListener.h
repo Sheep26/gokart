@@ -12,6 +12,4 @@ class CommandListener {
 public:
     static void init_commands();
     static std::string handle_command(std::string command);
-private:
-    static std::vector<Command> commands;
 };

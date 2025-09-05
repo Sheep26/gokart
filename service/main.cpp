@@ -159,12 +159,12 @@ void display_write(OledScreen *oled, unsigned char poscode[]) {
     digitalWrite(DC, HIGH);
 
     digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, oled.pix_buf, 1024);
+    wiringPiSPIDataRW(0, oled->pix_buf, 1024);
     digitalWrite(DC, HIGH);
 }
 
 void buffer_display(OledScreen *oled) {
-    oled.println("Hello world!", 16, 16, 32, 1);
+    oled->println("Hello world!", 16, 16, 32, 1);
 }
 
 void Threads::display_t() {
@@ -304,9 +304,9 @@ int main(int argc, char **argv) {
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
-    if ((fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
+    if ((serial_fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
         printf("Unable to open /dev/ttyS0\n");
-    } else if ((fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
+    } else if ((serial_fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
         printf("Unable to open /dev/ttyAMA0\n");
         return 3;
     }

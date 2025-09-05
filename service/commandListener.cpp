@@ -1,5 +1,7 @@
 #include "commandListener.h"
 
+std::vector<Command> commands;
+
 std::string help(std::vector<std::string> args) {
     std::string output = "Help\n";
 
