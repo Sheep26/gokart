@@ -60,13 +60,6 @@ if ! $(apt list --installed | grep -q libbluetooth-dev); then
     apt install libbluetooth-dev -y
 fi
 
-if ! $(apt list --installed | grep -q libasound2-dev); then
-    echo "Dependency libasound2-dev missing, installing"
-
-    # Install the libasound2-dev library.
-    apt install libasound2-dev -y
-fi
-
 if ! $(apt list --installed | grep -q bluetooth); then
     echo "bluetooth Missing, installing."
 
