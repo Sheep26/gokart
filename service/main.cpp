@@ -230,7 +230,7 @@ void Threads::bluetooth_server() {
     // Create Bluetooth socket
     server_sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
     loc_addr.rc_family = AF_BLUETOOTH;
-    loc_addr.rc_bdaddr = *BDADDR_ANY;
+    bacpy(&loc_addr.rc_bdaddr, BDADDR_ANY); // ✅ Correct way
     loc_addr.rc_channel = 1;
     bind(server_sock, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
     listen(server_sock, 1);
