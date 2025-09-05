@@ -13,7 +13,7 @@ std::string help(std::vector<std::string> args) {
 }
 
 std::string connect_wifi(std::vector<std::string> args) {
-    if (Networking::connnect_wifi(args[1], args[2])) return "Connection successful.";
+    if (Networking::connect_wifi(args[1], args[2])) return "Connection successful.";
 
     return "Failed to connect";
 }
