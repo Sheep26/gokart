@@ -302,13 +302,13 @@ int main(int argc, char **argv) {
         return 2;
     }
 
-    // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
+    /*// Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
     if ((serial_fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
         printf("Unable to open /dev/ttyS0\n");
     } else if ((serial_fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
         printf("Unable to open /dev/ttyAMA0\n");
-    }
+    }*/
 
     // Configure server.
     std::cout << "Reading environment varibles.\n";
