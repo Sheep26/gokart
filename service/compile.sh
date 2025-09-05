@@ -81,5 +81,5 @@ fi
 # -lasound
 
 # Compile.
-g++ *.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lpthread -o main
+g++ *.cpp -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -fpermissive -lpthread -o main
 chmod a+x main
