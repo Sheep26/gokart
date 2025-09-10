@@ -151,7 +151,7 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void display_write(OledScreen *oled, unsigned char poscode[]) {
+void display_write(OledScreen *oled, unsigned char *poscode[]) {
     // Send data to display.
     digitalWrite(DC, LOW);
     wiringPiSPIDataRW(0, poscode, 3);
@@ -215,7 +215,7 @@ void Threads::display_t() {
         oled.clear();
 
         buffer_display(&oled);
-        display_write(&oled, poscode);
+        display_write(&oled, &poscode);
 
         // Sleep for 33ms to achieve ~30 FPS.
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
