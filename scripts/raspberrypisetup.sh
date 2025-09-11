@@ -62,5 +62,4 @@ mv ../scripts/raspberrypiupdate.sh ~/update.sh
 cd ../../
 rm -rf gokart
 
-echo "Gokart service setup Rebooting raspberry pi."
-reboot
+echo "Gokart service setup."
