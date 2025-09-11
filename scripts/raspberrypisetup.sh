@@ -58,9 +58,9 @@ systemctl enable gokart.service
 systemctl start gokart.service
 
 echo "Cleaning up."
+mv ../scripts/raspberrypiupdate.sh ~/update.sh
 cd ../../
 rm -rf gokart
-mv ../scripts/raspberrypiupdate.sh ~/update.sh
 
 echo "Gokart service setup Rebooting raspberry pi."
 reboot
