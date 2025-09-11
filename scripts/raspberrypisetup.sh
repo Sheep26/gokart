@@ -5,14 +5,10 @@ if [ "${telementry,,}" == "y" ]; then
     logged_in=0
     while [ $logged_in -eq 0 ]; do
         echo "Please enter login details."
-        echo "Server ip: "
-        read serverip
-        echo "Rtmp server ip"
-        read rtmp_ip
-        echo "Username: "
-        read username
-        echo "Password: "
-        read password
+        read -p "Server IP: " serverip
+        read -p "Rtmp server ip: " rtmp_ip
+        read -p "Username: " username
+        read -p "Password: " password
 
         # Check login
         login_status=$(curl -s -o /dev/null -w "%{http_code}" -H "username: $username" -H "passwd: $password" "$serverip/api/login")
@@ -30,12 +26,10 @@ if [ "${telementry,,}" == "y" ]; then
 fi
 
 # Get race number.
-echo "Enter race number"
-read racenum
+read -p "Enter race number: " racenum
 export RACENUM="$racenum"
 
-echo "Enter wlan country"
-read wlan_country
+read -p "Enter wlan country: " wlan_country
 
 raspi-config nonint do_spi 1
 raspi-config nonint do_boot_wait 0
