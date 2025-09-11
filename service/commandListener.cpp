@@ -18,12 +18,17 @@ std::string connect_wifi(std::vector<std::string> args) {
     return "Failed to connect";
 }
 
+std::string scan_wifi(std::vector<std::string> args) {
+    Networking::scan_wifi();
+
+    return "Scan complete.";
+}
+
 void CommandListener::init_commands() {
     commands.clear();
-    Command help_cmd = {"help", help};
-    Command connect_wifi_cmd = {"help", help};
-    commands.push_back(help_cmd);
-    commands.push_back(connect_wifi_cmd);
+    commands.push_back({"help", help});
+    commands.push_back({"connect_wifi", connect_wifi});
+    commands.push_back({"scan_wifi", scan_wifi});
 }
 
 std::string CommandListener::handle_command(std::vector<std::string> args) {

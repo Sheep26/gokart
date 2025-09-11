@@ -53,8 +53,9 @@ struct Server {
 
 Server server;
 CommandListener commandListener;
-std::atomic<bool> telementry_running;
-std::atomic<bool> shutting_down;
+std::atomic<bool> telementry_running = false;
+std::atomic<bool> shutting_down = false;
+bool bluetooth_running = false;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
@@ -303,13 +304,13 @@ int main(int argc, char **argv) {
         return 2;
     }
 
-    /*// Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
+    // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
     if ((serial_fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
         printf("Unable to open /dev/ttyS0\n");
     } else if ((serial_fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
         printf("Unable to open /dev/ttyAMA0\n");
-    }*/
+    }
 
     // Configure server.
     std::cout << "Reading environment varibles.\n";
@@ -342,11 +343,29 @@ int main(int argc, char **argv) {
         }
 
         if (!telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
-            std::cout << "Starting bluetooth server.\n";
-            std::thread bluetooth_thread(Threads::bluetooth_server);
-            bluetooth_thread.detach();
+            if (!bluetooth_running) {
+                // Start bluetooth server.
+                std::cout << "Starting bluetooth server.\n";
+                std::thread bluetooth_thread(Threads::bluetooth_server);
+                bluetooth_thread.detach();
 
+                bluetooth_running = true;
+            }
+
+            std::cout << "Checking wifi.\n";
+            if (!Networking::wifi_enabled()) {
+                std::cout << "Wifi disabled, enabling wifi.\n";
+                Networking::set_wifi(true);
+            }
+
+            // Scan wifi.
+            std::cout << "Scanning network.\n";
+            Networking::scan_wifi();
+            std::cout << "Scan complete.\n";
+
+            // Wait for network.
             std::cout << "Waiting for network.\n";
+            std::cout << "You can connect to network through bluetooth terminal.\n";
             std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
             std::cout << "Attempting login.\n";
 
