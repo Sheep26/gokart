@@ -24,11 +24,16 @@ std::string scan_wifi(std::vector<std::string> args) {
     return "Scan complete.";
 }
 
+std::string list_networks(std::vector<std::string> args) {
+    return Networking::list_networks();
+}
+
 void CommandListener::init_commands() {
     commands.clear();
     commands.push_back({"help", help});
     commands.push_back({"connect_wifi", connect_wifi});
     commands.push_back({"scan_wifi", scan_wifi});
+    commands.push_back({"list_networks", list_networks});
 }
 
 std::string CommandListener::handle_command(std::vector<std::string> args) {

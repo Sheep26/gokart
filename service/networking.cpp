@@ -143,3 +143,21 @@ bool Networking::connect_wifi(std::string ssid, std::string passwd) {
         return false;
     }
 }
+
+std::string Networking::list_networks() {
+    FILE* pipe = popen("nmcli device wifi list", "r");
+    char buffer[128];
+    std::string result = "";
+
+    if (pipe) {
+        while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            result += buffer;
+        }
+
+        int return_code = pclose(pipe);
+    } else {
+        std::cerr << "Error listing networks.\n";
+    }
+
+    return result;
+}
