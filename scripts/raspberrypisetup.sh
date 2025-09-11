@@ -7,6 +7,8 @@ if [ "${telementry,,}" == "y" ]; then
         echo "Please enter login details."
         echo "Server ip: "
         read serverip
+        echo "Rtmp server ip"
+        read rtmp_ip
         echo "Username: "
         read username
         echo "Password: "
@@ -19,6 +21,7 @@ if [ "${telementry,,}" == "y" ]; then
             logged_in=1
             # Configure login for software.
             export SERVERIP="$serverip"
+            export RTMPSERVERIP="$rtmp_ip"
             export SERVERUSERNAME="$username"
             export SERVERPASSWD="$password"
             break
