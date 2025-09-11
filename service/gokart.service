@@ -1,6 +1,6 @@
 [Unit]
 Description=Gokart service
-After=network.target
+After=sysinit.target
 
 [Service]
 Type=simple
