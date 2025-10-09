@@ -278,6 +278,8 @@ void start_telementry() {
 }
 
 void start_display_thread() {
+    std::cout << "Starting display.\n";
+    
     std::thread display_thread(Threads::display_t);
     display_thread.detach();
 }
