@@ -168,6 +168,8 @@ void buffer_display(OledScreen *oled) {
 }
 
 void Threads::display_t() {
+    std::cout << "Hello world";
+
     OledScreen oled;
 
     unsigned char initcode[] = {
