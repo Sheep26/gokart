@@ -18,3 +18,6 @@ systemctl restart gokart.service
 echo "Cleaning up."
 cd ../../
 rm -rf gokart
+
+sleep 1
+reboot
