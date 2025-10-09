@@ -31,7 +31,7 @@ fi
 # Get race number.
 read -p "Enter race number: " racenum
 export RACENUM="$racenum"
-echo "export RACENUM=$racenum" > /root/.server_env
+echo "export RACENUM=$racenum" >> /root/.server_env
 
 #read -p "Enter wlan country: " wlan_country
 
