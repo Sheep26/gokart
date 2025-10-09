@@ -66,4 +66,4 @@ rm -rf gokart
 
 echo "Gokart service setup."
 sleep 1
-reboot
+#reboot
