@@ -16,14 +16,10 @@
 #include "data.h"
 #include "networking.h"
 #include "threads.h"
-#include "ssd1309.h"
-#include "OledScreen.h"
 #include "commandListener.h"
 
 #define TELEMENTRY_PIN 10
 #define SHUTDOWN_PIN 12
-#define DC 27
-#define RST 22
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -154,84 +150,6 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void display_write(OledScreen *oled, unsigned char poscode[]) {
-    // Send data to display.
-    digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, poscode, sizeof(poscode));
-
-    digitalWrite(DC, HIGH);
-    wiringPiSPIDataRW(0, oled->pix_buf, 1024);
-}
-
-void buffer_display(OledScreen *oled) {
-    oled->fill_test_pattern();
-}
-
-void Threads::display_t() {
-    std::cout << "Hello world";
-
-    OledScreen oled;
-
-    unsigned char initcode[] = {
-        DISPLAY_OFF,
-        SET_DISPLAY_CLOCK_DEVICE_RATIO, 0x80,
-        SET_MULTIPLEX_RATIO, 0x3F,
-        SET_DISPLAY_OFFSET, 0x00,
-        SET_DISPLAY_START_LINE,
-        SET_SEGMENT_REMAP_ON,
-        SET_COM_OUTPUT_SCAN_DIRECTION_8,
-        SET_COM_PINS_HARDWARE_CONFIG, 0x12,
-        SET_CONTRAST, 0x7F,
-        SET_PRECHANGE_PERIOD, 0xF1,
-        SET_VCOMH_DESELECT_LEVEL, 0x40,
-        SET_MEMORY_ADDRESS_MODE, 0x00,
-        SET_CHARGE_PUMP, 0x14,
-        DEACTIVATE_SCROLL,
-        SET_NORMAL_DISPLAY,
-        DISPLAY_ON
-    };
-
-    /*unsigned char poscode[] = {
-        SET_LOW_COLUMN,            // low col = 0
-        SET_HIGH_COLUMN,           // hi col = 0
-        SET_DISPLAY_START_LINE     // line #0
-    };*/
-
-    unsigned char poscode[] = {
-        SET_COLUMN_ADDRESS, 0x00, 0x7F,   // column 0 → 127
-        SET_PAGE_ADDRESS, 0x00, 0x07      // page 0 → 7 (8 pages)
-    };
-    
-    // reset
-    digitalWrite(RST,  LOW);
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    digitalWrite(RST,  HIGH);
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    
-    // init
-    digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, initcode, sizeof(initcode)); // Send init commands.
-
-    for(int i=0; i<1024; i++) oled.pix_buf[i] = 0xFF;
-
-    digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, poscode, sizeof(poscode));
-    digitalWrite(DC, HIGH);
-    wiringPiSPIDataRW(0, oled.pix_buf, 1024);
-
-    /*while (true) {
-        // Oled data.
-        // Clear screen.
-        oled.clear();
-
-        buffer_display(&oled);
-        display_write(&oled, poscode);
-
-        // Sleep for 33ms to achieve ~30 FPS.
-        std::this_thread::sleep_for(std::chrono::milliseconds(33));
-    }*/
-}
-
 void Threads::bluetooth_server() {
     struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
     int server_sock, client_sock;
@@ -287,11 +205,8 @@ void start_telementry() {
     data_thread.detach();
 }
 
-void start_display_thread() {
+void start_display() {
     std::cout << "Starting display.\n";
-
-    std::thread display_thread(Threads::display_t);
-    display_thread.detach();
 }
 
 int main(int argc, char **argv) {
@@ -305,12 +220,6 @@ int main(int argc, char **argv) {
     if (wiringPiSetupPinType(WPI_PIN_BCM) == -1) {
         std::cerr << "Error: Failed to initialize GPIO.\n";
         return 1;
-    }
-    
-    std::cout << "Init SPI.\n";
-    if (wiringPiSPISetupMode(0, 4000000, 0) == -1) {  // 4 MHz
-        std::cerr << "Error: Failed to initialize SPI.\n";
-        return 2;
     }
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
@@ -338,11 +247,9 @@ int main(int argc, char **argv) {
     pinMode(SHUTDOWN_PIN, INPUT);
     pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
     pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
-    pinMode(DC, OUTPUT);
-    pinMode(RST, OUTPUT);
 
-    // Create display thread.
-    start_display_thread();
+    // Create display.
+    start_display();
 
     while (true) {
         if (digitalRead(SHUTDOWN_PIN) == LOW) {
