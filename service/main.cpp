@@ -171,25 +171,24 @@ void Threads::display_t() {
     OledScreen oled;
 
     unsigned char initcode[] = {
-        DISPLAY_OFF,                     // 0xAE: Turn display off
-        SET_DISPLAY_CLOCK_DEVICE_RATIO,  0x80, // 0xD5: Set clock divide ratio/oscillator frequency
-        SET_MULTIPLEX_RATIO,             0x3F, // 0xA8: Set multiplex ratio (1/64 duty cycle)
-        SET_DISPLAY_OFFSET,              0x00, // 0xD3: Set display offset to 0
-        SET_DISPLAY_START_LINE/* | 0x00*/,         // 0x40: Set display start line to 0
-        SET_SEGMENT_REMAP_ON,                  // 0xA1: Set segment re-map (column address 127 is mapped to SEG0)
-        SET_COM_OUTPUT_SCAN_DIRECTION_8,       // 0xC8: Set COM output scan direction (remapped mode)
-        SET_COM_PINS_HARDWARE_CONFIG,    0x12, // 0xDA: Set COM pins hardware configuration
-        SET_CONTRAST,                   0x7F,  // 0x81: Set contrast control to medium
-        SET_PRECHANGE_PERIOD,           0xF1,  // 0xD9: Set pre-charge period
-        SET_VCOMH_DESELECT_LEVEL,       0x40,  // 0xDB: Set VCOMH deselect level
-        SET_MEMORY_ADDRESS_MODE,        0x00,  // 0x20: Set memory addressing mode to horizontal
-        SET_LOW_COLUMN,                       // 0x00: Set lower column start address
-        SET_HIGH_COLUMN,                      // 0x10: Set higher column start address
-        SET_CHARGE_PUMP,               0x14,  // 0x8D: Enable charge pump regulator
-        DEACTIVATE_SCROLL,                   // 0x2E: Deactivate scrolling
-        SET_NORMAL_DISPLAY,                  // 0xA6: Set normal display mode (not inverted)
-        DISPLAY_ON
+        DISPLAY_OFF,                     // 0xAE
+        SET_DISPLAY_CLOCK_DEVICE_RATIO, 0x80, // 0xD5
+        SET_MULTIPLEX_RATIO, 0x3F,       // 0xA8
+        SET_DISPLAY_OFFSET, 0x00,        // 0xD3
+        SET_DISPLAY_START_LINE,          // 0x40
+        SET_SEGMENT_REMAP_ON,            // 0xA1
+        SET_COM_OUTPUT_SCAN_DIRECTION_8, // 0xC8
+        SET_COM_PINS_HARDWARE_CONFIG, 0x12, // 0xDA
+        SET_CONTRAST, 0x7F,              // 0x81
+        SET_PRECHANGE_PERIOD, 0xF1,      // 0xD9
+        SET_VCOMH_DESELECT_LEVEL, 0x40,  // 0xDB
+        SET_MEMORY_ADDRESS_MODE, 0x00,   // 0x20 Horizontal addressing
+        SET_CHARGE_PUMP, 0x14,           // 0x8D
+        DEACTIVATE_SCROLL,               // 0x2E
+        SET_NORMAL_DISPLAY,              // 0xA6
+        DISPLAY_ON                        // 0xAF
     };
+
 
     /*unsigned char poscode[] = {
         SET_LOW_COLUMN,            // low col = 0
