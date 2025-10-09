@@ -19,10 +19,11 @@ if [ "${telementry,,}" == "y" ]; then
             # Login successful.
             logged_in=1
             # Configure login for software.
-            export SERVERIP=$serverip
-            export RTMPSERVERIP=$rtmp_ip
-            export SERVERUSERNAME=$username
-            export SERVERPASSWD=$password
+            touch /root/.server_env
+            echo "export SERVERIP=$serverip" > /root/.server_env
+            echo "export RTMPSERVERIP=$rtmp_ip" >> /root/.server_env
+            echo "export SERVERUSERNAME=$username" >> /root/.server_env
+            echo "export SERVERPASSWD=$password" >> /root/.server_env
             break
         fi
     done

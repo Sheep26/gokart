@@ -6,7 +6,7 @@ After=sysinit.target
 Type=simple
 Restart=always
 User=root
-ExecStart=/usr/bin/gokart-main
+ExecStart=source /root/.server_env && /usr/bin/gokart-main
 
 [Install]
 WantedBy=multi-user.target
