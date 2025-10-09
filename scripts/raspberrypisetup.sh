@@ -32,11 +32,11 @@ fi
 read -p "Enter race number: " racenum
 export RACENUM="$racenum"
 
-read -p "Enter wlan country: " wlan_country
+#read -p "Enter wlan country: " wlan_country
 
-raspi-config nonint do_spi 1
-raspi-config nonint do_serial_hw 1
-raspi-config nonint do_wifi_country $wlan_country
+#raspi-config nonint do_spi 1
+#raspi-config nonint do_serial_hw 1
+#raspi-config nonint do_wifi_country $wlan_country
 
 #echo "Cloning github repository."
 #git clone https://github.com/Sheep26/gokart.git
