@@ -33,7 +33,6 @@ export RACENUM="$racenum"
 read -p "Enter wlan country: " wlan_country
 
 raspi-config nonint do_spi 1
-raspi-config nonint do_boot_wait 0
 raspi-config nonint do_serial_hw 1
 raspi-config nonint do_wifi_country $wlan_country
 
