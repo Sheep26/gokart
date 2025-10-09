@@ -1,6 +1,7 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
+#include <wiringSerial.h>
 #include <thread>
 #include <chrono>
 #include <atomic>
