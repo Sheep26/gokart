@@ -157,12 +157,10 @@ void Threads::ffmpeg_t() {
 void display_write(OledScreen *oled, unsigned char poscode[]) {
     // Send data to display.
     digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, poscode, 3);
-    digitalWrite(DC, HIGH);
+    wiringPiSPIWrite(0, poscode, 3);
 
-    digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, oled->pix_buf, 1024);
     digitalWrite(DC, HIGH);
+    wiringPiSPIWrite(0, oled->pix_buf, 1024);
 }
 
 void buffer_display(OledScreen *oled) {
@@ -193,21 +191,25 @@ void Threads::display_t() {
         DISPLAY_ON
     };
 
-    unsigned char poscode[] = {
+    /*unsigned char poscode[] = {
         SET_LOW_COLUMN,            // low col = 0
         SET_HIGH_COLUMN,           // hi col = 0
         SET_DISPLAY_START_LINE     // line #0
+    };*/
+
+    unsigned char poscode[] = {
+        SET_COLUMN_ADDRESS, 0x00, 0x7F,   // column 0 → 127
+        SET_PAGE_ADDRESS, 0x00, 0x07      // page 0 → 7 (8 pages)
     };
     
     // reset
     digitalWrite(RST,  LOW);
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     digitalWrite(RST,  HIGH);
     
     // init
     digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, initcode, sizeof(initcode)); // Send init commands.
-    digitalWrite(DC, HIGH);
+    wiringPiSPIWrite(0, initcode, sizeof(initcode)); // Send init commands.
 
     while (true) {
         // Oled data.
@@ -279,7 +281,7 @@ void start_telementry() {
 
 void start_display_thread() {
     std::cout << "Starting display.\n";
-    
+
     std::thread display_thread(Threads::display_t);
     display_thread.detach();
 }
