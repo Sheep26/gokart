@@ -52,6 +52,10 @@ chmod a+x ./compile.sh
 # Create service.
 echo "Creating service."
 mv main /usr/bin/gokart-main
+
+echo "source /root/.server_env" > /root/start.sh
+echo "/usr/bin/gokart-main" >> /root/start.sh
+
 mv gokart.service /etc/systemd/system/gokart.service
 
 # Enable services.
@@ -61,7 +65,7 @@ systemctl enable gokart.service
 systemctl start gokart.service
 
 echo "Cleaning up."
-mv ../scripts/raspberrypiupdate.sh ~/update.sh
+mv ../scripts/raspberrypiupdate.sh /root/update.sh
 cd ../../
 rm -rf gokart
 
