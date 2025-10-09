@@ -251,7 +251,6 @@ void Threads::bluetooth_server() {
             cmd.erase(cmd.find_last_not_of("\r\n") + 1);
             std::vector<std::string> parts = split_string(cmd, ' ');
             std::vector<std::string> args(parts.begin() + 1, parts.end());
-            std::cout << "[BT]" << args << "\n";
             std::string response = commandListener.handle_command(args);
             std::cout << "[BT]" << response << "\n";
             write(client_sock, response.c_str(), response.length());
