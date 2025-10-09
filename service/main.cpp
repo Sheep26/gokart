@@ -164,7 +164,7 @@ void display_write(OledScreen *oled, unsigned char poscode[]) {
 }
 
 void buffer_display(OledScreen *oled) {
-    oled->println("Hello world!", 16, 16, 32, 1);
+    oled->fill_test_pattern();
 }
 
 void Threads::display_t() {
@@ -188,7 +188,6 @@ void Threads::display_t() {
         SET_NORMAL_DISPLAY,              // 0xA6
         DISPLAY_ON                        // 0xAF
     };
-
 
     /*unsigned char poscode[] = {
         SET_LOW_COLUMN,            // low col = 0
