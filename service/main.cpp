@@ -315,6 +315,7 @@ int main(int argc, char **argv) {
     server.rtmp_ip = (std::string) getenv("RTMPSERVERIP");
     server.username = (std::string) getenv("SERVERUSERNAME");
     server.passwd = (std::string) getenv("SERVERPASSWD");
+
     std::cout << "Server configured at " << server.ip << "\n";
     
     // Set race number.
