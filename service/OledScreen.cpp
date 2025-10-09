@@ -9,14 +9,12 @@ OledScreen::OledScreen() {
   //printf("init oled screen, clearing oled screen\n");
 }
 
-void OledScreen::fill_test_pattern() {
-    // Example: checkerboard pattern, 8x8 pixels
-  for (unsigned int y = 0; y < 64; y++) {       // screen height
-    for (unsigned int x = 0; x < 128; x++) {  // screen width
-      if (((x / 8) + (y / 8)) % 2 == 0)
-        put_pixel(1, x, y);  // 1 = pixel ON
-      else
-        put_pixel(0, x, y);  // 0 = pixel OFF
+void OledScreen::fill_test_pattern(OledScreen *oled) {
+  for (unsigned int y = 0; y < 64; y++) {
+    for (unsigned int x = 0; x < 128; x++) {
+      if ((x / 8 + y / 8) % 2) {
+        put_pixel(1, x, y); // set pixel
+      }
     }
   }
 }
