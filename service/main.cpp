@@ -305,10 +305,12 @@ int main(int argc, char **argv) {
     }
     
     std::cout << "Init SPI.\n";
-    if (wiringPiSPISetup(0, 8000000) == -1) {
+    if (wiringPiSPISetup(0, 4000000) == -1) {  // 4 MHz
         std::cerr << "Error: Failed to initialize SPI.\n";
         return 2;
     }
+
+    wiringPiSPISetupMode(0, 4000000, 0);
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
