@@ -33,7 +33,7 @@
  SDA    --- MOSI
  RES    --- GPIO22
  DC     --- GPIO27
- CS     --- CE0_N OR GND
+ CS     --- CE0,CE1 OR GND
 */
 
 /*
