@@ -9,7 +9,7 @@ OledScreen::OledScreen() {
   //printf("init oled screen, clearing oled screen\n");
 }
 
-void OledScreen::fill_test_pattern(OledScreen *oled) {
+void OledScreen::fill_test_pattern() {
   for (unsigned int y = 0; y < 64; y++) {
     for (unsigned int x = 0; x < 128; x++) {
       if ((x / 8 + y / 8) % 2) {
