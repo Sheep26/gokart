@@ -157,7 +157,7 @@ void Threads::ffmpeg_t() {
 void display_write(OledScreen *oled, unsigned char poscode[]) {
     // Send data to display.
     digitalWrite(DC, LOW);
-    wiringPiSPIDataRW(0, poscode, 5);
+    wiringPiSPIDataRW(0, poscode, 6);
 
     digitalWrite(DC, HIGH);
     wiringPiSPIDataRW(0, oled->pix_buf, 1024);
