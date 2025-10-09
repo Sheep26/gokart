@@ -204,8 +204,9 @@ void Threads::display_t() {
     
     // reset
     digitalWrite(RST,  LOW);
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     digitalWrite(RST,  HIGH);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     // init
     digitalWrite(DC, LOW);
