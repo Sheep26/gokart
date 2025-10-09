@@ -19,7 +19,6 @@ if [ "${telementry,,}" == "y" ]; then
             # Login successful.
             logged_in=1
             # Configure login for software.
-            touch /root/.server_env
             echo "export SERVERIP=$serverip" > /root/.server_env
             echo "export RTMPSERVERIP=$rtmp_ip" >> /root/.server_env
             echo "export SERVERUSERNAME=$username" >> /root/.server_env
