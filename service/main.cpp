@@ -197,9 +197,6 @@ void Threads::display_t() {
         SET_HIGH_COLUMN,           // hi col = 0
         SET_DISPLAY_START_LINE     // line #0
     };
-
-    pinMode(DC, OUTPUT);
-    pinMode(RST, OUTPUT);
     
     // reset
     digitalWrite(RST,  LOW);
@@ -328,6 +325,8 @@ int main(int argc, char **argv) {
     pinMode(SHUTDOWN_PIN, INPUT);
     pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
     pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
+    pinMode(DC, OUTPUT);
+    pinMode(RST, OUTPUT);
 
     // Create display thread.
     start_display_thread();
