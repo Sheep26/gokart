@@ -12,10 +12,3 @@ device = ssd1309(serial, width=128, height=64)
 # Draw text
 with canvas(device) as draw:
     draw.text((0, 0), "Hello SSD1309!", fill=255)
-
-# Optional: scroll text
-import time
-for i in range(128):
-    with canvas(device) as draw:
-        draw.text((i, 0), "Scrolling!", fill=255)
-    time.sleep(0.05)
