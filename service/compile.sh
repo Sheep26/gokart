@@ -1,81 +1,83 @@
 #!/usr/bin/bash
-apt update
-#apt upgrade -y
+if [[ "$*" != *-u* ]]; then
+    apt update
+    #apt upgrade -y
 
-# Check dependencies.
-if ! $(apt list --installed | grep -q git); then
-    echo "Dependency git missing, installing."
+    # Check dependencies.
+    if ! $(apt list --installed | grep -q git); then
+        echo "Dependency git missing, installing."
 
-    # Install libcurl library
-    apt install git -y
-fi
+        # Install libcurl library
+        apt install git -y
+    fi
 
-if ! $(apt list --installed | grep -q g++); then
-    echo "Build tools missing, installing."
+    if ! $(apt list --installed | grep -q g++); then
+        echo "Build tools missing, installing."
 
-    # Install build-essential (includes g++)
-    apt install build-essential -y
-fi
+        # Install build-essential (includes g++)
+        apt install build-essential -y
+    fi
 
-if ! $(apt list --installed | grep -q libfmt-dev); then
-    echo "Dependency libfmt-dev missing, installing."
+    if ! $(apt list --installed | grep -q libfmt-dev); then
+        echo "Dependency libfmt-dev missing, installing."
 
-    # Install libfmt-dev
-    apt install libfmt-dev -y
-fi
+        # Install libfmt-dev
+        apt install libfmt-dev -y
+    fi
 
-if ! $(apt list --installed | grep -q wiringpi); then
-    echo "Dependency wiringPi missing, installing."
-    git clone https://github.com/WiringPi/WiringPi.git
-    # Install
-    cd WiringPi
-    ./build debian
+    if ! $(apt list --installed | grep -q wiringpi); then
+        echo "Dependency wiringPi missing, installing."
+        git clone https://github.com/WiringPi/WiringPi.git
+        # Install
+        cd WiringPi
+        ./build debian
 
-    mv debian-template/wiringpi_* .
-    apt install ./wiringpi_*
+        mv debian-template/wiringpi_* .
+        apt install ./wiringpi_*
 
-    # Clean up
-    cd ../
-    rm -rf WiringPi
-fi
+        # Clean up
+        cd ../
+        rm -rf WiringPi
+    fi
 
-if ! $(apt list --installed | grep -q pkg-config); then
-    echo "Dependency pkg-config missing, installing."
+    if ! $(apt list --installed | grep -q pkg-config); then
+        echo "Dependency pkg-config missing, installing."
 
-    # Install libcurl library
-    apt install pkg-config -y
-fi
+        # Install libcurl library
+        apt install pkg-config -y
+    fi
 
-if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
-    echo "Dependency libcurl4-openssl-dev missing, installing."
+    if ! $(apt list --installed | grep -q libcurl4-openssl-dev); then
+        echo "Dependency libcurl4-openssl-dev missing, installing."
 
-    # Install libcurl library
-    apt install libcurl4-openssl-dev -y
-fi
+        # Install libcurl library
+        apt install libcurl4-openssl-dev -y
+    fi
 
-if ! $(apt list --installed | grep -q libbluetooth-dev); then
-    echo "Dependency libbluetooth-dev missing, installing."
+    if ! $(apt list --installed | grep -q libbluetooth-dev); then
+        echo "Dependency libbluetooth-dev missing, installing."
 
-    # Install libcurl library
-    apt install libbluetooth-dev -y
-fi
+        # Install libcurl library
+        apt install libbluetooth-dev -y
+    fi
 
-if ! $(apt list --installed | grep -q bluetooth); then
-    echo "bluetooth Missing, installing."
+    if ! $(apt list --installed | grep -q bluetooth); then
+        echo "bluetooth Missing, installing."
 
-    apt install bluetooth -y
-fi
+        apt install bluetooth -y
+    fi
 
-if ! $(apt list --installed | grep -q bluez); then
-    echo "bluez Missing, installing."
+    if ! $(apt list --installed | grep -q bluez); then
+        echo "bluez Missing, installing."
 
-    apt install bluez -y
-fi
+        apt install bluez -y
+    fi
 
-if ! $(apt list --installed | grep -q libsndfile1-dev); then
-    echo "libsndfile1-dev Missing, installing."
+    if ! $(apt list --installed | grep -q libsndfile1-dev); then
+        echo "libsndfile1-dev Missing, installing."
 
-    apt install libsndfile1-dev -y
+        apt install libsndfile1-dev -y
+    fi
 fi
 
 # -lasound
