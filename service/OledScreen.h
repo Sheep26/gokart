@@ -35,7 +35,7 @@ class OledScreen
         unsigned int put_char_small(unsigned char c, unsigned int y, unsigned int x, unsigned int color);
         void println(const char * line, int x, int y, int h, int color);
         void println_8(const char * line, int len, int x, int y);
-        void fill_test_pattern(OledScreen *oled);
+        void fill_test_pattern();
 };
 
 #endif
