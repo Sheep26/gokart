@@ -173,22 +173,22 @@ void Threads::display_t() {
     OledScreen oled;
 
     unsigned char initcode[] = {
-        DISPLAY_OFF,                     // 0xAE
-        SET_DISPLAY_CLOCK_DEVICE_RATIO, 0x80, // 0xD5
-        SET_MULTIPLEX_RATIO, 0x3F,       // 0xA8
-        SET_DISPLAY_OFFSET, 0x00,        // 0xD3
-        SET_DISPLAY_START_LINE,          // 0x40
-        SET_SEGMENT_REMAP_ON,            // 0xA1
-        SET_COM_OUTPUT_SCAN_DIRECTION_8, // 0xC8
-        SET_COM_PINS_HARDWARE_CONFIG, 0x12, // 0xDA
-        SET_CONTRAST, 0x7F,              // 0x81
-        SET_PRECHANGE_PERIOD, 0xF1,      // 0xD9
-        SET_VCOMH_DESELECT_LEVEL, 0x40,  // 0xDB
-        SET_MEMORY_ADDRESS_MODE, 0x00,   // 0x20 Horizontal addressing
-        SET_CHARGE_PUMP, 0x14,           // 0x8D
-        DEACTIVATE_SCROLL,               // 0x2E
-        SET_NORMAL_DISPLAY,              // 0xA6
-        DISPLAY_ON                        // 0xAF
+        DISPLAY_OFF,
+        SET_DISPLAY_CLOCK_DEVICE_RATIO, 0x80,
+        SET_MULTIPLEX_RATIO, 0x3F,
+        SET_DISPLAY_OFFSET, 0x00,
+        SET_DISPLAY_START_LINE,
+        SET_SEGMENT_REMAP_ON,
+        SET_COM_OUTPUT_SCAN_DIRECTION_8,
+        SET_COM_PINS_HARDWARE_CONFIG, 0x12,
+        SET_CONTRAST, 0x7F,
+        SET_PRECHANGE_PERIOD, 0xF1,
+        SET_VCOMH_DESELECT_LEVEL, 0x40,
+        SET_MEMORY_ADDRESS_MODE, 0x00,
+        SET_CHARGE_PUMP, 0x14,
+        DEACTIVATE_SCROLL,
+        SET_NORMAL_DISPLAY,
+        DISPLAY_ON
     };
 
     /*unsigned char poscode[] = {
@@ -308,12 +308,10 @@ int main(int argc, char **argv) {
     }
     
     std::cout << "Init SPI.\n";
-    if (wiringPiSPISetup(0, 4000000) == -1) {  // 4 MHz
+    if (wiringPiSPISetupMode(0, 4000000, 0) == -1) {  // 4 MHz
         std::cerr << "Error: Failed to initialize SPI.\n";
         return 2;
     }
-
-    wiringPiSPISetupMode(0, 4000000, 0);
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
