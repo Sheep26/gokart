@@ -209,7 +209,14 @@ void Threads::display_t() {
     digitalWrite(DC, LOW);
     wiringPiSPIDataRW(0, initcode, sizeof(initcode)); // Send init commands.
 
-    while (true) {
+    for(int i=0; i<1024; i++) oled.pix_buf[i] = 0xFF;
+
+    digitalWrite(DC, LOW);
+    wiringPiSPIDataRW(0, poscode, 6);
+    digitalWrite(DC, HIGH);
+    wiringPiSPIDataRW(0, oled.pix_buf, 1024);
+
+    /*while (true) {
         // Oled data.
         // Clear screen.
         oled.clear();
@@ -219,7 +226,7 @@ void Threads::display_t() {
 
         // Sleep for 33ms to achieve ~30 FPS.
         std::this_thread::sleep_for(std::chrono::milliseconds(33));
-    }
+    }*/
 }
 
 void Threads::bluetooth_server() {
