@@ -20,4 +20,4 @@ cd ../../
 rm -rf gokart
 
 sleep 1
-reboot
+#reboot
