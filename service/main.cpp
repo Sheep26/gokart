@@ -115,7 +115,7 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-        std::string data = fmt::format(R"({{
+        std::string data = (std::string) fmt::format(R"({{
                 "num": {},
                 "speed": {},
                 "batteryVolt": {},
