@@ -161,9 +161,9 @@ app.post("/api/update_data", (req, res) => {
             last_online = Date.now();
             
             data.online = true;
-            data.data = req.json();
+            data.data = req.json;
             data.chart.labels.push(Date.now());
-            console.log(req.json());
+            console.log(req.json);
             data.chart.datasets[0].data.push(data.data.speed); // Speed dataset.
             data.chart.datasets[1].data.push(data.data.satellites); // Battery Voltage dataset.
             data.chart.datasets[2].data.push(data.data.batteryVolt); // Battery Voltage dataset.
