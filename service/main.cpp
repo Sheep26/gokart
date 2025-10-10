@@ -121,7 +121,7 @@ void Threads::data_t() {
                 "satellites": {},
                 "batteryVolt": {},
                 "batteryPercent": {}
-            }})", data.num, data.speed, gps.satellites.value(), data.batteryVolt, data.batteryPercent);
+            }})", data.num, (int) data.speed, gps.satellites.value(), data.batteryVolt, data.batteryPercent);
         
         std::cout << "Sending Data: \n" << send_data << "\n";
         
