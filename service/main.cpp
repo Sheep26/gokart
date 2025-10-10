@@ -58,7 +58,7 @@ public:
     static void ffmpeg_t();
     static void display_t();
     static void bluetooth_server();
-    static void serial_thread();
+    static void collection_thread();
 };
 
 Server server;
@@ -93,7 +93,7 @@ std::vector<std::string> split_string(const std::string& input, char delimiter) 
     return tokens;
 }
 
-void Threads::serial_thread() {
+void Threads::collection_thread() {
     std::cout << "Serial started.\n";
     while(true) {
         while (serialDataAvail(gps_serial)) {
@@ -263,9 +263,9 @@ int main(int argc, char **argv) {
     }
 
     if (gps_serial >= 0) {
-        std::thread serial_thread(Threads::serial_thread);
+        std::thread collection_thread(Threads::collection_thread);
 
-        serial_thread.detach();
+        collection_thread.detach();
     }
 
     // Configure server.
