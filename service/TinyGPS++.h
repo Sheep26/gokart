@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <cstdlib>
 #include <cctype>
 #include <limits.h>
+#include "wiringPi.h"
 
 #define _GPS_VERSION "1.1.0" // software version of this library
 #define _GPS_MPH_PER_KNOT 1.15077945
@@ -50,17 +51,6 @@ typedef unsigned char byte;
 #define radians(x) ((x) * M_PI / 180.0)
 #define degrees(x) ((x) * 180.0 / M_PI)
 #define sq(x) ((x) * (x))
-
-// Alternate implementation of millis() that relies on std
-unsigned long millis()
-{
-   static auto start_time = std::chrono::high_resolution_clock::now();
-   
-   auto end_time = std::chrono::high_resolution_clock::now();
-   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-
-   return static_cast<unsigned long>(duration.count());
-}
 
 struct RawDegrees
 {
