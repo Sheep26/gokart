@@ -283,7 +283,14 @@ int main(int argc, char **argv) {
     std::cout << "Server configured at " << server.ip << "\n";
     
     // Set race number.
-    data.num = (int) safe_getenv("RACENUM");
+    try {
+        data.num = std::stoi(safe_getenv("RACENUM"));
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid argument: " << e.what() << std::endl;
+    } catch (const std::out_of_range& e) {
+        std::cerr << "Out of range: " << e.what() << std::endl;
+    }
+    
 
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
