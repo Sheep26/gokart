@@ -84,7 +84,7 @@ std::vector<std::string> split_string(const std::string& input, char delimiter) 
 
 void Threads::serial_thread() {
     std::cout << "Serial started.\n";
-    for (;;) {
+    while(true) {
         while (serialDataAvail(gps_serial)) {
             //gps.encode(serialGetchar(gps_serial))
             std::cout << serialDataAvail(gps_serial);
@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
         gps_serial = serialOpen("/dev/ttyAMA0", 9600);
         
         if (gps_serial < 0) {
-            std::cout << "Unable to open /dev/ttyAMA0";
+            std::cout << "Unable to open /dev/ttyAMA0\n";
         }
     }
 
