@@ -193,7 +193,7 @@ void Threads::bluetooth_server() {
 
     std::cout << "[BT] Listening on RFCOMM channel 1...\n";
 
-    while (telementry_running) {
+    while (true) {
         char client_addr[18] = { 0 };
         client_sock = accept(server_sock, (struct sockaddr *)&rem_addr, &opt);
         ba2str(&rem_addr.rc_bdaddr, client_addr);
@@ -332,7 +332,6 @@ int main(int argc, char **argv) {
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-        std::cout << (int) digitalRead(TELEMENTRY_PIN) << "\n";
     }
 
     // Return 0.
