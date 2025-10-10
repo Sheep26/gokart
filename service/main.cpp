@@ -295,6 +295,7 @@ int main(int argc, char **argv) {
     while (true) {
         if (digitalRead(SHUTDOWN_PIN) == LOW) {
             shutting_down = true;
+            telementry_running = false;
 
             // Wait a second.
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
