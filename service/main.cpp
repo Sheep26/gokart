@@ -10,6 +10,8 @@
 #include <string>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <fmt/core.h>
@@ -188,7 +190,32 @@ void Threads::ffmpeg_t() {
 }
 
 void Threads::bluetooth_server() {
-    struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
+    int dev_id = hci_get_route(nullptr); // get first available adapter
+    if (dev_id < 0) {
+        std::cerr << "No Bluetooth Adapter Found!\n";
+        return 1;
+    }
+
+    int sock = hci_open_dev(dev_id);
+    if (sock < 0) {
+        perror("HCI device open failed");
+        return 1;
+    }
+
+    if (hci_test_bit(HCI_UP, &((struct hci_dev_info){0}).flags)) {
+        std::cout << "Bluetooth adapter is already up\n";
+    } else {
+        if (ioctl(sock, HCIDEVUP, dev_id) < 0) {
+            perror("Cannot bring up adapter");
+            close(sock);
+            return 1;
+        }
+        std::cout << "Bluetooth adapter turned on\n";
+    }
+
+    close(sock);
+    
+    /*struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
     int server_sock, client_sock;
     socklen_t opt = sizeof(rem_addr);
 
@@ -227,7 +254,65 @@ void Threads::bluetooth_server() {
     }
 
     close(server_sock);
-    std::cout << "[BT] Server stopped.\n";
+    std::cout << "[BT] Server stopped.\n";*/
+    // Chatgpt code.
+    struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
+    char buf[1024] = { 0 };
+    int s, client, bytes_read;
+    socklen_t opt = sizeof(rem_addr);
+
+    // Create RFCOMM socket
+    s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+    if (s < 0) {
+        perror("socket");
+        return 1;
+    }
+
+    // Bind to channel 1 of the first available adapter
+    loc_addr.rc_family = AF_BLUETOOTH;
+    loc_addr.rc_bdaddr = *BDADDR_ANY;
+    loc_addr.rc_channel = (uint8_t)1;
+
+    if (bind(s, (struct sockaddr *)&loc_addr, sizeof(loc_addr)) < 0) {
+        perror("bind");
+        close(s);
+        return 1;
+    }
+
+    // Start listening
+    listen(s, 1);
+    std::cout << "Bluetooth RFCOMM server started, waiting for connections...\n";
+
+    // Accept a connection
+    client = accept(s, (struct sockaddr *)&rem_addr, &opt);
+    if (client < 0) {
+        perror("accept");
+        close(s);
+    }
+
+    char client_addr[18] = { 0 };
+    ba2str(&rem_addr.rc_bdaddr, client_addr);
+    std::cout << "Accepted connection from " << client_addr << "\n";
+
+    // Main loop: read from client and echo back
+    while (true) {
+        memset(buf, 0, sizeof(buf));
+        bytes_read = read(client, buf, sizeof(buf));
+        if (bytes_read > 0) {
+            std::cout << "Received: " << buf << "\n";
+            // echo back
+            write(client, buf, bytes_read);
+        } else if (bytes_read == 0) {
+            std::cout << "Client disconnected\n";
+            break;
+        } else {
+            perror("read");
+            break;
+        }
+    }
+
+    close(client);
+    close(s);
 }
 
 void start_telementry() {
