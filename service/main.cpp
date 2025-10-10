@@ -230,10 +230,6 @@ void start_telementry() {
     data_thread.detach();
 }
 
-void start_display() {
-    std::cout << "Starting display.\n";
-}
-
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
     shutting_down = false;
@@ -280,9 +276,6 @@ int main(int argc, char **argv) {
     pinMode(SHUTDOWN_PIN, INPUT);
     pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
     pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
-
-    // Create display.
-    start_display();
 
     while (true) {
         if (digitalRead(SHUTDOWN_PIN) == LOW) {
