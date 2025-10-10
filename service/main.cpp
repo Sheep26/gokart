@@ -118,9 +118,10 @@ void Threads::data_t() {
         std::string send_data = fmt::format(R"({{
                 "num": {},
                 "speed": {},
+                "satellites": {},
                 "batteryVolt": {},
                 "batteryPercent": {},
-            }})", data.num, data.speed, data.batteryVolt, data.batteryPercent);
+            }})", data.num, data.speed, gps.satellites.value(), data.batteryVolt, data.batteryPercent);
         
         std::cout << "Sending Data: \n" << send_data << "\n";
         
