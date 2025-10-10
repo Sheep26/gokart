@@ -114,14 +114,18 @@ void Threads::data_t() {
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
-        
-        // Make the http request.
-        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", fmt::format(R"({{
+
+        std::string data = fmt::format(R"({{
                 "num": {},
                 "speed": {},
                 "batteryVolt": {},
                 "batteryPercent": {},
-            }})", data.num, data.speed, data.batteryVolt, data.batteryPercent),
+            }})", data.num, data.speed, data.batteryVolt, data.batteryPercent);
+        
+        std::cout << "Sending Data: \n" << data << "\n";
+        
+        // Make the http request.
+        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", data,
             true, headers);
 
         if (update_request.status_code != 200) {
