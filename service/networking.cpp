@@ -5,12 +5,16 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::stri
     return size * nmemb;
 }
 
-HTTP_Request Networking::send_http_request(const std::string& url, const std::string& body, bool is_post, const struct curl_slist* headers) {
+HTTP_Request Networking::send_http_request(const std::string& url, const std::string& body, const bool is_post, const bool is_json, const struct curl_slist* headers) {
     CURL* curl = curl_easy_init();
     HTTP_Request response = {"", 0};
 
     if (curl) {
         std::string readBuffer;
+
+        if (is_json) {
+            headers = curl_slist_append(headers, "Content-Type: application/json");
+        }
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
