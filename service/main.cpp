@@ -334,9 +334,14 @@ int main(int argc, char **argv) {
             login_headers = curl_slist_append(login_headers, pass_header.c_str());
             HTTP_Request login_request = Networking::send_http_request(server.ip + "/api/login", "", false, login_headers);
             if (login_request.status_code == 200) {
+                std::cout << "Login successful.\n";
+
                 std::vector<std::string> parts = split_string(login_request.text, ',');
                 server.id = parts[0];
                 server.session = parts[1];
+
+                std::cout << "Id: " << server.id;
+                std::cout << "Session: " << server.session;
 
                 std::cout << "Starting telementry.\n";
                 start_telementry();
