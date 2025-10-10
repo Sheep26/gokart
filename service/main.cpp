@@ -12,10 +12,13 @@
 #include <bluetooth/rfcomm.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <fmt/core.h>
+#include <cstdio>
+#include <string>
+#include <cstring>
 
 #include "data.h"
 #include "networking.h"
-#include "threads.h"
 #include "commandListener.h"
 #include "TinyGPS++.h"
 
@@ -47,6 +50,14 @@ struct Server {
     std::string passwd;
     std::string session;
     std::string id;
+};
+
+class Threads {
+public:
+    static void data_t();
+    static void ffmpeg_t();
+    static void display_t();
+    static void bluetooth_server();
 };
 
 Server server;
