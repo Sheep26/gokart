@@ -115,18 +115,17 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-        std::string data = (std::string) fmt::format(R"({{
+        std::string send_data = fmt::format(R"({{
                 "num": {},
                 "speed": {},
                 "batteryVolt": {},
                 "batteryPercent": {},
             }})", data.num, data.speed, data.batteryVolt, data.batteryPercent);
         
-        std::cout << "Sending Data: \n" << data << "\n";
+        std::cout << "Sending Data: \n" << send_data << "\n";
         
         // Make the http request.
-        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", data,
-            true, headers);
+        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", send_data, true, headers);
 
         if (update_request.status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
