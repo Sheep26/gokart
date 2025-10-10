@@ -24,6 +24,7 @@ HTTP_Request Networking::send_http_request(const std::string url, const std::str
         if (is_post) {
             curl_easy_setopt(curl, CURLOPT_POST, 1L);
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body.size());
         }
 
         CURLcode res = curl_easy_perform(curl);
@@ -36,6 +37,10 @@ HTTP_Request Networking::send_http_request(const std::string url, const std::str
         } else {
             std::cerr << "CURL error: " << curl_easy_strerror(res) << "\n";
             response.status_code = -1;
+        }
+
+        if (headers) {
+            curl_slist_free_all(headers);
         }
 
         curl_easy_cleanup(curl);
