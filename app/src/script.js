@@ -174,6 +174,12 @@ function create_flv() {
     }
 }
 
+function reset_chart() {
+    statsChart.destroy();
+
+    create_chart();
+}
+
 function create_chart() {
     const statsChartCtx = document.getElementById('statsChart');
 
