@@ -332,7 +332,7 @@ int main(int argc, char **argv) {
             
             login_headers = curl_slist_append(login_headers, user_header.c_str());
             login_headers = curl_slist_append(login_headers, pass_header.c_str());
-            HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", "", false, login_headers);
+            HTTP_Request login_request = Networking::send_http_request(server.ip + "/api/update_data", "", false, login_headers);
             if (login_request.status_code == 200) {
                 std::vector<std::string> parts = split_string(login_request.text, ',');
                 server.id = parts[0];
