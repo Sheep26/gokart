@@ -70,6 +70,17 @@ std::atomic<bool> shutting_down = false;
 bool bluetooth_running = false;
 int gps_serial;
 
+std::string safe_getenv(const char* name) {
+    const char* val = getenv(name);
+
+    if (!val) {
+        std::cerr << "Missing environment variable: " << name << "\n";
+        return "";
+    }
+
+    return std::string(val);
+};
+
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
     std::stringstream ss(input);
@@ -260,10 +271,10 @@ int main(int argc, char **argv) {
 
     // Configure server.
     std::cout << "Reading environment varibles.\n";
-    server.ip = (std::string) getenv("SERVERIP");
-    server.rtmp_ip = (std::string) getenv("RTMPSERVERIP");
-    server.username = (std::string) getenv("SERVERUSERNAME");
-    server.passwd = (std::string) getenv("SERVERPASSWD");
+    server.ip = safe_getenv("SERVERIP");
+    server.rtmp_ip = safe_getenv("RTMPSERVERIP");
+    server.username = safe_getenv("SERVERUSERNAME");
+    server.passwd = safe_getenv("SERVERPASSWD");
 
     std::cout << "Server configured at " << server.ip << "\n";
     
