@@ -168,9 +168,8 @@ void Threads::ffmpeg_t() {
     // ffmpeg command with drawtext filter using reloading file.
     // 720p@60
     std::string cmd =
-        "ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -i /dev/video0 "
-        "-f alsa -i default "
-        "-b:v 2000k -maxrate 2000k -c:v libx264 -bufsize 4000k -c:a aac -b:a 192k"
+        "ffmpeg -f v4l2 -framerate 30 -video_size 1280x720 -i /dev/video0 "
+        "-b:v 3M -maxrate 3M -c:v libx264 -bufsize 6M"
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=12:fontcolor=white:box=1:boxcolor=black@0.50\" "
         "-f flv rtmp://" + server.rtmp_ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
