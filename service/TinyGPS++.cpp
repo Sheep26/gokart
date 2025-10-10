@@ -29,17 +29,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _RMCterm "RMC"
 #define _GGAterm "GGA"
 
-// Alternate implementation of millis() that relies on std
-unsigned long millis()
-{
-  static auto start_time = std::chrono::high_resolution_clock::now();
-
-  auto end_time = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-
-  return static_cast<unsigned long>(duration.count());
-}
-
 TinyGPSPlus::TinyGPSPlus()
   :  parity(0)
   ,  isChecksumTerm(false)

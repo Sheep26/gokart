@@ -51,6 +51,17 @@ typedef unsigned char byte;
 #define degrees(x) ((x) * 180.0 / M_PI)
 #define sq(x) ((x) * (x))
 
+// Alternate implementation of millis() that relies on std
+unsigned long millis()
+{
+   static auto start_time = std::chrono::high_resolution_clock::now();
+   
+   auto end_time = std::chrono::high_resolution_clock::now();
+   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+   return static_cast<unsigned long>(duration.count());
+}
+
 struct RawDegrees
 {
    uint16_t deg;

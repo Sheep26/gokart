@@ -337,6 +337,6 @@ int main(int argc, char **argv) {
     }
 
     // Return 0.
-    serialClose(gps_serial)
+    serialClose(gps_serial);
     return 0;
 }
