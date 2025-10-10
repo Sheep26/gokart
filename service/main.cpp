@@ -121,7 +121,7 @@ void Threads::data_t() {
         std::cout << "Sending Data: \n" << send_data << "\n";
         
         // Make the http request.
-        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", send_data, true, false, headers);
+        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", send_data, true, false, &headers);
 
         if (update_request.status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
@@ -338,7 +338,7 @@ int main(int argc, char **argv) {
             
             login_headers = curl_slist_append(login_headers, user_header.c_str());
             login_headers = curl_slist_append(login_headers, pass_header.c_str());
-            HTTP_Request login_request = Networking::send_http_request(server.ip + "/api/login", "", false, false, login_headers);
+            HTTP_Request login_request = Networking::send_http_request(server.ip + "/api/login", "", false, false, &login_headers);
             if (login_request.status_code == 200) {
                 std::cout << "Login successful.\n";
 
