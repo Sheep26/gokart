@@ -86,9 +86,13 @@ void Threads::serial_thread() {
     std::cout << "Serial started.\n";
     while(true) {
         while (serialDataAvail(gps_serial)) {
-            //gps.encode(serialGetchar(gps_serial))
-            std::cout << (char) serialDataAvail(gps_serial);
+            gps.encode(serialGetchar(gps_serial));
         }
+
+        std::cout << gps.location.lat() << "\n";
+        std::cout << gps.location.lng() << "\n";
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
