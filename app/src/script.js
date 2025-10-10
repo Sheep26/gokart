@@ -136,6 +136,7 @@ function update_statistics() {
         return;
     }
 
+    console.log(connection.get_chart_data());
     statsChart.data = connection.get_chart_data();
 
     statsChart.update();

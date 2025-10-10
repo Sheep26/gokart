@@ -163,6 +163,10 @@ app.post("/api/update_data", (req, res) => {
             data.online = true;
             data.data = req.body;
             data.chart.labels.push(Date.now());
+            console.log(data.data.speed);
+            console.log(data.data.satellites);
+            console.log(data.data.batteryVolt);
+            console.log(data.data.batteryPercent);
             data.chart.datasets[0].data.push(data.data.speed); // Speed dataset.
             data.chart.datasets[1].data.push(data.data.satellites); // Battery Voltage dataset.
             data.chart.datasets[2].data.push(data.data.batteryVolt); // Battery Voltage dataset.
