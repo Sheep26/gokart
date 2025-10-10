@@ -326,8 +326,12 @@ int main(int argc, char **argv) {
 
             // Login.
             struct curl_slist* login_headers = nullptr;
-            login_headers = curl_slist_append(login_headers, ("username: " + server.username).c_str());
-            login_headers = curl_slist_append(login_headers, ("passwd: " + server.passwd).c_str());
+
+            std::string user_header = "username: " + server.username;
+            std::string pass_header = "passwd: " + server.passwd;
+            
+            login_headers = curl_slist_append(login_headers, user_header.c_str());
+            login_headers = curl_slist_append(login_headers, pass_header.c_str());
             HTTP_Request login_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", nullptr, false, login_headers);
             if (login_request.status_code == 200) {
                 std::vector<std::string> parts = split_string(login_request.text, ',');
