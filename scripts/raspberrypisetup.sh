@@ -63,6 +63,13 @@ systemctl enable bluetooth
 systemctl start bluetooth
 systemctl enable gokart.service
 systemctl start gokart.service
+systemctl enable bluetooth
+systemctl start bluetooth
+bluetoothctl power on
+bluetoothctl agent on
+bluetoothctl default-agent
+bluetoothctl discoverable on
+bluetoothctl pairable on
 
 echo "Cleaning up."
 mv ../scripts/raspberrypiupdate.sh /root/update.sh
