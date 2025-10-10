@@ -17,6 +17,7 @@
 #include "networking.h"
 #include "threads.h"
 #include "commandListener.h"
+#include "TinyGPS++.h"
 
 #define TELEMENTRY_PIN 10
 #define SHUTDOWN_PIN 12
@@ -50,6 +51,8 @@ struct Server {
 
 Server server;
 CommandListener commandListener;
+TinyGPSPlus gps;
+
 std::atomic<bool> telementry_running = false;
 std::atomic<bool> shutting_down = false;
 bool bluetooth_running = false;
