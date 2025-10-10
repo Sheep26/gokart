@@ -54,25 +54,6 @@ if [[ "$*" != *-u* ]]; then
         apt install libcurl4-openssl-dev -y
     fi
 
-    if ! $(apt list --installed | grep -q libbluetooth-dev); then
-        echo "Dependency libbluetooth-dev missing, installing."
-
-        # Install libcurl library
-        apt install libbluetooth-dev -y
-    fi
-
-    if ! $(apt list --installed | grep -q bluetooth); then
-        echo "bluetooth Missing, installing."
-
-        apt install bluetooth -y
-    fi
-
-    if ! $(apt list --installed | grep -q bluez); then
-        echo "bluez Missing, installing."
-
-        apt install bluez -y
-    fi
-
     if ! $(apt list --installed | grep -q libsndfile1-dev); then
         echo "libsndfile1-dev Missing, installing."
 

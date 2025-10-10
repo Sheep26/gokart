@@ -8,10 +8,6 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/rfcomm.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <fmt/core.h>
@@ -59,17 +55,14 @@ public:
     static void data_t();
     static void ffmpeg_t();
     static void display_t();
-    static void bluetooth_server();
     static void collection_thread();
 };
 
 Server server;
-CommandListener commandListener;
 TinyGPSPlus gps;
 
 std::atomic<bool> telementry_running = false;
 std::atomic<bool> shutting_down = false;
-bool bluetooth_running = false;
 int gps_serial;
 
 std::string safe_getenv(const char* name) {
@@ -189,105 +182,6 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void Threads::bluetooth_server() {
-    /*struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
-    int server_sock, client_sock;
-    socklen_t opt = sizeof(rem_addr);
-
-    // Create Bluetooth socket
-    server_sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-    loc_addr.rc_family = AF_BLUETOOTH;
-    bacpy(&loc_addr.rc_bdaddr, BDADDR_ANY);
-    loc_addr.rc_channel = 1;
-    bind(server_sock, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
-    listen(server_sock, 1);
-
-    std::cout << "[BT] Listening on RFCOMM channel 1...\n";
-
-    while (true) {
-        char client_addr[18] = { 0 };
-        client_sock = accept(server_sock, (struct sockaddr *)&rem_addr, &opt);
-        ba2str(&rem_addr.rc_bdaddr, client_addr);
-        std::cout << "[BT] Client connected: " << client_addr << "\n";
-
-        char buf[1024];
-        int bytes_read;
-        while ((bytes_read = read(client_sock, buf, sizeof(buf) - 1)) > 0) {
-            buf[bytes_read] = '\0';
-            std::string cmd(buf);
-            // Trim newline if needed
-            cmd.erase(cmd.find_last_not_of("\r\n") + 1);
-            std::vector<std::string> parts = split_string(cmd, ' ');
-            std::vector<std::string> args(parts.begin() + 1, parts.end());
-            std::string response = commandListener.handle_command(args);
-            std::cout << "[BT]" << response << "\n";
-            write(client_sock, response.c_str(), response.length());
-        }
-
-        std::cout << "[BT] Client disconnected.\n";
-        close(client_sock);
-    }
-
-    close(server_sock);
-    std::cout << "[BT] Server stopped.\n";*/
-    // Chatgpt code.
-    struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
-    char buf[1024] = { 0 };
-    int s, client, bytes_read;
-    socklen_t opt = sizeof(rem_addr);
-
-    // Create RFCOMM socket
-    s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-    if (s < 0) {
-        perror("socket");
-    }
-
-    // Bind to channel 1 of the first available adapter
-    loc_addr.rc_family = AF_BLUETOOTH;
-    loc_addr.rc_bdaddr = *BDADDR_ANY;
-    loc_addr.rc_channel = (uint8_t)1;
-
-    if (bind(s, (struct sockaddr *)&loc_addr, sizeof(loc_addr)) < 0) {
-        perror("bind");
-        close(s);
-    }
-
-    // Start listening
-    listen(s, 1);
-    std::cout << "Bluetooth RFCOMM server started, waiting for connections...\n";
-
-    // Accept a connection
-    client = accept(s, (struct sockaddr *)&rem_addr, &opt);
-    if (client < 0) {
-        perror("accept");
-        close(s);
-    }
-
-    char client_addr[18] = { 0 };
-    ba2str(&rem_addr.rc_bdaddr, client_addr);
-    std::cout << "Accepted connection from " << client_addr << "\n";
-
-    // Main loop: read from client and echo back
-    while (true) {
-        memset(buf, 0, sizeof(buf));
-        bytes_read = read(client, buf, sizeof(buf));
-        if (bytes_read > 0) {
-            std::cout << "Received: " << buf << "\n";
-            // echo back
-            write(client, buf, bytes_read);
-        } else if (bytes_read == 0) {
-            std::cout << "Client disconnected\n";
-            break;
-        } else {
-            perror("read");
-            break;
-        }
-    }
-
-    close(client);
-    close(s);
-}
-
 void start_telementry() {
     telementry_running = true;
 
@@ -362,15 +256,6 @@ int main(int argc, char **argv) {
         }
 
         if (!telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
-            if (!bluetooth_running) {
-                // Start bluetooth server.
-                std::cout << "Starting bluetooth server.\n";
-                std::thread bluetooth_thread(Threads::bluetooth_server);
-                bluetooth_thread.detach();
-
-                bluetooth_running = true;
-            }
-
             std::cout << "Checking wifi.\n";
             if (!Networking::wifi_enabled()) {
                 std::cout << "Wifi disabled, enabling wifi.\n";
@@ -384,7 +269,6 @@ int main(int argc, char **argv) {
 
             // Wait for network.
             std::cout << "Waiting for network.\n";
-            std::cout << "You can connect to network through bluetooth terminal.\n";
             std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
             std::cout << "Attempting login.\n";
 
