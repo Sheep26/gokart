@@ -94,7 +94,7 @@ async function login(api_url, username, passwd) {
     
     connection = new Connection(api_url, text);
     
-    create_charts();
+    setup_chart();
     setInterval(check_online, 100);
     setInterval(update_statistics, 100);
     
@@ -174,7 +174,7 @@ function create_flv() {
     }
 }
 
-function create_charts() {
+function create_chart() {
     const statsChartCtx = document.getElementById('statsChart');
 
     const zoomOptions = {
@@ -221,6 +221,10 @@ function create_charts() {
             },
         }
     });
+}
+
+function setup_chart() {
+    create_chart();
 
     const canvas = document.getElementById('statsChart');
 
