@@ -58,6 +58,7 @@ public:
     static void ffmpeg_t();
     static void display_t();
     static void bluetooth_server();
+    static void serial_thread();
 };
 
 Server server;
@@ -79,6 +80,15 @@ std::vector<std::string> split_string(const std::string& input, char delimiter) 
     }
     
     return tokens;
+}
+
+void Threads::serial_thread() {
+    std::cout << "Serial started.\n";
+    for (;;) {
+        while (serialDataAvail(gps_serial)) {
+            gps.encode(serialGetchar(gps_serial))
+        }
+    }
 }
 
 void Threads::data_t() {
@@ -247,6 +257,12 @@ int main(int argc, char **argv) {
         }
     }
 
+    if (gps_serial >= 0) {
+        std::thread serial_thread(Threads::serial_thread);
+
+        serial_thread.detach();
+    }
+
     // Configure server.
     std::cout << "Reading environment varibles.\n";
     server.ip = (std::string) getenv("SERVERIP");
@@ -327,5 +343,6 @@ int main(int argc, char **argv) {
     }
 
     // Return 0.
+    serialClose(gps_serial)
     return 0;
 }
