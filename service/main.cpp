@@ -107,7 +107,7 @@ void Threads::serial_thread() {
 }
 
 void Threads::data_t() {
-    // Send data to server every 100ms
+    // Send data to server every second.
     
     while (telementry_running) {
         // Set headers
@@ -129,8 +129,8 @@ void Threads::data_t() {
             break;
         }
  
-        // Sleep for 100ms
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // Sleep for 1000ms
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
