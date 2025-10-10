@@ -56,6 +56,7 @@ TinyGPSPlus gps;
 std::atomic<bool> telementry_running = false;
 std::atomic<bool> shutting_down = false;
 bool bluetooth_running = false;
+int gps_serial;
 
 std::vector<std::string> split_string(const std::string& input, char delimiter) {
     std::vector<std::string> tokens;
@@ -214,8 +215,6 @@ void start_display() {
 
 int main(int argc, char **argv) {
     std::cout << "Starting gokart service.\n";
-    int serial_fd;
-
     shutting_down = false;
 
     // Setup GPIO
@@ -227,10 +226,14 @@ int main(int argc, char **argv) {
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
-    if ((serial_fd = serialOpen("/dev/ttyS0", 9600)) < 0) {
-        printf("Unable to open /dev/ttyS0\n");
-    } else if ((serial_fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
-        printf("Unable to open /dev/ttyAMA0\n");
+    gps_serial = serialOpen("/dev/ttyS0", 9600);
+    if (gps_serial < 0) {
+        std::cout << "Unable to open /dev/ttyS0\n";
+        gps_serial = serialOpen("/dev/ttyAMA0", 9600);
+        
+        if (gps_serial < 0) {
+            std::cout << "Unable to open /dev/ttyAMA0";
+        }
     }
 
     // Configure server.
