@@ -337,13 +337,12 @@ int main(int argc, char **argv) {
                 std::vector<std::string> parts = split_string(login_request.text, ',');
                 server.id = parts[0];
                 server.session = parts[1];
+
+                std::cout << "Starting telementry.\n";
+                start_telementry();
             } else {
                 std::cerr << "Login failed\n";
-                return 1;
             }
-
-            std::cout << "Starting telementry.\n";
-            start_telementry();
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10000));
