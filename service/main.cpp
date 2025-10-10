@@ -87,7 +87,7 @@ void Threads::serial_thread() {
     while(true) {
         while (serialDataAvail(gps_serial)) {
             //gps.encode(serialGetchar(gps_serial))
-            std::cout << serialDataAvail(gps_serial);
+            std::cout << std::string(serialDataAvail(gps_serial));
         }
     }
 }
@@ -244,14 +244,10 @@ int main(int argc, char **argv) {
 
     // Open serial port (replace /dev/ttyS0 with /dev/ttyAMA0 if needed)
     std::cout << "Init Serial.\n";
-    gps_serial = serialOpen("/dev/ttyS0", 9600);
+    gps_serial = serialOpen("/dev/serial0", 9600);
+
     if (gps_serial < 0) {
-        std::cout << "Unable to open /dev/ttyS0\n";
-        gps_serial = serialOpen("/dev/ttyAMA0", 9600);
-        
-        if (gps_serial < 0) {
-            std::cout << "Unable to open /dev/ttyAMA0\n";
-        }
+        std::cout << "Unable to open /dev/serial0\n";
     }
 
     if (gps_serial >= 0) {
