@@ -172,7 +172,7 @@ void Threads::ffmpeg_t() {
 
     int ret = system(cmd.c_str());
 
-    telementry_running = false;
+    //telementry_running = false;
     // Remove the named pipe after use.
     system("rm -f /tmp/ffmpeg_overlay.txt");
 
