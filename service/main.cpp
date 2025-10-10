@@ -17,7 +17,6 @@
 
 #include "data.h"
 #include "networking.h"
-#include "commandListener.h"
 #include "TinyGPS++.h"
 
 #define TELEMENTRY_PIN 5
