@@ -121,7 +121,7 @@ void Threads::data_t() {
         std::cout << "Sending Data: \n" << send_data << "\n";
         
         // Make the http request.
-        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", send_data, true, false, headers);
+        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", send_data, true, true, headers);
 
         if (update_request.status_code != 200) {
             std::cerr << "Error: Failed to send telemetry data.\n";
