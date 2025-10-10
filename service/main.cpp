@@ -190,31 +190,6 @@ void Threads::ffmpeg_t() {
 }
 
 void Threads::bluetooth_server() {
-    int dev_id = hci_get_route(nullptr); // get first available adapter
-    if (dev_id < 0) {
-        std::cerr << "No Bluetooth Adapter Found!\n";
-        return 1;
-    }
-
-    int sock = hci_open_dev(dev_id);
-    if (sock < 0) {
-        perror("HCI device open failed");
-        return 1;
-    }
-
-    if (hci_test_bit(HCI_UP, &((struct hci_dev_info){0}).flags)) {
-        std::cout << "Bluetooth adapter is already up\n";
-    } else {
-        if (ioctl(sock, HCIDEVUP, dev_id) < 0) {
-            perror("Cannot bring up adapter");
-            close(sock);
-            return 1;
-        }
-        std::cout << "Bluetooth adapter turned on\n";
-    }
-
-    close(sock);
-    
     /*struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
     int server_sock, client_sock;
     socklen_t opt = sizeof(rem_addr);
@@ -265,7 +240,6 @@ void Threads::bluetooth_server() {
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
     if (s < 0) {
         perror("socket");
-        return 1;
     }
 
     // Bind to channel 1 of the first available adapter
