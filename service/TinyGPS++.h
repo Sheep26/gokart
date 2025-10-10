@@ -48,9 +48,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 typedef unsigned char byte;
 
-//#define radians(x) ((x) * M_PI / 180.0)
-//#define degrees(x) ((x) * 180.0 / M_PI)
-//#define sq(x) ((x) * (x))
+#define radians(x) ((x) * M_PI / 180.0)
+#define degrees(x) ((x) * 180.0 / M_PI)
+#define sq(x) ((x) * (x))
 
 struct RawDegrees
 {
