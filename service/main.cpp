@@ -250,7 +250,6 @@ void Threads::bluetooth_server() {
     if (bind(s, (struct sockaddr *)&loc_addr, sizeof(loc_addr)) < 0) {
         perror("bind");
         close(s);
-        return 1;
     }
 
     // Start listening
