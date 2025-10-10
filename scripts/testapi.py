@@ -5,7 +5,7 @@ from random import randint
 data = {
         "num": 12,
         "speed": 12,
-        "rpm": 1000,
+        "satellites": 8,
         "batteryVolt": 46.43,
         "batteryPercent": 29.00
 }
