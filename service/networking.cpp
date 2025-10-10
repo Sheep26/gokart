@@ -5,7 +5,7 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::stri
     return size * nmemb;
 }
 
-HTTP_Request Networking::send_http_request(const std::string& url, const std::string& body, const bool is_post, const bool is_json, const struct curl_slist* headers) {
+HTTP_Request Networking::send_http_request(std::string& url, std::string& body, bool is_post, bool is_json, struct curl_slist* headers) {
     CURL* curl = curl_easy_init();
     HTTP_Request response = {"", 0};
 
