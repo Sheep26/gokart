@@ -116,7 +116,7 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
         
         // Make the http request.
-        HTTP_Request update_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
+        HTTP_Request update_request = Networking::send_http_request(server.ip + "/api/update_data", fmt::format(R"({{
                 "num": {},
                 "speed": {},
                 "batteryVolt": {},
