@@ -89,8 +89,7 @@ void Threads::serial_thread() {
             gps.encode(serialGetchar(gps_serial));
         }
 
-        std::cout << gps.location.lat() << "\n";
-        std::cout << gps.location.lng() << "\n";
+        data.speed = gps.speed.kmph();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -109,10 +108,9 @@ void Threads::data_t() {
         HTTP_Request update_request = Networking::send_http_request("https://" + server.ip + "/api/update_data", fmt::format(R"({{
                 "num": {},
                 "speed": {},
-                "rpm": {},
                 "batteryVolt": {},
                 "batteryPercent": {},
-            }})", data.num, data.speed, data.rpm, data.batteryVolt, data.batteryPercent),
+            }})", data.num, data.speed, data.batteryVolt, data.batteryPercent),
             true, headers);
 
         if (update_request.status_code != 200) {
@@ -144,7 +142,7 @@ void Threads::ffmpeg_t() {
             }
 
             char overlay[128];
-            snprintf(overlay, sizeof(overlay), "Num:%d\nSpeed:%dkmph\nrpm:%d\nBattery:V%d%Voltage:%dv", data.num, data.speed, data.rpm, data.batteryPercent, data.batteryVolt);
+            snprintf(overlay, sizeof(overlay), "Num:%d\nSpeed:%dkmph\n\nBattery:%d%\nVoltage:%dV", data.num, data.speed, data.batteryPercent, data.batteryVolt);
             
             fprintf(f, "%s", overlay);
 

@@ -2,8 +2,7 @@
 #define DATA_H
 
 struct DATA {
-    int speed;
-    int rpm;
+    double speed;
     float batteryVolt;
     float batteryPercent;
     int num;

@@ -42,7 +42,6 @@ let data = {
     data: {
         num: 0,
         speed: 0,
-        rpm: 0,
         batteryVolt: 0.00,
         batteryPercent: 0.00
     },
@@ -56,17 +55,10 @@ let data = {
                 borderColor: 'blue',
             },
             {
-                label: 'RPM',
-                data: [],
-                yAxisID: 'yBig',
-                borderWidth: 1,
-                borderColor: 'red',
-            },
-            {
                 label: 'Battery Voltage',
                 data: [],
                 borderWidth: 1,
-                borderColor: 'yellow',
+                borderColor: 'red',
             },
             {
                 label: 'Battery Percent',
@@ -165,9 +157,8 @@ app.post("/api/update_data", (req, res) => {
             data.data = req.body;
             data.chart.labels.push(Date.now());
             data.chart.datasets[0].data.push(data.data.speed); // Speed dataset.
-            data.chart.datasets[1].data.push(data.data.rpm); // RPM dataset.
-            data.chart.datasets[2].data.push(data.data.batteryVolt); // Battery Voltage dataset.
-            data.chart.datasets[3].data.push(data.data.batteryPercent); // Battery Percent dataset.
+            data.chart.datasets[1].data.push(data.data.batteryVolt); // Battery Voltage dataset.
+            data.chart.datasets[2].data.push(data.data.batteryPercent); // Battery Percent dataset.
 
             res.sendStatus(200);
             return;
