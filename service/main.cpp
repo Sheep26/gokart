@@ -22,8 +22,8 @@
 #include "commandListener.h"
 #include "TinyGPS++.h"
 
-#define TELEMENTRY_PIN 10
-#define SHUTDOWN_PIN 12
+#define TELEMENTRY_PIN 5
+#define SHUTDOWN_PIN 6
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -332,6 +332,7 @@ int main(int argc, char **argv) {
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+        std::cout << (int) digitalRead(TELEMENTRY_PIN) << "\n";
     }
 
     // Return 0.
