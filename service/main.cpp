@@ -171,7 +171,7 @@ void Threads::ffmpeg_t() {
     std::string cmd =
         "ffmpeg -f v4l2 -framerate 60 -video_size 1280x720 -i /dev/video0 "
         "-f alsa -i default "
-        "-b:v 4300k -maxrate 4300k -c:v libx264 -bufsize 8600k -c:a aac -b:a 192k"
+        "-b:v 2000k -maxrate 2000k -c:v libx264 -bufsize 4000k -c:a aac -b:a 192k"
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=12:fontcolor=white:box=1:boxcolor=black@0.50\" "
         "-f flv rtmp://" + server.rtmp_ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
