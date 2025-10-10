@@ -115,7 +115,7 @@ void Threads::data_t() {
         headers = curl_slist_append(headers, ("id: " + server.id).c_str());
         headers = curl_slist_append(headers, ("session: " + server.session).c_str());
 
-        std::string send_data = fmt::format(R"({"num": {},"speed": {},"satellites": {},"batteryVolt": {},"batteryPercent": {}})",
+        std::string send_data = fmt::format(R"({{"num": {},"speed": {},"satellites": {},"batteryVolt": {},"batteryPercent": {}}})",
             data.num, (int) data.speed, gps.satellites.value(), data.batteryVolt, data.batteryPercent);
         
         std::cout << "Sending Data: \n" << send_data << "\n";
@@ -346,8 +346,8 @@ int main(int argc, char **argv) {
                 server.id = parts[0];
                 server.session = parts[1];
 
-                std::cout << "Id: " << server.id;
-                std::cout << "Session: " << server.session;
+                std::cout << "Id: " << server.id << "\n";
+                std::cout << "Session: " << server.session << "\n";
 
                 std::cout << "Starting telementry.\n";
                 start_telementry();
