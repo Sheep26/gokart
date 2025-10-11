@@ -105,7 +105,7 @@ bool Networking::check_hotspot() {
     // Trim any trailing whitespace (e.g., newline)
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    return result.find("Hotspot") != std::string::npos;
+    return result.find("connected") != std::string::npos && result.find("Hotspot") != std::string::npos;
 }
 
 bool Networking::wifi_enabled() {
