@@ -65,6 +65,14 @@ if [[ "$*" != *-u* ]]; then
 
         apt install libasio-dev -y
     fi
+
+    if ! $(apt list --installed | grep -q crow); then
+        echo "crow Missing, installing."
+
+        wget https://github.com/CrowCpp/Crow/releases/download/v1.2.1.2/Crow-1.2.1-Linux.deb
+        apt install ./Crow-1.2.1-Linux.deb -y
+        rm Crow-1.2.1-Linux.deb
+    fi
 fi
 
 # -lasound
