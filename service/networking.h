@@ -18,6 +18,7 @@ class Networking {
 public:
     static int wait_for_network();
     static bool check_network();
+    static bool check_hotspot();
     static bool wifi_enabled();
     static void connect_last_network();
     static void set_wifi(bool enabled);

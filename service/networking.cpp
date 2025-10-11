@@ -80,6 +80,34 @@ bool Networking::check_network() {
     return result.find("connected") != std::string::npos && result.find("Hotspot") == std::string::npos;
 }
 
+bool Networking::check_hotspot() {
+    FILE* pipe = popen("nmcli device status | grep wlan", "r");
+    if (!pipe) {
+        std::cerr << "Error: Failed to open pipe for network check." << "\n";
+        return false;
+    }
+
+    char buffer[128];
+    std::string result = "";
+
+    // Read the output of the command
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+
+    // Close the pipe
+    int return_code = pclose(pipe);
+    if (return_code != 0) {
+        std::cerr << "Error: nmcli command failed with return code " << return_code << "\n";
+        return false;
+    }
+
+    // Trim any trailing whitespace (e.g., newline)
+    result.erase(result.find_last_not_of(" \n\r\t") + 1);
+
+    return result.find("Hotspot") != std::string::npos;
+}
+
 bool Networking::wifi_enabled() {
     FILE* pipe = popen("nmcli radio wifi", "r");
     if (!pipe) {
