@@ -59,6 +59,12 @@ if [[ "$*" != *-u* ]]; then
 
         apt install libsndfile1-dev -y
     fi
+
+    if ! $(apt list --installed | grep -q libasio-dev); then
+        echo "libasio-dev Missing, installing."
+
+        apt install libasio-dev -y
+    fi
 fi
 
 # -lasound

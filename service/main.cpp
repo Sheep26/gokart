@@ -1,3 +1,7 @@
+#define TELEMENTRY_PIN 5
+#define SHUTDOWN_PIN 6
+#define HOTSPOT_PIN 26
+
 #include <iostream>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
@@ -19,10 +23,6 @@
 #include "networking.h"
 #include "TinyGPS++.h"
 #include "crow_all.h"
-
-#define TELEMENTRY_PIN 5
-#define SHUTDOWN_PIN 6
-#define HOTSPOT_PIN 26
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
     });
 
     app.port(18080).multithreaded().run();
-    
+
     std::cout << "Starting gokart service.\n";
     shutting_down = false;
 
