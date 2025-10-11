@@ -57,6 +57,7 @@ public:
     static void ffmpeg_t();
     static void display_t();
     static void collection_thread();
+    static void web_server_thread();
 };
 
 Server server;
@@ -188,6 +189,16 @@ void Threads::ffmpeg_t() {
     }
 }
 
+void Threads::web_server_thead() {
+    crow::SimpleApp app;
+
+    CROW_ROUTE(app, "/")([](){
+        return "Hello world";
+    });
+
+    app.port(80).run();
+}
+
 void start_telementry() {
     telementry_running = true;
 
@@ -201,14 +212,6 @@ void start_telementry() {
 }
 
 int main(int argc, char **argv) {
-    crow::SimpleApp app;
-
-    CROW_ROUTE(app, "/")([](){
-        return "Hello world";
-    });
-
-    app.port(18080).multithreaded().run();
-    
     std::cout << "Starting gokart service.\n";
     shutting_down = false;
 
@@ -229,7 +232,6 @@ int main(int argc, char **argv) {
 
     if (gps_serial >= 0) {
         std::thread collection_thread(Threads::collection_thread);
-
         collection_thread.detach();
     }
 
@@ -251,6 +253,9 @@ int main(int argc, char **argv) {
         std::cout << "Server configured incorrectly.\n";
     } else if (telementry) {
         std::cout << "Server configured at " << server.ip << "\n";
+
+        std::thread web_server_thread(Threads::web_server_thread);
+        web_server_thread.detach();
     }
     
     // Set race number.
