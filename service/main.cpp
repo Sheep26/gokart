@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
                 Networking::stop_hotspot();
         }
 
-        if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
+        if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW && !check_hotspot()) {
             std::cout << "Checking wifi.\n";
             if (!Networking::wifi_enabled()) {
                 std::cout << "Wifi disabled, enabling wifi.\n";
