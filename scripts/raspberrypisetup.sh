@@ -1,5 +1,5 @@
 rm /root/.server_env
-read -p "Telementry [y/n]" telementry
+read -p "Telementry [y/n] " telementry
 echo "export TELEMENTRY=${telementry,,}" > /root/.server_env
 if [ "${telementry,,}" == "y" ]; then
     # Get hotspot details
