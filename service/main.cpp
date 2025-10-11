@@ -273,15 +273,14 @@ int main(int argc, char **argv) {
         }
 
         if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
-            Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
+            if (!check_hotspot()) {
+                Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
         } else if (digitalRead(HOTSPOT_PIN) == HIGH) {
-            if (!Networking::wifi_enabled()) {
+            if (!Networking::wifi_enabled())
                 Networking::set_wifi(true);
-            }
 
-            if (!Networking::check_network()) {
+            if (!Networking::check_network()) 
                 Networking::connect_last_network();
-            }
         }
 
         if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
