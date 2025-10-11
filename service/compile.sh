@@ -78,5 +78,5 @@ fi
 # -lasound
 
 # Compile.
-g++ *.cpp -O2 -vv -fpermissive -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lbluetooth -fpermissive -lpthread -o main
+g++ *.cpp -O2 -v -fpermissive -lwiringPi -lfmt $(pkg-config --cflags --libs libcurl) -lbluetooth -fpermissive -lpthread -o main
 chmod a+x main
