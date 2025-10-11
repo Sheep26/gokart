@@ -280,7 +280,7 @@ int main(int argc, char **argv) {
                 Networking::set_wifi(true);
 
             if (!Networking::check_network()) 
-                Networking::connect_last_network();
+                Networking::stop_hotspot();
         }
 
         if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {

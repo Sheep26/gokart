@@ -159,8 +159,8 @@ void Networking::create_hotspot(std::string ifname, std::string ssid, std::strin
     }
 }
 
-void Networking::connect_last_network() {
-    std::string cmd = "nmcli connection up \"$(nmcli -t -f NAME connection show | grep -v Hotspot | head -n1)\"";
+void Networking::stop_hotspot() {
+    std::string cmd = "nmcli connection down Hotspot; nmcli radio wifi on; nmcli connection up \"$(nmcli -t -f NAME connection show | grep -v Hotspot | head -n1)\"";
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
