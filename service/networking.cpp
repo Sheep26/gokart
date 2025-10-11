@@ -176,6 +176,9 @@ int Networking::wait_for_network() {
     while (!Networking::check_network()) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         elapsed_seconds++;
+
+        if (digitalRead(HOTSPOT_PIN) == LOW)
+            return -1;
     }
 
     return elapsed_seconds;

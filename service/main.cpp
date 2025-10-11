@@ -295,7 +295,13 @@ int main(int argc, char **argv) {
 
             // Wait for network.
             std::cout << "Waiting for network.\n";
-            std::cout << "Network connected, took " << Networking::wait_for_network() << "s.\n";
+
+            int wait_time = Networking::wait_for_network();
+
+            if (wait_time < 0)
+                continue;
+
+            std::cout << "Network connected, took " << wait_time << "s.\n";
             std::cout << "Attempting login.\n";
 
             // Login.

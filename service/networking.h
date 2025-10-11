@@ -8,6 +8,7 @@
 #include <thread>
 #include <cstring>
 #include <curl/curl.h>
+#include <wiringPi.h>
 
 struct HTTP_Request {
     std::string text;
