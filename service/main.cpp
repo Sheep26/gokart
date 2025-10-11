@@ -273,7 +273,7 @@ int main(int argc, char **argv) {
         }
 
         if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
-            if (!check_hotspot()) {
+            if (!Networking::check_hotspot()) {
                 Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
         } else if (digitalRead(HOTSPOT_PIN) == HIGH) {
             if (!Networking::wifi_enabled())
