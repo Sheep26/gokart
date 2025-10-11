@@ -2,6 +2,15 @@ rm /root/.server_env
 read -p "Telementry [y/n]" telementry
 echo "export TELEMENTRY=${telementry,,}" > /root/.server_env
 if [ "${telementry,,}" == "y" ]; then
+    # Get hotspot details
+    echo "Please enter wifi hotspot login details."
+    
+    read -p "SSID: " wifissid
+    read -p "PASSWD: " wifipasswd
+
+    echo "export WLANSSID=$wifissid" >> /root/.server_env
+    echo "export WLANPASSWD=$wifipasswd" >> /root/.server_env
+
     # Get login details
     logged_in=0
     while [ $logged_in -eq 0 ]; do
