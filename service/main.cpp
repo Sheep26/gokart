@@ -62,7 +62,12 @@ TinyGPSPlus gps;
 
 std::atomic<bool> telementry_running = false;
 std::atomic<bool> shutting_down = false;
+
+bool telementry;
 int gps_serial;
+
+std::string wlanssid;
+std::string wlanpasswd;
 
 std::string safe_getenv(const char* name) {
     const char* val = getenv(name);
@@ -220,12 +225,23 @@ int main(int argc, char **argv) {
 
     // Configure server.
     std::cout << "Reading environment varibles.\n";
-    server.ip = safe_getenv("SERVERIP");
-    server.rtmp_ip = safe_getenv("RTMPSERVERIP");
-    server.username = safe_getenv("SERVERUSERNAME");
-    server.passwd = safe_getenv("SERVERPASSWD");
+    telementry = safe_getenv("TELEMENTRY") == "y";
 
-    std::cout << "Server configured at " << server.ip << "\n";
+    if (telementry) {
+        server.ip = safe_getenv("SERVERIP");
+        server.rtmp_ip = safe_getenv("RTMPSERVERIP");
+        server.username = safe_getenv("SERVERUSERNAME");
+        server.passwd = safe_getenv("SERVERPASSWD");
+
+        wlanssid = safe_getenv("WLANSSID");
+        wlanpasswd = safe_getenv("WLANPASSWD");
+    }
+
+    if (telementry && server.username != "" && server.passwd != "" && server.ip != "" && server.rtmp_ip != "") {
+        std::cout << "Server configured incorrectly.\n";
+    } else if (telementry) {
+        std::cout << "Server configured at " << server.ip << "\n";
+    }
     
     // Set race number.
     try {
@@ -243,6 +259,10 @@ int main(int argc, char **argv) {
     pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
     pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
 
+    if (telementry && digitalRead(TELEMENTRY_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
+        Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
+    }
+
     while (true) {
         if (digitalRead(SHUTDOWN_PIN) == LOW) {
             shutting_down = true;
@@ -254,7 +274,7 @@ int main(int argc, char **argv) {
             system("shutdown -h now");
         }
 
-        if (!telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
+        if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
             std::cout << "Checking wifi.\n";
             if (!Networking::wifi_enabled()) {
                 std::cout << "Wifi disabled, enabling wifi.\n";

@@ -1,5 +1,6 @@
-echo "Telementry [y/n]"
-read telementry
+echo "" > /root/.server_env
+read -p "Telementry [y/n]" telementry
+echo "export TELEMENTRY=${telementry,,}" >> /root/.server_env
 if [ "${telementry,,}" == "y" ]; then
     # Get login details
     logged_in=0
@@ -19,7 +20,7 @@ if [ "${telementry,,}" == "y" ]; then
             # Login successful.
             logged_in=1
             # Configure login for software.
-            echo "export SERVERIP=$serverip" > /root/.server_env
+            echo "export SERVERIP=$serverip" >> /root/.server_env
             echo "export RTMPSERVERIP=$rtmp_ip" >> /root/.server_env
             echo "export SERVERUSERNAME=$username" >> /root/.server_env
             echo "export SERVERPASSWD=$password" >> /root/.server_env

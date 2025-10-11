@@ -120,8 +120,8 @@ void Networking::set_wifi(bool enabled) {
     }
 }
 
-void Networking::create_hotspot(std::string ifname, std::string con_name, std::string ssid, std::string band, std::string channel, std::string passwd) {
-    std::string cmd = "nmcli radio wifi " + ifname + " " + con_name + " " + ssid + " " + band + " " + channel + " " + passwd;
+void Networking::create_hotspot(std::string ifname, std::string ssid, std::string passwd) {
+    std::string cmd = "nmcli device wifi hotspot ifname " + ifname + " ssid " + ssid + " password " + passwd;
     FILE* pipe = popen(cmd.c_str(), "r");
 
     if (pipe) {
