@@ -131,6 +131,17 @@ void Networking::create_hotspot(std::string ifname, std::string ssid, std::strin
     }
 }
 
+void Networking::connect_last_network() {
+    std::string cmd = "nmcli device wifi connect \"$(nmcli -t -f NAME connection show --active | grep -v Hotspot | head -n1)\"";
+    FILE* pipe = popen(cmd.c_str(), "r");
+
+    if (pipe) {
+        pclose(pipe);
+    } else{
+        std::cerr << "Error: Failed to execute command." << "\n";
+    }
+}
+
 int Networking::wait_for_network() {
     int elapsed_seconds = 0;
 

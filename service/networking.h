@@ -19,6 +19,7 @@ public:
     static int wait_for_network();
     static bool check_network();
     static bool wifi_enabled();
+    static void connect_last_network();
     static void set_wifi(bool enabled);
     static void create_hotspot(std::string ifname, std::string ssid, std::string passwd);
     static void scan_wifi();

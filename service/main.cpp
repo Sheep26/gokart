@@ -21,6 +21,7 @@
 
 #define TELEMENTRY_PIN 5
 #define SHUTDOWN_PIN 6
+#define HOTSPOT_PIN 26
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -255,12 +256,10 @@ int main(int argc, char **argv) {
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
     pinMode(SHUTDOWN_PIN, INPUT);
+    pinMode(HOTSPOT_PIN, INPUT);
     pullUpDnControl(TELEMENTRY_PIN, PUD_UP);
     pullUpDnControl(SHUTDOWN_PIN, PUD_UP);
-
-    if (telementry && digitalRead(TELEMENTRY_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
-        Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
-    }
+    pullUpDnControl(HOTSPOT_PIN, PUD_UP);
 
     while (true) {
         if (digitalRead(SHUTDOWN_PIN) == LOW) {
@@ -271,6 +270,18 @@ int main(int argc, char **argv) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
             system("shutdown -h now");
+        }
+
+        if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
+            Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
+        } else  {
+            if (!Networking::wifi_enabled()) {
+                Networking::set_wifi(true);
+            }
+
+            if (!Networking::check_network()) {
+                
+            }
         }
 
         if (telementry && !telementry_running && digitalRead(TELEMENTRY_PIN) == LOW) {
