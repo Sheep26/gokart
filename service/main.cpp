@@ -189,7 +189,7 @@ void Threads::ffmpeg_t() {
     }
 }
 
-void Threads::web_server_thead() {
+void Threads::web_server_thread() {
     crow::SimpleApp app;
 
     CROW_ROUTE(app, "/")([](){
