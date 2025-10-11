@@ -120,6 +120,17 @@ void Networking::set_wifi(bool enabled) {
     }
 }
 
+void Networking::create_hotspot(std::string ifname, std::string con_name, std::string ssid, std::string band, std::string channel, std::string passwd) {
+    std::string cmd = "nmcli radio wifi " + ifname + " " + con_name + " " + ssid + " " + band + " " + channel + " " + passwd;
+    FILE* pipe = popen(cmd.c_str(), "r");
+
+    if (pipe) {
+        pclose(pipe);
+    } else{
+        std::cerr << "Error: Failed to execute command." << "\n";
+    }
+}
+
 int Networking::wait_for_network() {
     int elapsed_seconds = 0;
 
