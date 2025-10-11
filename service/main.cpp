@@ -171,7 +171,7 @@ void Threads::ffmpeg_t() {
         "-b:v 2M -maxrate 2M -c:v h264_v4l2m2m -bufsize 4M"
         "-vf \"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
         "textfile=/tmp/ffmpeg_overlay.txt:reload=1:x=10:y=10:fontsize=12:fontcolor=white:box=1:boxcolor=black@0.50\" "
-        "-f flv rtmp://" + server.rtmp_ip + ":1935/live/stream?id=" + server.id + "&session=" + server.session;
+        "-f flv rtmp://" + server.rtmp_ip + "/live/stream?id=" + server.id + "&session=" + server.session;
     
     std::cout << "Running command: " << cmd << "\n";
 
