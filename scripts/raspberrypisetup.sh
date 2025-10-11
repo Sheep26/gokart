@@ -15,8 +15,6 @@ if [ "${telementry,,}" == "y" ]; then
         login_status=$(curl -s -o /dev/null -w "%{http_code}" -H "username: $username" -H "passwd: $password" "$serverip/api/login")
         echo $login_status
         if [ $login_status == "200" ]; then
-            echo "Setting environment variables"
-
             # Login successful.
             logged_in=1
             # Configure login for software.
