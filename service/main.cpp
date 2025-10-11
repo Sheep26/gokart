@@ -274,7 +274,7 @@ int main(int argc, char **argv) {
 
         if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
             Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
-        } else  {
+        } else if (digitalRead(HOTSPOT_PIN) == HIGH) {
             if (!Networking::wifi_enabled()) {
                 Networking::set_wifi(true);
             }
