@@ -22,6 +22,7 @@
 #include "data.h"
 #include "networking.h"
 #include "TinyGPS++.h"
+#include "crow.h"
 
 /*
  https://www.hpinfotech.ro/SSD1309.pdf - Datasheet
@@ -200,6 +201,14 @@ void start_telementry() {
 }
 
 int main(int argc, char **argv) {
+    crow::SimpleApp app;
+
+    CROW_ROUTE(app, "/")([](){
+        return "Hello world";
+    });
+
+    app.port(18080).multithreaded().run();
+    
     std::cout << "Starting gokart service.\n";
     shutting_down = false;
 
