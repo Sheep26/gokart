@@ -252,7 +252,6 @@ int main(int argc, char **argv) {
         std::cerr << "Out of range: " << e.what() << std::endl;
     }
     
-
     // Set pin modes.
     pinMode(TELEMENTRY_PIN, INPUT);
     pinMode(SHUTDOWN_PIN, INPUT);
