@@ -272,14 +272,12 @@ int main(int argc, char **argv) {
             system("shutdown -h now");
         }
 
-        if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "") {
-            if (!Networking::check_hotspot())
-                Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
-        } else if (digitalRead(HOTSPOT_PIN) == HIGH) {
-            if (!Networking::wifi_enabled())
-                Networking::set_wifi(true);
-
-            if (!Networking::check_network()) 
+        if (telementry && digitalRead(HOTSPOT_PIN) == LOW && wlanssid != "" && wlanpasswd != "" && !Networking::check_hotspot()) {
+            Networking::create_hotspot("wlan0", wlanssid, wlanpasswd);
+        }
+        
+        if (digitalRead(HOTSPOT_PIN) == HIGH) {
+            if (Networking::check_hotspot()) 
                 Networking::stop_hotspot();
         }
 
