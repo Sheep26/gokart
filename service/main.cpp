@@ -280,7 +280,7 @@ int main(int argc, char **argv) {
             }
 
             if (!Networking::check_network()) {
-                
+                Networking::connect_last_network();
             }
         }
 
