@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
         wlanpasswd = safe_getenv("WLANPASSWD");
     }
 
-    if (telementry && server.username != "" && server.passwd != "" && server.ip != "" && server.rtmp_ip != "") {
+    if (telementry && server.username == "" && server.passwd == "" && server.ip == "" && server.rtmp_ip == "") {
         std::cout << "Server configured incorrectly.\n";
     } else if (telementry) {
         std::cout << "Server configured at " << server.ip << "\n";
