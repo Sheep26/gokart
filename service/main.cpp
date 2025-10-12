@@ -216,8 +216,8 @@ void Threads::web_server_thread() {
     ([web_ui_passwd](const crow::request& req) {
         std::cout << req.body << "\n";
         auto params = crow::query_string(req.body);
-        std::cout << params << "\n";
-        
+        std::cout << params.get("passwd") << "\n";
+
         return crow::response(200, "Command received\n");
     });
 
