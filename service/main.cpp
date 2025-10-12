@@ -216,6 +216,8 @@ void Threads::web_server_thread() {
     ([web_ui_passwd](const crow::request& req) {
         std::cout << req.body << "\n";
         std::cout << req.url_params << "\n";
+
+        return "e";
     });
 
     app.port(80).run();
