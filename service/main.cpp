@@ -215,8 +215,9 @@ void Threads::web_server_thread() {
     CROW_ROUTE(app, "/send").methods(crow::HTTPMethod::Post)
     ([web_ui_passwd](const crow::request& req) {
         std::cout << req.body << "\n";
-        std::cout << req.url_params << "\n";
-
+        auto params = crow::query_string(req.body);
+        std::cout << params << "\n";
+        
         return crow::response(200, "Command received\n");
     });
 
