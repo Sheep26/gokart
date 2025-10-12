@@ -190,6 +190,8 @@ void Threads::ffmpeg_t() {
 }
 
 void Threads::web_server_thread() {
+    // Extremely bare bones, just to get connected to a network.
+
     std::string web_ui_passwd = safe_getenv("WEBUIPASSWD");
     crow::SimpleApp app;
 
