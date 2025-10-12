@@ -214,17 +214,8 @@ void Threads::web_server_thread() {
     // POST route for sending message
     CROW_ROUTE(app, "/send").methods(crow::HTTPMethod::Post)
     ([web_ui_passwd](const crow::request& req) {
-        auto body_params = crow::query_string(req.body);
-        std::cout << body_params << "\n";
-        std::string passwd = body_params.get("passwd") ? body_params.get("passwd") : "";
-        std::string msg = body_params.get("msg") ? body_params.get("msg") : "";
-
-        if (passwd != web_ui_passwd) {
-            return crow::response(403, "Invalid password\n");
-        }
-
-        std::cout << "[Web Message] " << msg << std::endl;
-        return crow::response(200, "Command received\n");
+        std::cout << req.body << "\n";
+        std::cout << req.url_params << "\n";
     });
 
     app.port(80).run();
