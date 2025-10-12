@@ -225,12 +225,7 @@ void Threads::web_server_thread() {
             std::cout << param_split[0] << "\n";
             std::cout << param_split[1] << "\n";
 
-            switch (param_split[0]) {
-                case "passwd":
-                    break;
-                case "msg":
-                    break;
-            }
+            
         }
 
         return crow::response(200, "Command received\n");
