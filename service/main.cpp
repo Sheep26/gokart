@@ -215,13 +215,13 @@ void Threads::web_server_thread() {
     CROW_ROUTE(app, "/send").methods(crow::HTTPMethod::Post)
     ([web_ui_passwd](const crow::request& req) {
         std::cout << req.body << "\n";
-        std::vector<std::string> split = split_string((std::string) req.body, "&");
+        std::vector<std::string> split = split_string((std::string) req.body, '&');
 
         std::string passwd;
         std::string msg;
 
         for (std::string param : split) {
-            std::vector<std::string> param_split = split_string(param, "=");
+            std::vector<std::string> param_split = split_string(param, '=');
             std::cout << param_split[0] << "\n";
             std::cout << param_split[1] << "\n";
 
