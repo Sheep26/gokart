@@ -217,7 +217,7 @@ void Threads::web_server_thread() {
         std::cout << req.body << "\n";
         std::cout << req.url_params << "\n";
 
-        return "e";
+        return crow::response(200, "Command received\n");
     });
 
     app.port(80).run();
