@@ -202,8 +202,8 @@ void Threads::web_server_thread() {
                 <body>
                     <h2>Send Command to Console</h2>
                     <form action="/send" method="post">
-                        Password: <input type="password" name="passwd"><br>
-                        Message: <input type="text" name="msg"><br>
+                        Password: <input type="password" id="passwd" name="passwd"><br>
+                        Message: <input type="text" id="msg" name="msg"><br>
                         <input type="submit" value="Send">
                     </form>
                 </body>
@@ -215,6 +215,7 @@ void Threads::web_server_thread() {
     CROW_ROUTE(app, "/send").methods(crow::HTTPMethod::Post)
     ([web_ui_passwd](const crow::request& req) {
         auto body_params = crow::query_string(req.body);
+        std::cout << body_params << "\n";
         std::string passwd = body_params.get("passwd") ? body_params.get("passwd") : "";
         std::string msg = body_params.get("msg") ? body_params.get("msg") : "";
 
