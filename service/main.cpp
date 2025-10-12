@@ -190,10 +190,38 @@ void Threads::ffmpeg_t() {
 }
 
 void Threads::web_server_thread() {
+    std::string web_ui_passwd = safe_getenv("WEBUIPASSWD");
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/")([](){
-        return "Hello world";
+    CROW_ROUTE(app, "/") ([]() {
+        return R"(
+            <html>
+                <head><title>Send Command</title></head>
+                <body>
+                    <h2>Send Command to Console</h2>
+                    <form action="/send" method="post">
+                        Password: <input type="password" name="passwd"><br>
+                        Message: <input type="text" name="msg"><br>
+                        <input type="submit" value="Send">
+                    </form>
+                </body>
+            </html>
+        )";
+    });
+
+    // POST route for sending message
+    CROW_ROUTE(app, "/send").methods(crow::HTTPMethod::Post)
+    ([web_ui_passwd](const crow::request& req) {
+        auto body_params = crow::query_string(req.body);
+        std::string passwd = body_params.get("passwd") ? body_params.get("passwd") : "";
+        std::string msg = body_params.get("msg") ? body_params.get("msg") : "";
+
+        if (passwd != web_ui_passwd) {
+            return crow::response(403, "Invalid password\n");
+        }
+
+        std::cout << "[Web Message] " << msg << std::endl;
+        return crow::response(200, "Command received\n");
     });
 
     app.port(80).run();
