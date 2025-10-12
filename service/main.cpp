@@ -253,6 +253,7 @@ int main(int argc, char **argv) {
         std::cout << "Server configured incorrectly.\n";
     } else if (telementry) {
         std::cout << "Server configured at " << server.ip << "\n";
+        std::cout << "Starting web server.\n";
 
         std::thread web_server_thread(Threads::web_server_thread);
         web_server_thread.detach();
