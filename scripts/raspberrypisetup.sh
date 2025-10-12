@@ -11,6 +11,9 @@ if [ "${telementry,,}" == "y" ]; then
     echo "export WLANSSID=$wifissid" >> /root/.server_env
     echo "export WLANPASSWD=$wifipasswd" >> /root/.server_env
 
+    read -p "Web Ui passwd: " webuipasswd
+    echo "export WEBUIPASSWD=$webuipasswd" >> /root/.server_env
+
     # Get login details
     logged_in=0
     while [ $logged_in -eq 0 ]; do
